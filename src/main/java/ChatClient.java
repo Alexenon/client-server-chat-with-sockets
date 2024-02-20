@@ -6,6 +6,10 @@ import java.util.Scanner;
 
 public class ChatClient {
 
+    // Configuration for the client to join server
+    public static final int SERVER_PORT = 9999;
+    public static final String SERVER_NAME = "localhost";
+
     String username;
     PrintWriter pw;
     BufferedReader br;
@@ -14,10 +18,8 @@ public class ChatClient {
     public ChatClient(String username) throws Exception {
         this.username = username;
 
-        String serverName = "localhost";
-        int serverPort = 9999;
-        System.out.println("Connecting to the server " + serverName + ":" + serverPort + "...");
-        client = new Socket(serverName, serverPort);
+        System.out.println("Connecting to the server " + SERVER_NAME + ":" + SERVER_PORT + "...");
+        client = new Socket(SERVER_NAME, SERVER_PORT);
         System.out.println("Welcome to the server " + username + "!");
         br = new BufferedReader(new InputStreamReader(client.getInputStream()));
         pw = new PrintWriter(client.getOutputStream(), true);
@@ -48,7 +50,6 @@ public class ChatClient {
 //        }
 //    }
 
-    // inner class for Messages Thread
     class MessagesThread extends Thread {
         public void run() {
             String line;
@@ -58,7 +59,7 @@ public class ChatClient {
                     System.out.println(line);
                 }
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
     }
