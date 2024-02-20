@@ -1,8 +1,13 @@
 package chat;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatServer {
     private static final int PORT = 8080;
@@ -13,7 +18,7 @@ public class ChatServer {
             ServerSocket serverSocket = new ServerSocket(PORT);
             System.out.println("Server started on port " + PORT);
 
-            while (true) {
+            while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
 
@@ -27,7 +32,7 @@ public class ChatServer {
     }
 
     static class ClientHandler extends Thread {
-        private Socket socket;
+        private final Socket socket;
         private PrintWriter out;
 
         public ClientHandler(Socket socket) {
