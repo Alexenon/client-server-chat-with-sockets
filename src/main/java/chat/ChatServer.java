@@ -65,7 +65,8 @@ public class ChatServer {
                     broadcastMessage(message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                System.out.println("Client left the chat");
+//                e.printStackTrace();
             } finally {
                 try {
                     socket.close();

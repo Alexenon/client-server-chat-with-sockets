@@ -74,8 +74,18 @@ public class ChatClient1 {
         messageField.setText("");
     }
 
-    private void updateChatArea(String message) {
-        SwingUtilities.invokeLater(() -> chatArea.append(message + "\n"));
+    private void updateChatArea(Message message) {
+        String messageText = getMessageTextToBeDisplayed(message);
+        SwingUtilities.invokeLater(() -> chatArea.append(messageText + "\n"));
+    }
+
+    private String getMessageTextToBeDisplayed(Message message) {
+        StringBuilder sb = new StringBuilder();
+
+        if (message.getAuthor() != null && !message.getAuthor().getUsername().equals(user.getUsername()))
+            sb.append(message.getAuthor().getUsername()).append(": ");
+
+        return sb.append(message.getText()).toString();
     }
 
     public void closeWindow() {
@@ -94,13 +104,11 @@ public class ChatClient1 {
                 while (true) {
                     Message message = (Message) inputStream.readObject();
 
-                    if (message == null) {
+                    if (message == null)
                         break;
-                    }
 
-                    String messageText = message.getText();
-                    System.out.println(messageText);
-                    updateChatArea(messageText);
+                    updateChatArea(message);
+                    System.out.println(message.getText());
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
