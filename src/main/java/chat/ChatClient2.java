@@ -37,11 +37,11 @@ public class ChatClient2 {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
         messageField = new JTextField();
-        messageField.addActionListener(e -> sendMessage());
+        messageField.addActionListener(e -> handleSendingMessage());
 
         bottomPanel.add(messageField, BorderLayout.CENTER);
         JButton sendButton = new JButton("Send");
-        sendButton.addActionListener(e -> sendMessage());
+        sendButton.addActionListener(e -> handleSendingMessage());
         bottomPanel.add(sendButton, BorderLayout.EAST);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
@@ -49,6 +49,7 @@ public class ChatClient2 {
         try {
             Socket socket = new Socket("localhost", 8080);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
+
             // Send the username to the server
             outputStream.writeObject(username);
             outputStream.flush();
@@ -62,10 +63,9 @@ public class ChatClient2 {
         SwingUtilities.invokeLater(ChatClient1::new);
     }
 
-    private void sendMessage() {
+    private void handleSendingMessage() {
         try {
-            String messageText = messageField.getText();
-            Message message = new Message(messageText, user, null); // TODO: Check for private messages
+            Message message = getMessageFromTextField();
             outputStream.writeObject(message);
             outputStream.flush();
         } catch (IOException e) {
@@ -74,8 +74,46 @@ public class ChatClient2 {
         messageField.setText("");
     }
 
-    private void updateChatArea(String message) {
-        SwingUtilities.invokeLater(() -> chatArea.append(message + "\n"));
+    private Message getMessageFromTextField() {
+        return isSendingMessagePrivate()
+                ? getPrivateMessage()
+                : getPublicMessage();
+    }
+
+    private boolean isSendingMessagePrivate() {
+        return messageField.getText().contains(":");
+    }
+
+    private Message getPrivateMessage() {
+        String[] split = messageField.getText().split(":");
+        String receiverUsername = split[0];
+        String messageText = split[1];
+        User receiver = new User(receiverUsername);
+
+        return new Message(messageText.trim(), user, receiver);
+    }
+
+    private Message getPublicMessage() {
+        return new Message(messageField.getText().trim(), user, null);
+    }
+
+//    private void sendPrivateMessage(Message message) {
+//        String messageToBeSent = message.getText();
+//        String messageToBeDisplayed = getMessageTextToBeDisplayed(message);
+//    }
+
+    private void updateChatArea(Message message) {
+        String messageText = getMessageTextToBeDisplayed(message);
+        SwingUtilities.invokeLater(() -> chatArea.append(messageText + "\n"));
+    }
+
+    private String getMessageTextToBeDisplayed(Message message) {
+        StringBuilder sb = new StringBuilder();
+
+        if (message.getAuthor() != null && !message.getAuthor().getUsername().equals(user.getUsername()))
+            sb.append(message.getAuthor().getUsername()).append(": ");
+
+        return sb.append(message.getText()).toString();
     }
 
     public void closeWindow() {
@@ -94,13 +132,11 @@ public class ChatClient2 {
                 while (true) {
                     Message message = (Message) inputStream.readObject();
 
-                    if (message == null) {
+                    if (message == null)
                         break;
-                    }
 
-                    String messageText = message.getText();
-                    System.out.println(messageText);
-                    updateChatArea(messageText);
+                    updateChatArea(message);
+                    System.out.println(message.getText());
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

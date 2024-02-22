@@ -15,14 +15,16 @@ import java.util.List;
 //  - encryption
 //  - private messages
 //  - commands
+//  - handle same username situations
 
 public class ChatServer {
+    private static ServerSocket serverSocket;
     private static final int PORT = 8080;
     private static final List<ClientHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(PORT);
             System.out.println("Server started on port " + PORT);
 
             while (!serverSocket.isClosed()) {
@@ -53,6 +55,7 @@ public class ChatServer {
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
 
                 // Read username from client
+                // When a user join the server, and enters the username, the username is sent to the server
                 String username = (String) inputStream.readObject();
                 System.out.println("User connected: " + username);
 
@@ -60,7 +63,7 @@ public class ChatServer {
                 broadcastMessage(new Message("User " + username + " joined the chat", null, null));
 
                 // Read messages from client
-                while (true) {
+                while (!serverSocket.isClosed()) {
                     Message message = (Message) inputStream.readObject();
                     broadcastMessage(message);
                 }
@@ -81,6 +84,11 @@ public class ChatServer {
                 try {
                     client.outputStream.writeObject(message);
                     client.outputStream.flush();
+
+                    String messageLog = message.getAuthor() != null
+                            ? message.getAuthor().getUsername() + ": " + message.getText()
+                            : message.getText();
+                    System.out.println(messageLog);
                 } catch (IOException e) {
                     System.out.println("Client discounted");
 //                    e.printStackTrace();
