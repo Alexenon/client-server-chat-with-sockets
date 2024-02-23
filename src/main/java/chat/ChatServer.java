@@ -18,9 +18,9 @@ import java.util.List;
 //  - handle same username situations
 
 public class ChatServer {
-    private static ServerSocket serverSocket;
     private static final int PORT = 8080;
     private static final List<ClientHandler> clients = new ArrayList<>();
+    private static ServerSocket serverSocket;
 
     public static void main(String[] args) {
         try {
@@ -79,19 +79,17 @@ public class ChatServer {
             }
         }
 
-        private void broadcastMessage(Message message) {
+        private void broadcastMessage(Message message) throws IOException {
             for (ClientHandler client : clients) {
                 try {
                     client.outputStream.writeObject(message);
                     client.outputStream.flush();
-
-                    String messageLog = message.getAuthor() != null
-                            ? message.getAuthor().getUsername() + ": " + message.getText()
-                            : message.getText();
-                    System.out.println(messageLog);
+                    System.out.println(message);
                 } catch (IOException e) {
                     System.out.println("Client discounted");
 //                    e.printStackTrace();
+                    inputStream.close();
+                    outputStream.close();
                 }
             }
         }

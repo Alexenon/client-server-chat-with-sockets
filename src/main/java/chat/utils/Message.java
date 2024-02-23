@@ -2,22 +2,24 @@ package chat.utils;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final String FORMATTER = "yyyy-MM-dd HH:mm:ss";
 
     private final String text;
     private final User author;
-    private final User designator;
-    private final LocalDate date;
+    private final User receiver;
+    private final LocalDateTime dateTime;
 
-    public Message(String text, User author, User designator) {
+    public Message(String text, User author, User receiver) {
         this.text = text;
         this.author = author;
-        this.designator = designator;
-        this.date = LocalDate.now();
+        this.receiver = receiver;
+        this.dateTime = LocalDateTime.now();
     }
 
     public String getText() {
@@ -28,12 +30,25 @@ public class Message implements Serializable {
         return author;
     }
 
-    public User getDesignator() {
-        return designator;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
+    public String getDateTimeFormatted() {
+        return dateTime.format(DateTimeFormatter.ofPattern(FORMATTER));
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+               "text='" + text + '\'' +
+               ", author=" + author +
+               ", receiver=" + receiver +
+               ", dateTime=" + getDateTimeFormatted() +
+               '}';
+    }
 }
