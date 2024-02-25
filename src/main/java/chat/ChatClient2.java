@@ -1,7 +1,7 @@
 package chat;
 
-import chat.utils.Message;
-import chat.utils.User;
+import chat.model.Message;
+import chat.model.User;
 
 import javax.swing.*;
 import java.awt.*;

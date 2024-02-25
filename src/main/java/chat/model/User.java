@@ -1,4 +1,4 @@
-package chat.utils;
+package chat.model;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -36,7 +36,7 @@ public class User implements Serializable {
 
         User user = (User) o;
 
-        return Objects.equals(username, user.username);
+        return Objects.equals(this.username, user.username);
     }
 
     @Override

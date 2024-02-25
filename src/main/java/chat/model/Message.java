@@ -1,4 +1,4 @@
-package chat.utils;
+package chat.model;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 public class Message implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final String FORMATTER = "yyyy-MM-dd HH:mm:ss";
+    private static final String FORMATTER = "yyyy-MM-dd HH:mm";
 
     private final String text;
     private final User author;

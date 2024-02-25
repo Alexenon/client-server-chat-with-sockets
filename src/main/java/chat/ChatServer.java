@@ -1,6 +1,6 @@
 package chat;
 
-import chat.utils.Message;
+import chat.model.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,11 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO:
-//  - chat layout
 //  - encryption
-//  - private messages
 //  - commands
 //  - handle same username situations
+//  - bytes to different objects (message, error, user, etc.)
 
 public class ChatServer {
     private static final int PORT = 8080;
