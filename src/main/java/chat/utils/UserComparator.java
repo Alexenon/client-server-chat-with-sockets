@@ -8,6 +8,7 @@ import java.util.Objects;
 public class UserComparator implements Comparator<User> {
     @Override
     public int compare(User o1, User o2) {
+        // if (o1 == null && o2 == null) return -1;
         if (o1 == null && o2 != null) return -1;
         if (o1 != null && o2 == null) return -1;
 

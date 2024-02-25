@@ -1,6 +1,7 @@
 package chat;
 
 import chat.model.Message;
+import chat.model.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -41,25 +42,24 @@ public class ChatServer {
 
     static class ClientHandler extends Thread {
         private final Socket socket;
-        private ObjectInputStream inputStream;
-        private ObjectOutputStream outputStream;
+        private final ObjectInputStream inputStream;
+        private final ObjectOutputStream outputStream;
+        private User user;
 
-        public ClientHandler(Socket socket) {
+        public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
+            this.inputStream = new ObjectInputStream(socket.getInputStream());
+            this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         }
 
         public void run() {
             try {
-                inputStream = new ObjectInputStream(socket.getInputStream());
-                outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-                // Read username from client
-                // When a user join the server, and enters the username, the username is sent to the server
+                System.out.println("Welcome to the server!");
+                System.out.print("Please enter your username: ");
                 String username = (String) inputStream.readObject();
-                System.out.println("User connected: " + username);
+                this.user = new User(username);
 
-                // Broadcast message to all clients
-                broadcastMessage(new Message("User " + username + " joined the chat", null, null));
+                welcomeNewUser();
 
                 // Read messages from client
                 while (!serverSocket.isClosed()) {
@@ -67,8 +67,9 @@ public class ChatServer {
                     broadcastMessage(message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Client left the chat");
-//                e.printStackTrace();
+                String leavingText = "User " + user.getUsername() + " left the chat";
+                broadcastMessage(leavingText);
+                System.out.println(leavingText);
             } finally {
                 try {
                     socket.close();
@@ -78,20 +79,29 @@ public class ChatServer {
             }
         }
 
-        private void broadcastMessage(Message message) throws IOException {
+        private void broadcastMessage(String messageText) {
+            Message message = new Message(messageText, null, null);
+            broadcastMessage(message);
+        }
+
+        private void broadcastMessage(Message message) {
             for (ClientHandler client : clients) {
                 try {
                     client.outputStream.writeObject(message);
                     client.outputStream.flush();
                     System.out.println(message);
                 } catch (IOException e) {
-                    System.out.println("Client discounted");
-//                    e.printStackTrace();
-                    inputStream.close();
-                    outputStream.close();
+                    System.out.println("User " + user.getUsername() + " got disconnected");
                 }
             }
         }
+
+        private void welcomeNewUser() {
+            String welcomingText = "User " + user.getUsername() + " joined the chat";
+            broadcastMessage(welcomingText);
+            System.out.println(welcomingText);
+        }
+
     }
 }
 

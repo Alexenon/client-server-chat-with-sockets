@@ -2,14 +2,14 @@ package chat;
 
 import chat.model.Message;
 import chat.model.User;
-import chat.utils.UserComparator;
+import chat.model.handlers.response.ResponseHandler;
+import chat.model.handlers.response.ResponseHandlerFactory;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Objects;
 
 public class ChatClient1 {
     private final User user;
@@ -80,18 +80,6 @@ public class ChatClient1 {
         return new Message(chatLayout.getMessageInput().trim(), user, null);
     }
 
-    private String getMessageTextToBeDisplayed(Message message) {
-        User author = message.getAuthor();
-        User receiver = message.getReceiver();
-        String text = message.getText();
-
-        // Check if author exists and is not the same as receiver
-        if (author != null && Objects.compare(author, receiver, new UserComparator()) == 0)
-            return author.getUsername() + ": " + text;
-
-        return text;
-    }
-
     private class IncomingMessageHandler implements Runnable {
         private final ObjectInputStream inputStream;
 
@@ -102,14 +90,12 @@ public class ChatClient1 {
         public void run() {
             try {
                 while (true) {
-                    Message message = (Message) inputStream.readObject();
+                    Object object = inputStream.readObject();
+                    ResponseHandler responseHandler = ResponseHandlerFactory.createResponseHandler(object);
+                    String textToBeDisplayed = responseHandler.handleResult();
 
-                    if (message == null)
-                        break;
-
-                    String messageTextToBeDisplayed = getMessageTextToBeDisplayed(message);
-                    chatLayout.updateChatArea(messageTextToBeDisplayed);
-                    System.out.println(message);
+                    chatLayout.updateChatArea(textToBeDisplayed);
+                    System.out.println(textToBeDisplayed);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

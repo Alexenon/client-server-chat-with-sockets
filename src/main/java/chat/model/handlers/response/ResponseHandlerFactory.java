@@ -1,4 +1,4 @@
-package chat.model.handlers;
+package chat.model.handlers.response;
 
 import chat.model.Message;
 
@@ -9,7 +9,8 @@ public class ResponseHandlerFactory {
         } else if (object instanceof Error) {
             return new ErrorHandlerImpl((Error) object);
         }
-        return null;
+
+        throw new RuntimeException("Couldn't process the response");
     }
 }
 

@@ -2,9 +2,10 @@ package chat;
 
 import chat.model.Message;
 import chat.model.User;
+import chat.model.handlers.response.ResponseHandler;
+import chat.model.handlers.response.ResponseHandlerFactory;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,46 +13,32 @@ import java.net.Socket;
 
 public class ChatClient2 {
     private final User user;
-    private final JFrame frame;
-    private final JTextArea chatArea;
-    private final JTextField messageField;
+    private final ChatLayout chatLayout;
     private ObjectOutputStream outputStream;
 
     public ChatClient2() {
-        frame = new JFrame("Chat Client 1");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        chatLayout = new ChatLayout();
+        user = new User(chatLayout.getUsername());
+        initialize();
+    }
 
-        String username = JOptionPane.showInputDialog(frame, "Enter your username:");
-        if (username == null || username.trim().isEmpty()) {
-            System.exit(0); // Exit if username is not provided
-        }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(ChatClient1::new);
+    }
 
-        user = new User(username);
+    private void initialize() {
+        chatLayout.buildForm();
+        chatLayout.sendActionListener(e -> handleSendingMessage());
+        connectToTheServer();
+    }
 
-        frame.setTitle("Chat Client 1 - " + username);
-        chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        frame.add(new JScrollPane(chatArea), BorderLayout.CENTER);
-
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BorderLayout());
-        messageField = new JTextField();
-        messageField.addActionListener(e -> handleSendingMessage());
-
-        bottomPanel.add(messageField, BorderLayout.CENTER);
-        JButton sendButton = new JButton("Send");
-        sendButton.addActionListener(e -> handleSendingMessage());
-        bottomPanel.add(sendButton, BorderLayout.EAST);
-        frame.add(bottomPanel, BorderLayout.SOUTH);
-        frame.setVisible(true);
-
+    private void connectToTheServer() {
         try {
             Socket socket = new Socket("localhost", 8080);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
 
             // Send the username to the server
-            outputStream.writeObject(username);
+            outputStream.writeObject(chatLayout.getUsername());
             outputStream.flush();
             new Thread(new IncomingMessageHandler(socket)).start();
         } catch (IOException e) {
@@ -59,19 +46,15 @@ public class ChatClient2 {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatClient1::new);
-    }
-
     private void handleSendingMessage() {
         try {
             Message message = getMessageFromTextField();
             outputStream.writeObject(message);
             outputStream.flush();
+            chatLayout.clearMessageInput();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        messageField.setText("");
     }
 
     private Message getMessageFromTextField() {
@@ -81,11 +64,11 @@ public class ChatClient2 {
     }
 
     private boolean isSendingMessagePrivate() {
-        return messageField.getText().contains(":");
+        return chatLayout.getMessageInput().contains(":");
     }
 
     private Message getPrivateMessage() {
-        String[] split = messageField.getText().split(":");
+        String[] split = chatLayout.getMessageInput().split(":");
         String receiverUsername = split[0];
         String messageText = split[1];
         User receiver = new User(receiverUsername);
@@ -94,30 +77,7 @@ public class ChatClient2 {
     }
 
     private Message getPublicMessage() {
-        return new Message(messageField.getText().trim(), user, null);
-    }
-
-//    private void sendPrivateMessage(Message message) {
-//        String messageToBeSent = message.getText();
-//        String messageToBeDisplayed = getMessageTextToBeDisplayed(message);
-//    }
-
-    private void updateChatArea(Message message) {
-        String messageText = getMessageTextToBeDisplayed(message);
-        SwingUtilities.invokeLater(() -> chatArea.append(messageText + "\n"));
-    }
-
-    private String getMessageTextToBeDisplayed(Message message) {
-        StringBuilder sb = new StringBuilder();
-
-        if (message.getAuthor() != null && !message.getAuthor().getUsername().equals(user.getUsername()))
-            sb.append(message.getAuthor().getUsername()).append(": ");
-
-        return sb.append(message.getText()).toString();
-    }
-
-    public void closeWindow() {
-        frame.dispose();
+        return new Message(chatLayout.getMessageInput().trim(), user, null);
     }
 
     private class IncomingMessageHandler implements Runnable {
@@ -130,17 +90,16 @@ public class ChatClient2 {
         public void run() {
             try {
                 while (true) {
-                    Message message = (Message) inputStream.readObject();
+                    Object object = inputStream.readObject();
+                    ResponseHandler responseHandler = ResponseHandlerFactory.createResponseHandler(object);
+                    String textToBeDisplayed = responseHandler.handleResult();
 
-                    if (message == null)
-                        break;
-
-                    updateChatArea(message);
-                    System.out.println(message.getText());
+                    chatLayout.updateChatArea(textToBeDisplayed);
+                    System.out.println(textToBeDisplayed);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                closeWindow();
+                chatLayout.closeWindow();
             }
         }
     }
