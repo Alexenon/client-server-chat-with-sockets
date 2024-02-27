@@ -1,13 +1,15 @@
 package chat.model.handlers.response;
 
 import chat.model.Message;
+import chat.model.User;
 
-public class ResponseHandlerFactory {
-    public static ResponseHandler createResponseHandler(Object object) {
-        if (object instanceof Message) {
-            return new MessageHandlerImpl((Message) object);
-        } else if (object instanceof Error) {
-            return new ErrorHandlerImpl((Error) object);
+public record ResponseHandlerFactory(User user) {
+
+    public ResponseHandler createResponseHandler(Object object) {
+        if (object instanceof Message message) {
+            return new MessageHandlerImpl(message, user);
+        } else if (object instanceof Error error) {
+            return new ErrorHandlerImpl(error);
         }
 
         throw new RuntimeException("Couldn't process the response");

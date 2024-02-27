@@ -14,11 +14,13 @@ import java.net.Socket;
 public class ChatClient1 {
     private final User user;
     private final ChatLayout chatLayout;
+    private final ResponseHandlerFactory responseHandlerFactory;
     private ObjectOutputStream outputStream;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
+        responseHandlerFactory = new ResponseHandlerFactory(user);
         initialize();
     }
 
@@ -91,7 +93,7 @@ public class ChatClient1 {
             try {
                 while (true) {
                     Object object = inputStream.readObject();
-                    ResponseHandler responseHandler = ResponseHandlerFactory.createResponseHandler(object);
+                    ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
                     String textToBeDisplayed = responseHandler.handleResult();
 
                     chatLayout.updateChatArea(textToBeDisplayed);
