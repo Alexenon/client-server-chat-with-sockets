@@ -1,4 +1,4 @@
-package chat.model;
+package chat.models;
 
 import java.io.Serial;
 import java.io.Serializable;

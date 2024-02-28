@@ -1,6 +1,6 @@
 package chat.sever;
 
-import chat.model.Message;
+import chat.models.Message;
 
 import java.io.IOException;
 import java.util.ArrayList;

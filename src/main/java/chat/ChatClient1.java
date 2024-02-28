@@ -1,10 +1,11 @@
 package chat;
 
+import chat.handlers.input.MessageInputHandler;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
-import chat.model.Command;
-import chat.model.Message;
-import chat.model.User;
+import chat.models.Message;
+import chat.models.User;
+import chat.ui.ChatLayout;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -49,47 +50,25 @@ public class ChatClient1 {
         }
     }
 
+    private Message getMessageFromTextField() {
+        String messageInput = chatLayout.getMessageInput();
+        MessageInputHandler messageInputHandler = new MessageInputHandler(user);
+        return (Message) messageInputHandler.convertIntoObject(messageInput);
+    }
+
     private void handleSendingMessage() {
+        Message message = getMessageFromTextField();
+        sendToServer(message);
+    }
+
+    private void sendToServer(Object o) {
         try {
-            Message message = getMessageFromTextField();
-            outputStream.writeObject(message);
+            outputStream.writeObject(o);
             outputStream.flush();
             chatLayout.clearMessageInput();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private Object getObjectToBeSentToTheServer() {
-        String input = chatLayout.getMessageInput();
-
-        if(input.startsWith("/"))
-            return new Command(input);
-
-        return getMessageFromTextField();
-    }
-
-    private Message getMessageFromTextField() {
-        return isSendingMessagePrivate()
-                ? getPrivateMessage()
-                : getPublicMessage();
-    }
-
-    private boolean isSendingMessagePrivate() {
-        return chatLayout.getMessageInput().contains(":");
-    }
-
-    private Message getPrivateMessage() {
-        String[] split = chatLayout.getMessageInput().split(":");
-        String receiverUsername = split[0];
-        String messageText = split[1];
-        User receiver = new User(receiverUsername);
-
-        return new Message(messageText.trim(), user, receiver);
-    }
-
-    private Message getPublicMessage() {
-        return new Message(chatLayout.getMessageInput().trim(), user, null);
     }
 
     private class IncomingMessageHandler implements Runnable {

@@ -1,4 +1,4 @@
-package chat.model;
+package chat.models;
 
 
 public class Error {

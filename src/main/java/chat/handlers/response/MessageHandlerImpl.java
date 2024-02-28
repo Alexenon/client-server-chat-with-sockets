@@ -1,7 +1,7 @@
 package chat.handlers.response;
 
-import chat.model.Message;
-import chat.model.User;
+import chat.models.Message;
+import chat.models.User;
 import chat.utils.UserComparator;
 
 import java.util.Objects;

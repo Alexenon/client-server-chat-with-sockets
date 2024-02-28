@@ -1,9 +1,10 @@
 package chat;
 
-import chat.model.Message;
-import chat.model.User;
+import chat.models.Message;
+import chat.models.User;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
+import chat.ui.ChatLayout;
 
 import javax.swing.*;
 import java.io.IOException;

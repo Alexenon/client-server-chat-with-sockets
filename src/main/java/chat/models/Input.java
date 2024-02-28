@@ -1,4 +1,4 @@
-package chat.model;
+package chat.models;
 
 public class Input {
     String text;
