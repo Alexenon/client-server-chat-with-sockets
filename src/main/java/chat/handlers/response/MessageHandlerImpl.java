@@ -1,4 +1,4 @@
-package chat.model.handlers.response;
+package chat.handlers.response;
 
 import chat.model.Message;
 import chat.model.User;

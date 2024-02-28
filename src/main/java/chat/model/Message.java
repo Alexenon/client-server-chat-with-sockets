@@ -6,14 +6,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-    private static final String FORMATTER = "yyyy-MM-dd HH:mm";
+    protected static final String FORMATTER = "yyyy-MM-dd HH:mm";
 
-    private final String text;
-    private final User author;
-    private final User receiver;
-    private final LocalDateTime dateTime;
+    @Serial
+    private static final long serialVersionUID = 8322154030015983245L;
+
+    protected String text;
+    protected User author;
+    protected User receiver;
+    protected LocalDateTime dateTime;
 
     public Message(String text, User author, User receiver) {
         this.text = text;

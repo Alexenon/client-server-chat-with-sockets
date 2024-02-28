@@ -1,9 +1,10 @@
 package chat;
 
+import chat.handlers.response.ResponseHandler;
+import chat.handlers.response.ResponseHandlerFactory;
+import chat.model.Command;
 import chat.model.Message;
 import chat.model.User;
-import chat.model.handlers.response.ResponseHandler;
-import chat.model.handlers.response.ResponseHandlerFactory;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -57,6 +58,15 @@ public class ChatClient1 {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Object getObjectToBeSentToTheServer() {
+        String input = chatLayout.getMessageInput();
+
+        if(input.startsWith("/"))
+            return new Command(input);
+
+        return getMessageFromTextField();
     }
 
     private Message getMessageFromTextField() {

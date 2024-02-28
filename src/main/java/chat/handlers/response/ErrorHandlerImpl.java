@@ -1,4 +1,4 @@
-package chat.model.handlers.response;
+package chat.handlers.response;
 
 public record ErrorHandlerImpl(Error error) implements ResponseHandler {
     @Override
