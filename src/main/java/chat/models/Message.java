@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
-    protected static final String FORMATTER = "yyyy-MM-dd HH:mm";
+    protected static final String DATE_TIME_FORMATTER = "yyyy-MM-dd HH:mm";
 
     @Serial
     private static final long serialVersionUID = 8322154030015983245L;
@@ -15,6 +15,10 @@ public class Message implements Serializable {
     protected User author;
     protected User receiver;
     protected LocalDateTime dateTime;
+
+    public Message(String text) {
+        this(text, null, null);
+    }
 
     public Message(String text, User author, User receiver) {
         this.text = text;
@@ -40,7 +44,7 @@ public class Message implements Serializable {
     }
 
     public String getDateTimeFormatted() {
-        return dateTime.format(DateTimeFormatter.ofPattern(FORMATTER));
+        return dateTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMATTER));
     }
 
     @Override

@@ -7,15 +7,23 @@ public class EncryptedMessage extends Message implements Serializable {
     @Serial
     private static final long serialVersionUID = 1414927498819791395L;
 
-    private final String decryptKey;
+    private final String encryptKey;
 
-    public EncryptedMessage(String text, User author, User receiver, String decryptKey) {
-        super(text, author, receiver);
-        this.decryptKey = decryptKey;
+    public EncryptedMessage(String text) {
+        this(text, null, null);
     }
 
-    public String getDecryptKey() {
-        return decryptKey;
+    public EncryptedMessage(String text, User author, User receiver) {
+        this(text, author, receiver, null);
+    }
+
+    public EncryptedMessage(String text, User author, User receiver, String encryptKey) {
+        super(text, author, receiver);
+        this.encryptKey = encryptKey;
+    }
+
+    public String getEncryptKey() {
+        return encryptKey;
     }
 
     @Override
@@ -24,7 +32,7 @@ public class EncryptedMessage extends Message implements Serializable {
                "text='" + text + '\'' +
                ", author=" + author +
                ", receiver=" + receiver +
-               ", decryptKey='" + decryptKey + '\'' +
+               ", decryptKey='" + encryptKey + '\'' +
                ", dateTime=" + getDateTimeFormatted() +
                '}';
     }
