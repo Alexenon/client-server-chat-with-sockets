@@ -1,4 +1,4 @@
-package chat.handlers.input;
+package chat.handlers.input.command;
 
 import chat.models.Command;
 import chat.models.Commands;

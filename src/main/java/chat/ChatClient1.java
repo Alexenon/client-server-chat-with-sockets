@@ -1,6 +1,8 @@
 package chat;
 
-import chat.handlers.input.MessageInputHandler;
+import chat.handlers.input.InputHandler;
+import chat.handlers.input.InputHandlerFactory;
+import chat.handlers.input.message.MessageInputHandler;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.Message;
@@ -16,12 +18,14 @@ import java.net.Socket;
 public class ChatClient1 {
     private final User user;
     private final ChatLayout chatLayout;
+    private final InputHandlerFactory inputHandlerFactory;
     private final ResponseHandlerFactory responseHandlerFactory;
     private ObjectOutputStream outputStream;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
+        inputHandlerFactory = new InputHandlerFactory(user);
         responseHandlerFactory = new ResponseHandlerFactory(user);
         initialize();
     }
@@ -50,18 +54,14 @@ public class ChatClient1 {
         }
     }
 
-    private Message getMessageFromTextField() {
-        String messageInput = chatLayout.getMessageInput();
-        MessageInputHandler messageInputHandler = new MessageInputHandler(user);
-        return (Message) messageInputHandler.convertIntoObject(messageInput);
-    }
-
     private void handleSendingMessage() {
-        Message message = getMessageFromTextField();
-        sendToServer(message);
+        Object objectToBeSent = getObjectToSend();
+        sendToServer(objectToBeSent);
     }
 
     private void sendToServer(Object o) {
+        if (o == null) return;
+
         try {
             outputStream.writeObject(o);
             outputStream.flush();
@@ -69,6 +69,14 @@ public class ChatClient1 {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Object getObjectToSend() {
+        String input = chatLayout.getMessageInput();
+        boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
+
+        InputHandler inputHandler = inputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
+        return inputHandler.convertIntoObject(input);
     }
 
     private class IncomingMessageHandler implements Runnable {

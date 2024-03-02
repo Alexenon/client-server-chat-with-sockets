@@ -1,5 +1,6 @@
-package chat.handlers.input;
+package chat.handlers.input.message;
 
+import chat.handlers.input.InputHandler;
 import chat.models.Message;
 import chat.models.User;
 

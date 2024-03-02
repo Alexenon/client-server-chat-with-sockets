@@ -1,6 +1,5 @@
 package chat.sever;
 
-import chat.models.Message;
 import chat.models.User;
 
 import java.io.IOException;
@@ -34,10 +33,10 @@ public class ClientHandler extends Thread {
             ServerManager.broadcastMessage(welcomingText);
             System.out.println(welcomingText);
 
-            // Read messages from client
+            // Read messages from client and send them to all clients
             while (!socket.isClosed()) {
-                Message message = (Message) inputStream.readObject();
-                ServerManager.broadcastMessage(message);
+                Object messageObject = inputStream.readObject();
+                ServerManager.broadcastMessage(messageObject);
             }
         } catch (IOException | ClassNotFoundException e) {
             String leavingText = "User " + user.getUsername() + " left the chat";
@@ -53,8 +52,8 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public void sendMessage(Message message) throws IOException {
-        outputStream.writeObject(message);
+    public void sendMessage(Object o) throws IOException {
+        outputStream.writeObject(o);
         outputStream.flush();
     }
 

@@ -1,19 +1,25 @@
 package chat.handlers.input;
 
-import chat.models.Command;
 import chat.models.User;
 
 public class Test {
-    User user = new User("test");
 
-    public void test() {
-        String input = getFieldInput();
+    public static void main(String[] args) {
+        String message1 = "This is simple";
+        String message2 = "This is complicated";
+        User user = new User("Test"); // Get From Input
 
-        CommandInputHandler commandInputHandler = new CommandInputHandler(input);
-        Command command = commandInputHandler.getCommand().orElseThrow();
+        InputHandlerFactory inputHandlerFactory = new InputHandlerFactory(user);
+        InputHandler inputHandler = inputHandlerFactory.getInputHandler(message1, false);
 
-        CommandOutputHandler commandOutputHandler = new CommandOutputHandler(command);
-        Object commandResponse = commandOutputHandler.getResponse();
+        Object publicMessage = inputHandler.convertIntoObject(message1);
+
+        InputHandler inputHandler2 = inputHandlerFactory.getInputHandler(message2, true);
+
+        Object encryptedMessage = inputHandler2.convertIntoObject(message2);
+
+        System.out.println(publicMessage);
+        System.out.println(encryptedMessage);
 
     }
 
@@ -21,7 +27,4 @@ public class Test {
         System.out.println("Sending " + o);
     }
 
-    private String getFieldInput() {
-        return "";
-    }
 }

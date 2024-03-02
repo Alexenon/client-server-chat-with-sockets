@@ -32,4 +32,16 @@ public class ServerManager {
             }
         }
     }
+
+    public static synchronized void broadcastMessage(Object object) {
+        for (ClientHandler client : clients) {
+            try {
+                System.out.println(object);
+                client.sendMessage(object);
+            } catch (IOException e) {
+                System.out.println("Error broadcasting message to client");
+            }
+        }
+    }
+
 }
