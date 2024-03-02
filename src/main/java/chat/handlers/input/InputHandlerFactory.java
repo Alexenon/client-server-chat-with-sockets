@@ -4,13 +4,15 @@ import chat.handlers.input.message.EncryptedMessageInputHandler;
 import chat.handlers.input.message.MessageInputHandler;
 import chat.models.User;
 
-public record InputHandlerFactory(User user) {
+import java.security.PublicKey;
+
+public record InputHandlerFactory(User user, PublicKey publicKey) {
 
     // TODO: Add Command Handlers
 
     public InputHandler getInputHandler(String input, boolean shouldBeEncrypted) {
         return shouldBeEncrypted
-                ? new EncryptedMessageInputHandler(input, user)
+                ? new EncryptedMessageInputHandler(input, user, publicKey)
                 : new MessageInputHandler(user);
     }
 

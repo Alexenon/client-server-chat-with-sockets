@@ -1,9 +1,10 @@
 package chat;
 
-import chat.models.Message;
-import chat.models.User;
+import chat.handlers.input.InputHandler;
+import chat.handlers.input.InputHandlerFactory;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
+import chat.models.User;
 import chat.ui.ChatLayout;
 
 import javax.swing.*;
@@ -11,18 +12,21 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.*;
 
 public class ChatClient2 {
     private final User user;
     private final ChatLayout chatLayout;
+    private final InputHandlerFactory inputHandlerFactory;
     private final ResponseHandlerFactory responseHandlerFactory;
     private ObjectOutputStream outputStream;
 
     public ChatClient2() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
-        responseHandlerFactory = new ResponseHandlerFactory(user);
         initialize();
+        inputHandlerFactory = new InputHandlerFactory(user, user.getPublicKey());
+        responseHandlerFactory = new ResponseHandlerFactory(user, user.getPrivateKey());
     }
 
     public static void main(String[] args) {
@@ -50,9 +54,15 @@ public class ChatClient2 {
     }
 
     private void handleSendingMessage() {
+        Object objectToBeSent = getObjectToSend();
+        sendToServer(objectToBeSent);
+    }
+
+    private void sendToServer(Object o) {
+        if (o == null) return;
+
         try {
-            Message message = getMessageFromTextField();
-            outputStream.writeObject(message);
+            outputStream.writeObject(o);
             outputStream.flush();
             chatLayout.clearMessageInput();
         } catch (IOException e) {
@@ -60,27 +70,12 @@ public class ChatClient2 {
         }
     }
 
-    private Message getMessageFromTextField() {
-        return isSendingMessagePrivate()
-                ? getPrivateMessage()
-                : getPublicMessage();
-    }
+    private Object getObjectToSend() {
+        String input = chatLayout.getMessageInput();
+        boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
 
-    private boolean isSendingMessagePrivate() {
-        return chatLayout.getMessageInput().contains(":");
-    }
-
-    private Message getPrivateMessage() {
-        String[] split = chatLayout.getMessageInput().split(":");
-        String receiverUsername = split[0];
-        String messageText = split[1];
-        User receiver = new User(receiverUsername);
-
-        return new Message(messageText.trim(), user, receiver);
-    }
-
-    private Message getPublicMessage() {
-        return new Message(chatLayout.getMessageInput().trim(), user, null);
+        InputHandler inputHandler = inputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
+        return inputHandler.convertIntoObject(input);
     }
 
     private class IncomingMessageHandler implements Runnable {

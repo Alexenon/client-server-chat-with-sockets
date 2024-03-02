@@ -33,6 +33,7 @@ public class ServerManager {
         }
     }
 
+
     public static synchronized void broadcastMessage(Object object) {
         for (ClientHandler client : clients) {
             try {

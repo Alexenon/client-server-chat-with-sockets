@@ -2,24 +2,48 @@ package chat.models;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.security.*;
 import java.util.Objects;
 
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 2L;
 
-    private String username;
+    private final String username;
+    private final PublicKey publicKey;
+    private final PrivateKey privateKey;
 
     public User(String username) {
         this.username = username;
+        KeyPair keyPair = generateKeyPair();
+        this.publicKey = keyPair.getPublic();
+        this.privateKey = keyPair.getPrivate();
+    }
+
+    private KeyPair generateKeyPair() {
+        KeyPair keyPair = null;
+
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(2048);
+            keyPair = keyGen.generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return keyPair;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
     }
 
     @Override

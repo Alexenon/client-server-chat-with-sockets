@@ -2,10 +2,8 @@ package chat;
 
 import chat.handlers.input.InputHandler;
 import chat.handlers.input.InputHandlerFactory;
-import chat.handlers.input.message.MessageInputHandler;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
-import chat.models.Message;
 import chat.models.User;
 import chat.ui.ChatLayout;
 
@@ -14,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.*;
 
 public class ChatClient1 {
     private final User user;
@@ -25,9 +24,9 @@ public class ChatClient1 {
     public ChatClient1() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
-        inputHandlerFactory = new InputHandlerFactory(user);
-        responseHandlerFactory = new ResponseHandlerFactory(user);
         initialize();
+        inputHandlerFactory = new InputHandlerFactory(user, user.getPublicKey());
+        responseHandlerFactory = new ResponseHandlerFactory(user, user.getPrivateKey());
     }
 
     public static void main(String[] args) {

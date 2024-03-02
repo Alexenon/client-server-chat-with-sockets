@@ -9,7 +9,7 @@ public class Test {
         String message2 = "This is complicated";
         User user = new User("Test"); // Get From Input
 
-        InputHandlerFactory inputHandlerFactory = new InputHandlerFactory(user);
+        InputHandlerFactory inputHandlerFactory = new InputHandlerFactory(user, null);
         InputHandler inputHandler = inputHandlerFactory.getInputHandler(message1, false);
 
         Object publicMessage = inputHandler.convertIntoObject(message1);

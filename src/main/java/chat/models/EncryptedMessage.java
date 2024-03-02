@@ -1,8 +1,11 @@
 package chat.models;
 
+import javax.crypto.Cipher;
 import java.io.Serial;
 import java.io.Serializable;
+import java.security.*;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 public class EncryptedMessage implements Serializable {
     @Serial
@@ -12,30 +15,40 @@ public class EncryptedMessage implements Serializable {
     private final User author;
     private final User receiver;
     private final LocalDateTime dateTime;
-    private final String encryptKey;
 
-    public EncryptedMessage(String text) {
-        this(text, null, null);
-    }
-
-    public EncryptedMessage(String text, User author, User receiver) {
-        this(text, author, receiver, null);
-    }
-
-    public EncryptedMessage(String text, User author, User receiver, String encryptKey) {
-        this.text = text;
+    public EncryptedMessage(String text, User author, User receiver, PublicKey publicKey) {
+        this.text = encryptMessage(text, publicKey);
         this.author = author;
         this.receiver = receiver;
-        this.encryptKey = encryptKey;
         this.dateTime = LocalDateTime.now();
     }
 
-    public String getEncryptKey() {
-        return encryptKey;
+    private String encryptMessage(String message, PublicKey publicKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encryptedBytes = cipher.doFinal(message.getBytes());
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String getText() {
         return text;
+    }
+
+    public String getText(PrivateKey privateKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(text));
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public User getAuthor() {
@@ -56,7 +69,6 @@ public class EncryptedMessage implements Serializable {
                "text='" + text + '\'' +
                ", author=" + author +
                ", receiver=" + receiver +
-               ", decryptKey='" + encryptKey + '\'' +
                ", dateTime=" + dateTime +
                '}';
     }
