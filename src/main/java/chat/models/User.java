@@ -10,28 +10,21 @@ public class User implements Serializable {
     private static final long serialVersionUID = 2L;
 
     private final String username;
-    private final PublicKey publicKey;
-    private final PrivateKey privateKey;
+    private final KeyPair keyPair;
 
     public User(String username) {
         this.username = username;
-        KeyPair keyPair = generateKeyPair();
-        this.publicKey = keyPair.getPublic();
-        this.privateKey = keyPair.getPrivate();
+        this.keyPair = generateKeyPair();
     }
 
     private KeyPair generateKeyPair() {
-        KeyPair keyPair = null;
-
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             keyGen.initialize(2048);
-            keyPair = keyGen.generateKeyPair();
+            return keyGen.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new RuntimeException("NoSuchAlgorithmException");
         }
-
-        return keyPair;
     }
 
     public String getUsername() {
@@ -39,11 +32,11 @@ public class User implements Serializable {
     }
 
     public PublicKey getPublicKey() {
-        return publicKey;
+        return keyPair.getPublic();
     }
 
     public PrivateKey getPrivateKey() {
-        return privateKey;
+        return keyPair.getPrivate();
     }
 
     @Override
