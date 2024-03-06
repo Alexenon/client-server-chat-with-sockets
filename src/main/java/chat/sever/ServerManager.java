@@ -3,11 +3,26 @@ package chat.sever;
 import chat.models.Message;
 
 import java.io.IOException;
+import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+
+/**
+ * One public key - Multiple private keys <br>
+ * When new client connects, the public key is regenerated, together with all private keys
+ * */
 public class ServerManager {
+    private final PublicKey publicKey;
     private static final List<ClientHandler> clients = new ArrayList<>();
+
+    public ServerManager() {
+
+        // Get the public key from the key pair
+        publicKey = generateKeyPar().getPublic();
+    }
+
 
     public static synchronized void addClient(ClientHandler clientHandler) {
         clients.add(clientHandler);
@@ -45,4 +60,23 @@ public class ServerManager {
         }
     }
 
+    private KeyPairGenerator getKeyPairGenerator() {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            return keyPairGenerator;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private KeyPair generateKeyPar() {
+        return Objects.requireNonNull(getKeyPairGenerator()).generateKeyPair();
+    }
+
+    private PrivateKey generatePrivateKey() {
+        return generateKeyPar().getPrivate();
+    }
 }

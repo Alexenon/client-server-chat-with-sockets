@@ -10,4 +10,7 @@ public interface ICommand {
 
     Optional<String> result();
 
+    default String getErrorMessage() {
+        return "Invalid command. Type /help for a list of all commands.";
+    };
 }

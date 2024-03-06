@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class HelpCommand implements ICommand {
-
     private final String input;
     private final String specifiedCommand;
 
