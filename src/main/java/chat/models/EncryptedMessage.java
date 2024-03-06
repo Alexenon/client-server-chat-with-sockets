@@ -1,6 +1,7 @@
 package chat.models;
 
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import java.io.Serial;
 import java.io.Serializable;
 import java.security.*;
@@ -16,17 +17,17 @@ public class EncryptedMessage implements Serializable {
     private final User receiver;
     private final LocalDateTime dateTime;
 
-    public EncryptedMessage(String text, User author, User receiver, PublicKey publicKey) {
-        this.text = encryptMessage(text, publicKey);
+    public EncryptedMessage(String text, User author, User receiver, SecretKey secretKey) {
+        this.text = encryptMessage(text, secretKey);
         this.author = author;
         this.receiver = receiver;
         this.dateTime = LocalDateTime.now();
     }
 
-    private String encryptMessage(String message, PublicKey publicKey) {
+    private String encryptMessage(String message, SecretKey secretKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encryptedBytes = cipher.doFinal(message.getBytes());
             return Base64.getEncoder().encodeToString(encryptedBytes);
         } catch (Exception e) {
@@ -43,6 +44,18 @@ public class EncryptedMessage implements Serializable {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(text));
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getText(SecretKey secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(text));
             return new String(decryptedBytes);
         } catch (Exception e) {

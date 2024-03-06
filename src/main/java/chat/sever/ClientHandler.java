@@ -8,8 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
-* Client Handler works for handling messages from clients using GUI
-* */
+ * Client Handler works for handling messages from clients using GUI
+ */
 public class ClientHandler extends Thread {
     private final Socket socket;
     private final ObjectInputStream inputStream;
@@ -29,9 +29,7 @@ public class ClientHandler extends Thread {
             String username = (String) inputStream.readObject();
             this.user = new User(username);
 
-            String welcomingText = "User " + user.getUsername() + " joined the chat";
-            ServerManager.broadcastMessage(welcomingText);
-            System.out.println(welcomingText);
+            ServerManager.broadcastMessage("User " + user.getUsername() + " joined the chat");
 
             // Read messages from client and send them to all clients
             while (!socket.isClosed()) {
@@ -39,22 +37,28 @@ public class ClientHandler extends Thread {
                 ServerManager.broadcastMessage(messageObject);
             }
         } catch (IOException | ClassNotFoundException e) {
-            String leavingText = "User " + user.getUsername() + " left the chat";
-            ServerManager.broadcastMessage(leavingText);
-            System.out.println(leavingText);
+            ServerManager.broadcastMessage("User " + user.getUsername() + " left the chat");
             ServerManager.removeClient(this);
         } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            shutdownServer();
         }
     }
 
-    public void sendMessage(Object o) throws IOException {
-        outputStream.writeObject(o);
-        outputStream.flush();
+    public void sendMessage(Object o) {
+        try {
+            outputStream.writeObject(o);
+            outputStream.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void shutdownServer() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

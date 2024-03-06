@@ -2,30 +2,23 @@ package chat.sever;
 
 import chat.models.Message;
 
-import java.io.IOException;
-import java.security.*;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 
 /**
  * One public key - Multiple private keys <br>
  * When new client connects, the public key is regenerated, together with all private keys
  * */
 public class ServerManager {
-    private final PublicKey publicKey;
+    private static final SecretKey groupKey = initiateGroupKey();
     private static final List<ClientHandler> clients = new ArrayList<>();
-
-    public ServerManager() {
-
-        // Get the public key from the key pair
-        publicKey = generateKeyPar().getPublic();
-    }
-
 
     public static synchronized void addClient(ClientHandler clientHandler) {
         clients.add(clientHandler);
+        clientHandler.sendMessage(groupKey); // TODO: Think how to send group key
     }
 
     public static synchronized void removeClient(ClientHandler clientHandler) {
@@ -35,48 +28,30 @@ public class ServerManager {
     public static synchronized void broadcastMessage(String messageText) {
         Message message = new Message(messageText, null, null);
         broadcastMessage(message);
+        System.out.println(message);
     }
 
     public static synchronized void broadcastMessage(Message message) {
         for (ClientHandler client : clients) {
-            try {
-                System.out.println(message);
-                client.sendMessage(message);
-            } catch (IOException e) {
-                System.out.println("Error broadcasting message to client");
-            }
+            System.out.println(message);
+            client.sendMessage(message);
         }
     }
-
 
     public static synchronized void broadcastMessage(Object object) {
         for (ClientHandler client : clients) {
-            try {
-                System.out.println(object);
-                client.sendMessage(object);
-            } catch (IOException e) {
-                System.out.println("Error broadcasting message to client");
-            }
+            System.out.println(object);
+            client.sendMessage(object);
         }
     }
 
-    private KeyPairGenerator getKeyPairGenerator() {
+    private static SecretKey initiateGroupKey() {
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            return keyPairGenerator;
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(256);
+            return keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new RuntimeException("NoSuchAlgorithmException");
         }
-
-        return null;
-    }
-
-    private KeyPair generateKeyPar() {
-        return Objects.requireNonNull(getKeyPairGenerator()).generateKeyPair();
-    }
-
-    private PrivateKey generatePrivateKey() {
-        return generateKeyPar().getPrivate();
     }
 }

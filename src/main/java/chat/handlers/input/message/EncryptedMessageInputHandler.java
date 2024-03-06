@@ -4,9 +4,11 @@ import chat.handlers.input.InputHandler;
 import chat.models.EncryptedMessage;
 import chat.models.User;
 
-import java.security.PublicKey;
+import javax.crypto.SecretKey;
 
-public record EncryptedMessageInputHandler(String input, User author, PublicKey publicKey) implements InputHandler {
+public record EncryptedMessageInputHandler(String input, User author, SecretKey groupKey) implements InputHandler {
+
+    // TODO: Implement Text To Message Object
 
     @Override
     public Object convertIntoObject(String input) {
@@ -29,11 +31,11 @@ public record EncryptedMessageInputHandler(String input, User author, PublicKey 
         User receiver = new User(receiverUsername);
         String messageText = splits[1];
 
-        return new EncryptedMessage(messageText.trim(), author, receiver, publicKey);
+        return new EncryptedMessage(messageText.trim(), author, receiver, groupKey);
     }
 
     private EncryptedMessage getPublicMessage() {
-        return new EncryptedMessage(input.trim(), author, null, publicKey);
+        return new EncryptedMessage(input.trim(), author, null, groupKey);
     }
 
 }
