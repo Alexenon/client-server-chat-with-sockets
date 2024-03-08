@@ -8,12 +8,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class EncryptionDecryptionTest {
     private final String message = "Hello, this should be encrypted";
-    private final EncryptedMessage encryptedMessage;
     private final SecretKey secretKey;
+    private final EncryptedMessage encryptedMessage;
 
     public EncryptionDecryptionTest() {
         secretKey = generateAESKey();
-        encryptedMessage = new EncryptedMessage(message, null, null, secretKey);
+        encryptedMessage = new EncryptedMessage(message, secretKey);
     }
 
     @Test
@@ -21,6 +21,7 @@ public class EncryptionDecryptionTest {
         String encryptedMessageText = encryptedMessage.getText();
         System.out.println("message = " + message);
         System.out.println("encryptedMessageText = " + encryptedMessageText);
+        System.out.println(encryptedMessage);
         Assert.assertNotEquals(message, encryptedMessageText);
     }
 
@@ -29,6 +30,7 @@ public class EncryptionDecryptionTest {
         String decryptedMessageText = encryptedMessage.getText(secretKey);
         System.out.println("message = " + message);
         System.out.println("decryptedMessageText = " + decryptedMessageText);
+        System.out.println(encryptedMessage);
         Assert.assertEquals(message, decryptedMessageText);
     }
 
