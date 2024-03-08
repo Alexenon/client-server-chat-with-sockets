@@ -26,13 +26,12 @@ public class ClientHandler extends Thread {
         try {
             System.out.println("Welcome to the server!");
 
-            ServerManager.broadcastMessage(ServerManager.getGroupKey());
-
             System.out.print("Please enter your username: ");
             String username = (String) inputStream.readObject();
             this.user = new User(username);
 
             ServerManager.broadcastMessage("User " + user.getUsername() + " joined the chat");
+            ServerManager.broadcastMessage("Please, don't spam", user);
 
             // Read messages from client and send them to all clients
             while (!socket.isClosed()) {
@@ -62,6 +61,10 @@ public class ClientHandler extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public User getUser() {
+        return user;
     }
 
 }

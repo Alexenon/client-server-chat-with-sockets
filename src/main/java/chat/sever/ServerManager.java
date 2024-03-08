@@ -9,13 +9,17 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Think how to send group key
+// TODO: Implement sending encrypted key, instead of the real one directly
+// TODO: Reset key, after a new user join or leave the channel
+
 public class ServerManager {
     private static final List<ClientHandler> clients = new ArrayList<>();
     private static SecretKey groupKey = initiateGroupKey();
 
     public static synchronized void addClient(ClientHandler clientHandler) {
         clients.add(clientHandler);
-        clientHandler.sendObject(groupKey); // TODO: Think how to send group key
+        clientHandler.sendObject(groupKey);
     }
 
     public static synchronized void removeClient(ClientHandler clientHandler) {
@@ -43,10 +47,13 @@ public class ServerManager {
     }
 
     public static synchronized void broadcastMessage(Object object, User receiver) {
-        for (ClientHandler client : clients) {
-            System.out.println(object);
-            client.sendObject(object);
-        }
+        ClientHandler clientHandlerReceiver = clients.stream()
+                .filter(cl -> cl.getUser() == receiver)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Couldn't find the receiver user " + receiver));
+
+        clientHandlerReceiver.sendObject(object);
+        System.out.println(object);
     }
 
     private static SecretKey initiateGroupKey() {
@@ -61,10 +68,6 @@ public class ServerManager {
 
     public static void resetSecurityKey() {
         groupKey = initiateGroupKey();
-    }
-
-    public static SecretKey getGroupKey() {
-        return groupKey;
     }
 
 }
