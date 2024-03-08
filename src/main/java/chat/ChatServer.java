@@ -15,7 +15,6 @@ import java.net.Socket;
 
 public class ChatServer {
     private static final int PORT = 8080;
-    private static final String SERVER_NAME = "localhost";
 
     public static void main(String[] args) {
         try {
@@ -25,7 +24,6 @@ public class ChatServer {
             while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
-
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 ServerManager.addClient(clientHandler);
                 clientHandler.start();

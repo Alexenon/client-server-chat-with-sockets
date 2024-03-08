@@ -25,6 +25,9 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             System.out.println("Welcome to the server!");
+
+            ServerManager.broadcastMessage(ServerManager.getGroupKey());
+
             System.out.print("Please enter your username: ");
             String username = (String) inputStream.readObject();
             this.user = new User(username);
@@ -40,11 +43,11 @@ public class ClientHandler extends Thread {
             ServerManager.broadcastMessage("User " + user.getUsername() + " left the chat");
             ServerManager.removeClient(this);
         } finally {
-            shutdownServer();
+            closeConnection();
         }
     }
 
-    public void sendMessage(Object o) {
+    public void sendObject(Object o) {
         try {
             outputStream.writeObject(o);
             outputStream.flush();
@@ -53,7 +56,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public void shutdownServer() {
+    public void closeConnection() {
         try {
             socket.close();
         } catch (IOException e) {

@@ -7,6 +7,7 @@ import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.User;
 import chat.ui.ChatLayout;
 
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,16 +17,17 @@ import java.net.Socket;
 public class ChatClient1 {
     private final User user;
     private final ChatLayout chatLayout;
-    private final InputHandlerFactory inputHandlerFactory;
-    private final ResponseHandlerFactory responseHandlerFactory;
+    private InputHandlerFactory inputHandlerFactory;
+    private ResponseHandlerFactory responseHandlerFactory;
     private ObjectOutputStream outputStream;
+    private SecretKey groupKey;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
         initialize();
-        inputHandlerFactory = new InputHandlerFactory(user, user.getPublicKey());
-        responseHandlerFactory = new ResponseHandlerFactory(user, user.getPrivateKey());
+        inputHandlerFactory = new InputHandlerFactory(user, groupKey);
+        responseHandlerFactory = new ResponseHandlerFactory(user, groupKey);
     }
 
     public static void main(String[] args) {
@@ -88,6 +90,15 @@ public class ChatClient1 {
             try {
                 while (true) {
                     Object object = inputStream.readObject();
+
+                    if (object instanceof SecretKey secretKey) {
+                        groupKey = secretKey;
+                        inputHandlerFactory = new InputHandlerFactory(user, secretKey);
+                        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
+                        System.out.println("Received secret key from server: " + secretKey);
+                        continue;
+                    }
+
                     ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
                     String textToBeDisplayed = responseHandler.handleResult();
 

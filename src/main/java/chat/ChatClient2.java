@@ -1,104 +1,104 @@
-package chat;
-
-import chat.handlers.input.InputHandler;
-import chat.handlers.input.InputHandlerFactory;
-import chat.handlers.response.ResponseHandler;
-import chat.handlers.response.ResponseHandlerFactory;
-import chat.models.User;
-import chat.ui.ChatLayout;
-
-import javax.swing.*;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.security.*;
-
-public class ChatClient2 {
-    private final User user;
-    private final ChatLayout chatLayout;
-    private final InputHandlerFactory inputHandlerFactory;
-    private final ResponseHandlerFactory responseHandlerFactory;
-    private ObjectOutputStream outputStream;
-
-    public ChatClient2() {
-        chatLayout = new ChatLayout();
-        user = new User(chatLayout.getUsername());
-        initialize();
-        inputHandlerFactory = new InputHandlerFactory(user, user.getPublicKey());
-        responseHandlerFactory = new ResponseHandlerFactory(user, user.getPrivateKey());
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatClient1::new);
-    }
-
-    private void initialize() {
-        chatLayout.buildForm();
-        chatLayout.sendActionListener(e -> handleSendingMessage());
-        connectToTheServer();
-    }
-
-    private void connectToTheServer() {
-        try {
-            Socket socket = new Socket("localhost", 8080);
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-            // Send the username to the server
-            outputStream.writeObject(chatLayout.getUsername());
-            outputStream.flush();
-            new Thread(new IncomingMessageHandler(socket)).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleSendingMessage() {
-        Object objectToBeSent = getObjectToSend();
-        sendToServer(objectToBeSent);
-    }
-
-    private void sendToServer(Object o) {
-        if (o == null) return;
-
-        try {
-            outputStream.writeObject(o);
-            outputStream.flush();
-            chatLayout.clearMessageInput();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Object getObjectToSend() {
-        String input = chatLayout.getMessageInput();
-        boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
-
-        InputHandler inputHandler = inputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
-        return inputHandler.convertIntoObject(input);
-    }
-
-    private class IncomingMessageHandler implements Runnable {
-        private final ObjectInputStream inputStream;
-
-        public IncomingMessageHandler(Socket socket) throws IOException {
-            inputStream = new ObjectInputStream(socket.getInputStream());
-        }
-
-        public void run() {
-            try {
-                while (true) {
-                    Object object = inputStream.readObject();
-                    ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
-                    String textToBeDisplayed = responseHandler.handleResult();
-
-                    chatLayout.updateChatArea(textToBeDisplayed);
-                    System.out.println(textToBeDisplayed);
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                chatLayout.closeWindow();
-            }
-        }
-    }
-}
+//package chat;
+//
+//import chat.handlers.input.InputHandler;
+//import chat.handlers.input.InputHandlerFactory;
+//import chat.handlers.response.ResponseHandler;
+//import chat.handlers.response.ResponseHandlerFactory;
+//import chat.models.User;
+//import chat.ui.ChatLayout;
+//
+//import javax.swing.*;
+//import java.io.IOException;
+//import java.io.ObjectInputStream;
+//import java.io.ObjectOutputStream;
+//import java.net.Socket;
+//import java.security.*;
+//
+//public class ChatClient2 {
+//    private final User user;
+//    private final ChatLayout chatLayout;
+//    private final InputHandlerFactory inputHandlerFactory;
+//    private final ResponseHandlerFactory responseHandlerFactory;
+//    private ObjectOutputStream outputStream;
+//
+//    public ChatClient2() {
+//        chatLayout = new ChatLayout();
+//        user = new User(chatLayout.getUsername());
+//        initialize();
+//        inputHandlerFactory = new InputHandlerFactory(user, user.getPublicKey());
+//        responseHandlerFactory = new ResponseHandlerFactory(user, user.getPrivateKey());
+//    }
+//
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(ChatClient1::new);
+//    }
+//
+//    private void initialize() {
+//        chatLayout.buildForm();
+//        chatLayout.sendActionListener(e -> handleSendingMessage());
+//        connectToTheServer();
+//    }
+//
+//    private void connectToTheServer() {
+//        try {
+//            Socket socket = new Socket("localhost", 8080);
+//            outputStream = new ObjectOutputStream(socket.getOutputStream());
+//
+//            // Send the username to the server
+//            outputStream.writeObject(chatLayout.getUsername());
+//            outputStream.flush();
+//            new Thread(new IncomingMessageHandler(socket)).start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void handleSendingMessage() {
+//        Object objectToBeSent = getObjectToSend();
+//        sendToServer(objectToBeSent);
+//    }
+//
+//    private void sendToServer(Object o) {
+//        if (o == null) return;
+//
+//        try {
+//            outputStream.writeObject(o);
+//            outputStream.flush();
+//            chatLayout.clearMessageInput();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private Object getObjectToSend() {
+//        String input = chatLayout.getMessageInput();
+//        boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
+//
+//        InputHandler inputHandler = inputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
+//        return inputHandler.convertIntoObject(input);
+//    }
+//
+//    private class IncomingMessageHandler implements Runnable {
+//        private final ObjectInputStream inputStream;
+//
+//        public IncomingMessageHandler(Socket socket) throws IOException {
+//            inputStream = new ObjectInputStream(socket.getInputStream());
+//        }
+//
+//        public void run() {
+//            try {
+//                while (true) {
+//                    Object object = inputStream.readObject();
+//                    ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
+//                    String textToBeDisplayed = responseHandler.handleResult();
+//
+//                    chatLayout.updateChatArea(textToBeDisplayed);
+//                    System.out.println(textToBeDisplayed);
+//                }
+//            } catch (IOException | ClassNotFoundException e) {
+//                e.printStackTrace();
+//                chatLayout.closeWindow();
+//            }
+//        }
+//    }
+//}

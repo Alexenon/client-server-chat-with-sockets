@@ -103,8 +103,4 @@ public class ChatKeyGenerator {
         return groupKey;
     }
 
-    // Reset, the public key is regenerated, together with all private keys
-    // So new private keys are generated from new public key
-    public void reset() {
-    }
 }
