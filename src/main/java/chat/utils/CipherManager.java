@@ -8,11 +8,24 @@ import java.security.*;
 import java.util.Arrays;
 
 public class CipherManager {
-
+    private static final int KEY_SIZE = 2048;
     private static final int IV_BYTES_LENGTH = 16;
 
     private static final String SECRET_KEY_CIPHER_NAME = "RSA/ECB/PKCS1Padding";
     private static final String MESSAGE_CIPHER_NAME = "AES/CBC/PKCS5Padding";
+
+    private static CipherManager instance;
+
+    private CipherManager() {
+
+    }
+
+    public static CipherManager getInstance() {
+        if (instance == null) {
+            instance = new CipherManager();
+        }
+        return instance;
+    }
 
     /**
      * Used for encryption of a security key
@@ -20,7 +33,7 @@ public class CipherManager {
      * @param secretKey is the key, that should be encrypted
      * @param publicKey is user personal publicKey key used for encryption
      */
-    public static SecretKey encryptSecretKey(SecretKey secretKey, PublicKey publicKey) {
+    public SecretKey encryptSecretKey(SecretKey secretKey, PublicKey publicKey) {
         try {
             Cipher cipher = Cipher.getInstance(SECRET_KEY_CIPHER_NAME);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -37,7 +50,7 @@ public class CipherManager {
      * @param encryptedKey is the encrypted secret key that should be decrypted
      * @param privateKey   is user personal private key used for decryption
      */
-    public static SecretKey decryptSecretKey(SecretKey encryptedKey, PrivateKey privateKey) {
+    public SecretKey decryptSecretKey(SecretKey encryptedKey, PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance(SECRET_KEY_CIPHER_NAME);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -48,7 +61,7 @@ public class CipherManager {
         }
     }
 
-    public static byte[] encrypt(String text, SecretKey secretKey) {
+    public byte[] encrypt(String text, SecretKey secretKey) {
         try {
             Cipher cipher = Cipher.getInstance(MESSAGE_CIPHER_NAME);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
@@ -63,20 +76,36 @@ public class CipherManager {
         }
     }
 
-    public static byte[] decrypt(byte[] encryptedMessage, SecretKey secretKey) {
+    public byte[] decrypt(byte[] encryptedMessage, SecretKey secretKey) {
         try {
             byte[] key = secretKey.getEncoded();
             byte[] iv = Arrays.copyOfRange(encryptedMessage, 0, IV_BYTES_LENGTH);
             byte[] encryptedMessageShorted = Arrays.copyOfRange(encryptedMessage, IV_BYTES_LENGTH, encryptedMessage.length);
+
             Cipher cipher = Cipher.getInstance(MESSAGE_CIPHER_NAME);
-
-            System.out.println("ALGO: " + cipher.getAlgorithm());
-
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
+            String algorithm = getSimpleAlgorithmName(MESSAGE_CIPHER_NAME);
+            SecretKeySpec keySpec = new SecretKeySpec(key, algorithm);
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
             return cipher.doFinal(encryptedMessageShorted);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public KeyPair generateKeyPair() {
+        try {
+            String algorithmName = getSimpleAlgorithmName(SECRET_KEY_CIPHER_NAME);
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance(algorithmName);
+            keyGen.initialize(KEY_SIZE);
+            return keyGen.generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("NoSuchAlgorithmException");
+        }
+    }
+
+    private String getSimpleAlgorithmName(String fullAlgorithmName) {
+        return fullAlgorithmName.substring(0, fullAlgorithmName.indexOf("/"));
     }
 
 }
