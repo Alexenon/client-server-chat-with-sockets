@@ -31,7 +31,7 @@ public class ChatKeyGenerator {
 //    }
 //
 //    public byte[] getDecryptedGroupKey(PrivateKey privateKey) {
-//        return decryptGroupKey(groupKey.getEncoded(), privateKey);
+//        return decryptSecretKey(groupKey.getEncoded(), privateKey);
 //    }
 
 
@@ -54,7 +54,7 @@ public class ChatKeyGenerator {
      * @param keyToBeDecrypted is encrypted group key
      * @param privateKey       is user personal private key
      */
-    public byte[] decryptGroupKey(byte[] keyToBeDecrypted, PrivateKey privateKey) {
+    public byte[] decryptSecretKey(byte[] keyToBeDecrypted, PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);

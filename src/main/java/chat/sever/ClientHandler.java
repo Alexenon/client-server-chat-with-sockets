@@ -30,16 +30,16 @@ public class ClientHandler extends Thread {
             String username = (String) inputStream.readObject();
             this.user = new User(username);
 
-            ServerManager.broadcastMessage("User " + user.getUsername() + " joined the chat");
-            ServerManager.broadcastMessage("Please, don't spam", user);
+            ServerManager.broadcastObject("User " + user.getUsername() + " joined the chat");
+            ServerManager.broadcastObject("Please, don't spam", user);
 
             // Read messages from client and send them to all clients
             while (!socket.isClosed()) {
                 Object messageObject = inputStream.readObject();
-                ServerManager.broadcastMessage(messageObject);
+                ServerManager.broadcastObject(messageObject);
             }
         } catch (IOException | ClassNotFoundException e) {
-            ServerManager.broadcastMessage("User " + user.getUsername() + " left the chat");
+            ServerManager.broadcastObject("User " + user.getUsername() + " left the chat");
             ServerManager.removeClient(this);
         } finally {
             closeConnection();
@@ -48,6 +48,7 @@ public class ClientHandler extends Thread {
 
     public void sendObject(Object o) {
         try {
+            System.out.println(o);
             outputStream.writeObject(o);
             outputStream.flush();
         } catch (IOException e) {
