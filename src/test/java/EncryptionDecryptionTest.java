@@ -1,6 +1,4 @@
 import chat.models.EncryptedMessage;
-import chat.models.User;
-import chat.utils.CipherManager;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +17,7 @@ public class EncryptionDecryptionTest {
     }
 
     @Test
-    public void testMessageEncryption() {
+    public void testEncryption() {
         String encryptedMessageText = encryptedMessage.getText();
         System.out.println("message = " + message);
         System.out.println("encryptedMessageText = " + encryptedMessageText);
@@ -28,29 +26,12 @@ public class EncryptionDecryptionTest {
     }
 
     @Test
-    public void testMessageDecryption() {
+    public void testDecryption() {
         String decryptedMessageText = encryptedMessage.getText(secretKey);
         System.out.println("message = " + message);
         System.out.println("decryptedMessageText = " + decryptedMessageText);
         System.out.println(encryptedMessage);
         Assert.assertEquals(message, decryptedMessageText);
-    }
-
-    @Test
-    public void testWithKeyEncryption() {
-        User user = new User("test");
-        SecretKey encryptedKey = CipherManager.encryptSecretKey(secretKey, user.getPublicKey());
-        SecretKey decryptedKey = CipherManager.decryptSecretKey(encryptedKey, user.getPrivateKey());
-
-        String message = "This is a message";
-        byte[] encryptedMessageBytes = CipherManager.encrypt(message, secretKey);
-        byte[] decryptedMessageBytes = CipherManager.decrypt(encryptedMessageBytes, decryptedKey);
-        String decryptedMessage = new String(decryptedMessageBytes);
-
-        System.out.println(message);
-        System.out.println(decryptedMessage);
-        Assert.assertNotEquals(encryptedKey, decryptedKey);
-        Assert.assertEquals(message, decryptedMessage);
     }
 
     private SecretKey generateAESKey() {

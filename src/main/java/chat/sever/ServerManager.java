@@ -2,7 +2,6 @@ package chat.sever;
 
 import chat.models.Message;
 import chat.models.User;
-import chat.utils.CipherManager;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -12,6 +11,7 @@ import java.util.List;
 
 // TODO: Think how to send group key
 // TODO: Implement sending encrypted key, instead of the real one directly
+// TODO: Reset key, after a new user join or leave the channel
 
 public class ServerManager {
     private static final List<ClientHandler> clients = new ArrayList<>();
@@ -19,32 +19,41 @@ public class ServerManager {
 
     public static synchronized void addClient(ClientHandler clientHandler) {
         clients.add(clientHandler);
-        resetSecurityKey();
+        clientHandler.sendObject(groupKey);
     }
 
     public static synchronized void removeClient(ClientHandler clientHandler) {
         clients.remove(clientHandler);
-        resetSecurityKey();
     }
 
-    public static synchronized void broadcastObject(String messageText) {
+    public static synchronized void broadcastMessage(String messageText) {
         Message message = new Message(messageText, null, null);
-        broadcastObject(message);
+        broadcastMessage(message);
+        System.out.println(message);
     }
 
-    public static synchronized void broadcastObject(Object object) {
+    public static synchronized void broadcastMessage(Message message) {
         for (ClientHandler client : clients) {
+            System.out.println(message);
+            client.sendObject(message);
+        }
+    }
+
+    public static synchronized void broadcastMessage(Object object) {
+        for (ClientHandler client : clients) {
+            System.out.println(object);
             client.sendObject(object);
         }
     }
 
-    public static synchronized void broadcastObject(Object object, User receiver) {
+    public static synchronized void broadcastMessage(Object object, User receiver) {
         ClientHandler clientHandlerReceiver = clients.stream()
                 .filter(cl -> cl.getUser() == receiver)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Couldn't find the receiver user " + receiver));
 
         clientHandlerReceiver.sendObject(object);
+        System.out.println(object);
     }
 
     private static SecretKey initiateGroupKey() {
@@ -57,14 +66,8 @@ public class ServerManager {
         }
     }
 
-    // Resetting security and sending it to each user
     public static void resetSecurityKey() {
         groupKey = initiateGroupKey();
-        clients.forEach(clientHandler -> {
-            User user = clientHandler.getUser();
-            SecretKey encryptedSecretKey = CipherManager.encryptSecretKey(groupKey, user.getPublicKey());
-            broadcastObject(encryptedSecretKey, user);
-        });
     }
 
 }
