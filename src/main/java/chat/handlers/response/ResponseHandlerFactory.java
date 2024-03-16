@@ -17,13 +17,7 @@ public record ResponseHandlerFactory(User user, SecretKey groupKey) {
             return new ErrorHandlerImpl(error);
         }
 
-        if(object instanceof String s) {
-            System.out.println("Received text: " + s);
-            Message msg = new Message(s);
-            return new MessageHandlerImpl(msg, user);
-        }
-
-        throw new RuntimeException("Couldn't process the response");
+        throw new RuntimeException("Couldn't process the server response: " + object);
     }
 }
 
