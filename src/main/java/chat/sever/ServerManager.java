@@ -9,17 +9,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Think how to send group key
-// TODO: Implement sending encrypted key, instead of the real one directly
-// TODO: Reset key, after a new user join or leave the channel
-
 public class ServerManager {
     private static final List<ClientHandler> clients = new ArrayList<>();
-    private static SecretKey groupKey = initiateGroupKey();
+    private static SecretKey secretKey = initiateGroupKey();
 
     public static synchronized void addClient(ClientHandler clientHandler) {
         clients.add(clientHandler);
-        clientHandler.sendObject(groupKey);
+        clientHandler.sendObject(secretKey); // TODO: Think how to send group key
     }
 
     public static synchronized void removeClient(ClientHandler clientHandler) {
@@ -27,16 +23,8 @@ public class ServerManager {
     }
 
     public static synchronized void broadcastMessage(String messageText) {
-        Message message = new Message(messageText, null, null);
+        Message message = new Message(messageText);
         broadcastMessage(message);
-        System.out.println(message);
-    }
-
-    public static synchronized void broadcastMessage(Message message) {
-        for (ClientHandler client : clients) {
-            System.out.println(message);
-            client.sendObject(message);
-        }
     }
 
     public static synchronized void broadcastMessage(Object object) {
@@ -44,6 +32,11 @@ public class ServerManager {
             System.out.println(object);
             client.sendObject(object);
         }
+    }
+
+    public static synchronized void broadcastMessage(String messageText, User receiver) {
+        Message message = new Message(messageText);
+        broadcastMessage(message, receiver);
     }
 
     public static synchronized void broadcastMessage(Object object, User receiver) {
@@ -67,7 +60,11 @@ public class ServerManager {
     }
 
     public static void resetSecurityKey() {
-        groupKey = initiateGroupKey();
+        secretKey = initiateGroupKey();
+    }
+
+    public static SecretKey getSecretKey() {
+        return secretKey;
     }
 
 }

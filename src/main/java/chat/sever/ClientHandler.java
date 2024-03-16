@@ -66,5 +66,4 @@ public class ClientHandler extends Thread {
     public User getUser() {
         return user;
     }
-
 }

@@ -25,8 +25,8 @@ public class ChatServer {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
-                ServerManager.addClient(clientHandler);
                 clientHandler.start();
+                ServerManager.addClient(clientHandler);
             }
         } catch (IOException e) {
             e.printStackTrace();

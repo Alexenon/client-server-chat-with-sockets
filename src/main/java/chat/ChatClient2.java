@@ -31,7 +31,7 @@ public class ChatClient2 {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatClient1::new);
+        SwingUtilities.invokeLater(ChatClient2::new);
     }
 
     private void initialize() {

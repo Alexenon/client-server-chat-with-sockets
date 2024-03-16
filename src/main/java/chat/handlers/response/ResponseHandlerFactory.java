@@ -6,24 +6,18 @@ import chat.models.User;
 
 import javax.crypto.SecretKey;
 
-public record ResponseHandlerFactory(User user, SecretKey groupKey) {
+public record ResponseHandlerFactory(User user, SecretKey secretKey) {
 
     public ResponseHandler createResponseHandler(Object object) {
         if (object instanceof Message message) {
             return new MessageHandlerImpl(message, user);
         } else if (object instanceof EncryptedMessage encryptedMessage) {
-            return new EncryptedMessageHandlerImpl(encryptedMessage, user, groupKey);
+            return new EncryptedMessageHandlerImpl(encryptedMessage, user, secretKey);
         } else if (object instanceof Error error) {
             return new ErrorHandlerImpl(error);
         }
 
-        if(object instanceof String s) {
-            System.out.println("Received text: " + s);
-            Message msg = new Message(s);
-            return new MessageHandlerImpl(msg, user);
-        }
-
-        throw new RuntimeException("Couldn't process the response");
+        throw new RuntimeException("Couldn't process the server response: " + object);
     }
 }
 
