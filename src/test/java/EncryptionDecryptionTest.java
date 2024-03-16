@@ -38,14 +38,13 @@ public class EncryptionDecryptionTest {
 
     @Test
     public void testWithKeyEncryption() {
-        CipherManager cipherManager = CipherManager.getInstance();
         User user = new User("test");
-        SecretKey encryptedKey = cipherManager.encryptSecretKey(secretKey, user.getPublicKey());
-        SecretKey decryptedKey = cipherManager.decryptSecretKey(encryptedKey, user.getPrivateKey());
+        SecretKey encryptedKey = CipherManager.encryptSecretKey(secretKey, user.getPublicKey());
+        SecretKey decryptedKey = CipherManager.decryptSecretKey(encryptedKey, user.getPrivateKey());
 
         String message = "This is a message";
-        byte[] encryptedMessageBytes = cipherManager.encrypt(message, secretKey);
-        byte[] decryptedMessageBytes = cipherManager.decrypt(encryptedMessageBytes, decryptedKey);
+        byte[] encryptedMessageBytes = CipherManager.encrypt(message, secretKey);
+        byte[] decryptedMessageBytes = CipherManager.decrypt(encryptedMessageBytes, decryptedKey);
         String decryptedMessage = new String(decryptedMessageBytes);
 
         System.out.println(message);

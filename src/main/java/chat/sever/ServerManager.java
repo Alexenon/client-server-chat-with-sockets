@@ -14,7 +14,6 @@ import java.util.List;
 // TODO: Implement sending encrypted key, instead of the real one directly
 
 public class ServerManager {
-    private static final CipherManager cipherManager = CipherManager.getInstance();
     private static final List<ClientHandler> clients = new ArrayList<>();
     private static SecretKey groupKey = initiateGroupKey();
 
@@ -63,7 +62,7 @@ public class ServerManager {
         groupKey = initiateGroupKey();
         clients.forEach(clientHandler -> {
             User user = clientHandler.getUser();
-            SecretKey encryptedSecretKey = cipherManager.encryptSecretKey(groupKey, user.getPublicKey());
+            SecretKey encryptedSecretKey = CipherManager.encryptSecretKey(groupKey, user.getPublicKey());
             broadcastObject(encryptedSecretKey, user);
         });
     }
