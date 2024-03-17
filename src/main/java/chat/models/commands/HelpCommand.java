@@ -5,40 +5,40 @@ import chat.models.Commands;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class HelpCommand implements ICommand {
+public class HelpCommand implements Command {
     private final String input;
-    private final String specifiedCommand;
+    private final String commandForHelp;
 
     public HelpCommand(String input) {
         this.input = input;
-        this.specifiedCommand = extractCommand();
+        this.commandForHelp = extractCommandForHelp();
     }
 
-    private String extractCommand() {
+    private String extractCommandForHelp() {
         String[] splits = input.split(" ");
-        return splits.length > 0 ? splits[1] : "";
+        return splits.length > 1 ? splits[1] : "";
     }
 
     @Override
     public void execute() {
-        System.out.println("Executing /help command");
+        System.out.println("Executing \"/help\" command");
     }
 
     @Override
     public boolean isValid() {
-        String[] splits = input.split(" ");
+        String[] args = input.split(" ");
 
-        if (splits.length > 2) return false;
-        if (!splits[0].equals("/help")) return false;
+        if (args.length > 2) return false;
+        if (!args[0].equals("/help")) return false;
 
         return Arrays.stream(Commands.values())
                 .map(c -> c.toString().toLowerCase())
-                .anyMatch(s -> s.equals(specifiedCommand));
+                .anyMatch(s -> s.equals(commandForHelp));
     }
 
     @Override
     public Optional<String> result() {
-        return Optional.of(getResultPerCommand(specifiedCommand));
+        return Optional.of(getResultPerCommand(commandForHelp));
     }
 
     private String getResultPerCommand(String command) {

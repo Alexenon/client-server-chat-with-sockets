@@ -102,7 +102,8 @@ public class ChatClient1 {
                     ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
                     String textToBeDisplayed = responseHandler.handleResult();
 
-                    chatLayout.updateChatArea(textToBeDisplayed);
+//                    chatLayout.updateChatArea(textToBeDisplayed);
+                    chatLayout.addMessage(textToBeDisplayed);
                     System.out.println(textToBeDisplayed);
                 }
             } catch (IOException | ClassNotFoundException e) {

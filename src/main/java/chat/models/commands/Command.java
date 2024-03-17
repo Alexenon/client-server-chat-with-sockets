@@ -2,7 +2,7 @@ package chat.models.commands;
 
 import java.util.Optional;
 
-public interface ICommand {
+public interface Command {
 
     void execute();
 

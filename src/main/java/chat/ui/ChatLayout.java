@@ -35,6 +35,14 @@ public class ChatLayout {
         topPanel.add(encryptCheckbox);
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 
+        // Set layout for chat panel
+        chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
+        frame.getContentPane().add(chatPanel, BorderLayout.CENTER);
+
+        // Add chat panel to a scroll pane and add it to the frame's content pane
+        JScrollPane scrollPane = new JScrollPane(chatPanel);
+        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
         // Add chat area and message input components
         frame.add(new JScrollPane(chatArea), BorderLayout.CENTER);
         chatArea.setEditable(false);
@@ -77,6 +85,47 @@ public class ChatLayout {
         messageField.setText("");
     }
 
+
+
+    ///////////////////
+
+    private final JPanel chatPanel = new JPanel();
+
+    public void addMessage(String message) {
+        boolean isSender = true;
+        JPanel messagePanel = createMessagePanel(message, isSender);
+        chatPanel.add(messagePanel);
+        chatPanel.revalidate(); // Refresh layout
+        chatPanel.repaint(); // Repaint chat panel
+    }
+
+    private JPanel createMessagePanel(String message, boolean isSender) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        JLabel messageLabel = new JLabel(message);
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.add(messageLabel, BorderLayout.CENTER);
+
+        if (isSender) {
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener(e -> {
+                chatPanel.remove(panel);
+                chatPanel.revalidate();
+                chatPanel.repaint();
+            });
+            panel.add(deleteButton, BorderLayout.EAST);
+        }
+
+        return panel;
+    }
+
+    private void sendMessage() {
+        String message = messageField.getText();
+        // For demonstration purposes, let's assume the user is the sender
+        addMessage(message);
+        messageField.setText(""); // Clear the message field after sending
+    }
 
 }
 
