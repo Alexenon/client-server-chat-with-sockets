@@ -27,11 +27,11 @@ public class ChatKeyGenerator {
     }
 
 //    public byte[] getEncryptedGroupKey(PublicKey publicKey) {
-//        return encryptGroupKey(groupKey.getEncoded(), publicKey);
+//        return encryptGroupKey(secretKey.getEncoded(), publicKey);
 //    }
 //
 //    public byte[] getDecryptedGroupKey(PrivateKey privateKey) {
-//        return decryptGroupKey(groupKey.getEncoded(), privateKey);
+//        return decryptGroupKey(secretKey.getEncoded(), privateKey);
 //    }
 
 
