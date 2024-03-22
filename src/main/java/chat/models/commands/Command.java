@@ -1,14 +1,12 @@
 package chat.models.commands;
 
-import java.util.Optional;
-
 public interface Command {
 
     void execute();
 
-    boolean isValid();
+    boolean isValid() throws InvalidCommandException;
 
-    Optional<String> result();
+    String getResult();
 
     default String getErrorMessage() {
         return "Invalid command. Type /help for a list of all commands.";

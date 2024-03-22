@@ -7,12 +7,20 @@ public class CommandInputHandlerTest {
 
     @Test
     public void testHelpCommand() throws InvalidCommandException {
-        String commandName = "/help";
+        String helpCommand = "/help";
+        String helpEncrypt = helpCommand + " encrypt";
+        String helpExit = helpCommand + " exit";
+        String invalidCommand = helpCommand + " me";
 
-        CommandInputHandler commandInputHandler = new CommandInputHandler(commandName);
+        String[] commands = {helpCommand, helpEncrypt, helpExit, invalidCommand};
 
-        Command command = commandInputHandler.getCommand();
-        command.execute();
+        for (String commandName : commands) {
+            CommandInputHandler commandInputHandler = new CommandInputHandler(commandName);
+            Command command = commandInputHandler.getCommand();
+            command.execute();
+            System.out.println(command.getResult());
+        }
+
     }
 
 }

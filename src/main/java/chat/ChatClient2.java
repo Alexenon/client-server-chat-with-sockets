@@ -1,7 +1,7 @@
 package chat;
 
 import chat.handlers.input.InputHandler;
-import chat.handlers.input.InputHandlerFactory;
+import chat.handlers.input.MessageInputHandlerFactory;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.User;
@@ -17,7 +17,7 @@ import java.net.Socket;
 public class ChatClient2 {
     private final User user;
     private final ChatLayout chatLayout;
-    private InputHandlerFactory inputHandlerFactory;
+    private MessageInputHandlerFactory messageInputHandlerFactory;
     private ResponseHandlerFactory responseHandlerFactory;
     private ObjectOutputStream outputStream;
     private SecretKey groupKey;
@@ -26,7 +26,7 @@ public class ChatClient2 {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
         initialize();
-        inputHandlerFactory = new InputHandlerFactory(user, groupKey);
+        messageInputHandlerFactory = new MessageInputHandlerFactory(user, groupKey);
         responseHandlerFactory = new ResponseHandlerFactory(user, groupKey);
     }
 
@@ -75,7 +75,7 @@ public class ChatClient2 {
         String input = chatLayout.getMessageInput();
         boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
 
-        InputHandler inputHandler = inputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
+        InputHandler inputHandler = messageInputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
         return inputHandler.convertIntoObject(input);
     }
 
@@ -93,7 +93,7 @@ public class ChatClient2 {
 
                     if (object instanceof SecretKey secretKey) {
                         groupKey = secretKey;
-                        inputHandlerFactory = new InputHandlerFactory(user, secretKey);
+                        messageInputHandlerFactory = new MessageInputHandlerFactory(user, secretKey);
                         responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
                         System.out.println("Received secret key from server: " + secretKey);
                         continue;

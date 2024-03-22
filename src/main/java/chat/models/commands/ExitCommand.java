@@ -1,27 +1,27 @@
 package chat.models.commands;
 
-import chat.models.commands.Command;
-
-import java.util.Optional;
-
 public class ExitCommand implements Command {
     String input;
+
     public ExitCommand(String input) {
         this.input = input;
     }
 
     @Override
     public void execute() {
-
+        System.out.println("Executing \"" + input + "\" command");
     }
 
     @Override
     public boolean isValid() {
-        return false;
+        return !input.equals("/exit");
     }
 
     @Override
-    public Optional<String> result() {
-        return Optional.empty();
+    public String getResult() {
+        return !isValid()
+                ? getErrorMessage()
+                : "";
     }
+
 }
