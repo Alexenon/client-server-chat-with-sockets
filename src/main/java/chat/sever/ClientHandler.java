@@ -39,8 +39,8 @@ public class ClientHandler extends Thread {
                 ServerManager.broadcastMessage(messageObject);
             }
         } catch (IOException | ClassNotFoundException e) {
-            ServerManager.broadcastMessage("User " + user.getUsername() + " left the chat");
             ServerManager.removeClient(this);
+            ServerManager.broadcastMessage("User " + user.getUsername() + " left the chat");
         } finally {
             closeConnection();
         }

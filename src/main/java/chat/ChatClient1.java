@@ -1,10 +1,9 @@
 package chat;
 
-import chat.handlers.input.InputHandler;
-import chat.handlers.input.MessageInputHandlerFactory;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.User;
+import chat.models.temp.InputConvertor;
 import chat.ui.ChatLayout;
 
 import javax.crypto.SecretKey;
@@ -17,17 +16,14 @@ import java.net.Socket;
 public class ChatClient1 {
     private final User user;
     private final ChatLayout chatLayout;
-    private MessageInputHandlerFactory messageInputHandlerFactory;
-    private ResponseHandlerFactory responseHandlerFactory;
+    private SecretKey secretKey;
     private ObjectOutputStream outputStream;
-    private SecretKey groupKey;
+    private ResponseHandlerFactory responseHandlerFactory;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
         initialize();
-        messageInputHandlerFactory = new MessageInputHandlerFactory(user, groupKey);
-        responseHandlerFactory = new ResponseHandlerFactory(user, groupKey);
     }
 
     public static void main(String[] args) {
@@ -62,6 +58,8 @@ public class ChatClient1 {
     private void sendToServer(Object o) {
         if (o == null) return;
 
+        System.out.println("Sending object: " + o);
+
         try {
             outputStream.writeObject(o);
             outputStream.flush();
@@ -75,8 +73,8 @@ public class ChatClient1 {
         String input = chatLayout.getMessageInput();
         boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
 
-        InputHandler inputHandler = messageInputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
-        return inputHandler.convertIntoObject(input);
+        InputConvertor inputConvertor = new InputConvertor(user, secretKey, shouldBeEncrypted);
+        return inputConvertor.convertIntoObject(input);
     }
 
     private class IncomingMessageHandler implements Runnable {
@@ -88,12 +86,13 @@ public class ChatClient1 {
 
         public void run() {
             try {
-                while (true) {
+                while (chatLayout.isActive()) {
                     Object object = inputStream.readObject();
 
+                    System.out.println("Received object: " + object);
+
                     if (object instanceof SecretKey secretKey) {
-                        groupKey = secretKey;
-                        messageInputHandlerFactory = new MessageInputHandlerFactory(user, secretKey);
+                        ChatClient1.this.secretKey = secretKey;
                         responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
                         System.out.println("Received secret key from server: " + secretKey);
                         continue;
@@ -102,8 +101,7 @@ public class ChatClient1 {
                     ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
                     String textToBeDisplayed = responseHandler.handleResult();
 
-//                    chatLayout.updateChatArea(textToBeDisplayed);
-                    chatLayout.addMessage(textToBeDisplayed);
+                    chatLayout.updateChatArea(textToBeDisplayed);
                     System.out.println(textToBeDisplayed);
                 }
             } catch (IOException | ClassNotFoundException e) {
