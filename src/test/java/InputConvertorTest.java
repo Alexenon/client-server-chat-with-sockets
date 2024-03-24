@@ -60,6 +60,24 @@ public class InputConvertorTest {
         Assert.assertNull(message.getReceiver());
     }
 
+    @Test
+    public void testEncryptedPrivateMessage() {
+        String text = "Dan: This is a private message";
+        User expectedReceiver = new User("Dan");
+        String expectedText = "This is a private message";
+
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey, true);
+        Object convertedObject = inputConvertor.convertIntoObject(text);
+
+        Assert.assertTrue(convertedObject instanceof EncryptedMessage);
+
+        EncryptedMessage message = (EncryptedMessage) convertedObject;
+        Assert.assertNotEquals(message.getText(), text);
+        Assert.assertEquals(message.getText(secretKey), expectedText);
+        Assert.assertEquals(message.getAuthor(), author);
+        Assert.assertEquals(message.getReceiver(), expectedReceiver);
+    }
+
     private SecretKey initiateGroupKey() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");

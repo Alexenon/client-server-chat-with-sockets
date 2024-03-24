@@ -17,6 +17,9 @@ public record PrivateMessageConvertor(User author,
         Pattern pattern = Pattern.compile(InputConvertor.PRIVATE_MESSAGE_REGEX);
         Matcher matcher = pattern.matcher(input);
 
+        if(!matcher.find())
+            throw new IllegalArgumentException("Invalid private message format: " + input);
+
         String receiverUsername = matcher.group(1);
         String messageText = matcher.group(2).trim();
 

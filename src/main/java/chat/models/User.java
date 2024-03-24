@@ -53,8 +53,8 @@ public class User implements Serializable {
 
         User u = (User) o;
 
-        return username.compareTo(u.username) == 0
-               && Objects.equals(keyPair, u.keyPair);
+        return username.equals(u.username);
+//               && Objects.equals(keyPair, u.keyPair);
     }
 
     @Override

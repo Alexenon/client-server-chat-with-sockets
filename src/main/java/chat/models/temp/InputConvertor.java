@@ -4,16 +4,6 @@ import chat.models.User;
 
 import javax.crypto.SecretKey;
 
-
-// Message("text", author)                      -> PUBLIC MESSAGE
-// Message("text", author, receiver)            -> PRIVATE MESSAGE
-// EncryptedMessage("text", author)             -> ENCRYPTED PUBLIC MESSAGE
-// EncryptedMessage("text", author, receiver)   -> ENCRYPTED PRIVATE MESSAGE
-
-// Message("text")                              -> LOGS
-// EncryptedMessage("text")                     -> ENCRYPTED LOGS
-
-
 public class InputConvertor {
     /**
      * FORMAT: {@code <receiver_name>: <message>}
