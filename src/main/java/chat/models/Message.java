@@ -6,10 +6,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
-    private static final String DATE_TIME_FORMATTER = "yyyy-MM-dd HH:mm";
-
     @Serial
     private static final long serialVersionUID = 8322154030015983245L;
+    private static final String DATE_TIME_FORMATTER = "yyyy-MM-dd HH:mm";
 
     private final String text;
     private final User author;
