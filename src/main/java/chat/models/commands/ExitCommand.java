@@ -14,7 +14,7 @@ public class ExitCommand implements Command {
 
     @Override
     public boolean isValid() {
-        return !input.equals("/exit");
+        return input.equalsIgnoreCase("/exit");
     }
 
     @Override

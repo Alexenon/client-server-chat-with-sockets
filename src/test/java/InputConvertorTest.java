@@ -1,18 +1,20 @@
 import chat.models.EncryptedMessage;
 import chat.models.Message;
 import chat.models.User;
+import chat.models.commands.ExitCommand;
+import chat.models.commands.HelpCommand;
+import chat.models.commands.InvalidCommandException;
 import chat.models.temp.InputConvertor;
+import chat.sever.ServerManager;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
 
 public class InputConvertorTest {
 
     User author = new User("author");
-    SecretKey secretKey = initiateGroupKey();
+    SecretKey secretKey = ServerManager.initiateGroupKey();
 
     @Test
     public void testPublicMessage() {
@@ -78,13 +80,26 @@ public class InputConvertorTest {
         Assert.assertEquals(message.getReceiver(), expectedReceiver);
     }
 
-    private SecretKey initiateGroupKey() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
-            return keyGenerator.generateKey();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("NoSuchAlgorithmException");
-        }
+    @Test
+    public void testCommands() throws InvalidCommandException {
+        String help = "/help";
+        String exit = "/exit";
+
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey, false);
+        Object helpObj = inputConvertor.convertIntoObject(help);
+        Object exitObj = inputConvertor.convertIntoObject(exit);
+
+        Assert.assertTrue(helpObj instanceof HelpCommand);
+        Assert.assertTrue(exitObj instanceof ExitCommand);
+
+        HelpCommand helpCommand = (HelpCommand) helpObj;
+        ExitCommand exitCommand = (ExitCommand) exitObj;
+
+        Assert.assertTrue(helpCommand.isValid());
+        Assert.assertTrue(exitCommand.isValid());
+
+        System.out.println(helpCommand.getResult());
+        System.out.println(exitCommand.getResult());
     }
+
 }

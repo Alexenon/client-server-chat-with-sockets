@@ -30,13 +30,18 @@ public class HelpCommand implements Command {
         if (args.length > 2)
             throw new InvalidCommandException("Too many arguments for command \"/help\" found");
 
+        return isCommandForHelpValid();
+    }
+
+    private boolean isCommandForHelpValid() {
+        if (commandForHelp.isEmpty()) return true;
+
         return Arrays.stream(Commands.values())
                 .map(c -> c.toString().toLowerCase())
                 .anyMatch(s -> s.equals(commandForHelp));
     }
 
     public String getResult() {
-
         return getResultPerCommand(commandForHelp) == null
                 ? getErrorMessage()
                 : getResultPerCommand(commandForHelp);
@@ -62,7 +67,6 @@ public class HelpCommand implements Command {
                         /encrypt [message] - Encrypt just a particular message
                         /encrypt [on] - Turns ON encryption for next messages
                         /encrypt [off] - Turns OFF encryption for next messages
-                         
                     """;
             case "exit" -> "Disconnects from the server";
             default -> null;
