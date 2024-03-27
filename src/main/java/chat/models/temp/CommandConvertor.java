@@ -1,11 +1,12 @@
 package chat.models.temp;
 
 import chat.models.Commands;
-import chat.models.InternalError;
 import chat.models.commands.Command;
 import chat.models.commands.ExitCommand;
 import chat.models.commands.HelpCommand;
 import chat.models.commands.InvalidCommandException;
+import chat.models.errors.InternalError;
+import chat.models.errors.StatusCode;
 
 import java.util.Arrays;
 
@@ -14,10 +15,12 @@ public class CommandConvertor implements Convertor {
     @Override
     public Object getObjectFromInput(String input) {
         try {
-            return getCommandFromInput(input);
+            Command command = getCommandFromInput(input);
+            command.execute();
+            return command;
         } catch (InvalidCommandException e) {
             e.printStackTrace();
-            return new InternalError(e.getLocalizedMessage());
+            return new InternalError(StatusCode.BAD_REQUEST, e.getLocalizedMessage());
         }
     }
 

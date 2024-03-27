@@ -19,8 +19,9 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public void execute() {
-        System.out.println("Executing \"" + input + "\" command");
+    public void execute() throws InvalidCommandException {
+        if (isValid())
+            System.out.println("Executing \"" + input + "\" command");
     }
 
     @Override

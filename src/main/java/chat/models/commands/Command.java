@@ -2,7 +2,7 @@ package chat.models.commands;
 
 public interface Command {
 
-    void execute();
+    void execute() throws InvalidCommandException;
 
     boolean isValid() throws InvalidCommandException;
 

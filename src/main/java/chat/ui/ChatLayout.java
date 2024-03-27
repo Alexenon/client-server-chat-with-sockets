@@ -30,7 +30,7 @@ public class ChatLayout {
     public void buildForm() {
         frame.setTitle(username);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        frame.setSize(500, 400);
 
         // Create a panel for the checkbox and add it to the frame's content pane
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
