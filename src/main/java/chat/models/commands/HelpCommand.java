@@ -43,13 +43,13 @@ public class HelpCommand implements Command {
     }
 
     public String getResult() {
-        return getResultPerCommand(commandForHelp) == null
+        return getHelpForCommand(commandForHelp) == null
                 ? getErrorMessage()
-                : getResultPerCommand(commandForHelp);
+                : getHelpForCommand(commandForHelp);
     }
 
-    private String getResultPerCommand(String command) {
-        return switch (command) {
+    private String getHelpForCommand(String name) {
+        return switch (name) {
             case "" -> """
                     List of all available commands:
                         /help               - Display help message.
@@ -66,8 +66,8 @@ public class HelpCommand implements Command {
                                         
                     Options:
                         /encrypt [message] - Encrypt just a particular message
-                        /encrypt [on] - Turns ON encryption for next messages
-                        /encrypt [off] - Turns OFF encryption for next messages
+                        /encrypt [on] - Turns ON encryption for messages
+                        /encrypt [off] - Turns OFF encryption for messages
                     """;
             case "exit" -> "Disconnects from the server";
             default -> null;

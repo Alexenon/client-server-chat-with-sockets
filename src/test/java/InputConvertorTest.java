@@ -4,6 +4,8 @@ import chat.models.User;
 import chat.models.commands.ExitCommand;
 import chat.models.commands.HelpCommand;
 import chat.models.commands.InvalidCommandException;
+import chat.models.errors.InternalError;
+import chat.models.errors.StatusCode;
 import chat.models.temp.InputConvertor;
 import chat.sever.ServerManager;
 import org.junit.Assert;
@@ -81,7 +83,7 @@ public class InputConvertorTest {
     }
 
     @Test
-    public void testCommands() throws InvalidCommandException {
+    public void testValidCommands() throws InvalidCommandException {
         String help = "/help";
         String exit = "/exit";
 
@@ -101,5 +103,28 @@ public class InputConvertorTest {
         System.out.println(helpCommand.getResult());
         System.out.println(exitCommand.getResult());
     }
+
+    @Test
+    public void testInvalidCommands() throws InvalidCommandException {
+        String help_me = "/help me";
+        String me = "/me";
+
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey, false);
+        Object obj1 = inputConvertor.convertIntoObject(help_me);
+        Object obj2 = inputConvertor.convertIntoObject(me);
+
+        Assert.assertTrue(obj1 instanceof InternalError);
+        Assert.assertTrue(obj2 instanceof InternalError);
+
+        InternalError err1 = (InternalError) obj1;
+        InternalError err2 = (InternalError) obj2;
+
+        Assert.assertEquals(err1.getStatusCode(), StatusCode.BAD_REQUEST);
+        Assert.assertEquals(err2.getStatusCode(), StatusCode.BAD_REQUEST);
+
+        System.out.println(err1.getErrorMessage());
+        System.out.println(err2.getErrorMessage());
+    }
+
 
 }

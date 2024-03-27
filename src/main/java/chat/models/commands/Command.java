@@ -9,6 +9,6 @@ public interface Command {
     String getResult();
 
     default String getErrorMessage() {
-        return "Invalid command. Type /help for a list of all commands.";
+        return "Invalid command. To view the list of all valid commands, simply type \"/help\".";
     };
 }

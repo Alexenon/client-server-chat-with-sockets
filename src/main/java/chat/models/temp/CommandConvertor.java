@@ -8,16 +8,15 @@ import chat.models.commands.InvalidCommandException;
 import chat.models.errors.InternalError;
 import chat.models.errors.StatusCode;
 
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class CommandConvertor implements Convertor {
+    private static final String ERROR_MESSAGE = "Invalid command: \"%s\". To view the list of all valid commands, simply type \"/help\".";
 
     @Override
     public Object getObjectFromInput(String input) {
         try {
-            Command command = getCommandFromInput(input);
-            command.execute();
-            return command;
+            return getCommandFromInput(input);
         } catch (InvalidCommandException e) {
             e.printStackTrace();
             return new InternalError(StatusCode.BAD_REQUEST, e.getLocalizedMessage());
@@ -25,24 +24,26 @@ public class CommandConvertor implements Convertor {
     }
 
     public Command getCommandFromInput(String input) throws InvalidCommandException {
-        if (isCommandValid(input))
-            throw new InvalidCommandException("Invalid command: '" + input + "'");
+        if (isInvalidCommand(input))
+            throw new InvalidCommandException(ERROR_MESSAGE.formatted(input));
 
         String commandName = extractCommandName(input);
         return switch (commandName) {
             case "/help" -> new HelpCommand(input);
             case "/exit" -> new ExitCommand(input);
-            default -> throw new InvalidCommandException("Invalid command: '" + commandName + "'");
+            default -> throw new InvalidCommandException(ERROR_MESSAGE.formatted(commandName));
         };
     }
 
-    public boolean isCommandValid(String input) {
-        if (!input.startsWith("/")) return false;
+    public boolean isInvalidCommand(String input) {
+        if (!input.startsWith("/"))
+            return true;
 
         String commandName = extractCommandName(input);
-        return Arrays.stream(Commands.values())
-                .map(command -> command.name().toLowerCase())
-                .anyMatch(commandName::equals);
+        return Stream.of(Commands.values())
+                .map(Enum::name)
+                .map(s -> "/" + s.toLowerCase())
+                .noneMatch(commandName::equals);
     }
 
     public String extractCommandName(String input) {

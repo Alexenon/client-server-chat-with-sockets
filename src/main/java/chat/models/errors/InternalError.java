@@ -1,21 +1,21 @@
 package chat.models.errors;
 
 public class InternalError {
-    private final StatusCode code;
+    private final StatusCode statusCode;
     private final String errorMessage;
 
     public InternalError(StatusCode statusCode) {
-        this.code = statusCode;
+        this.statusCode = statusCode;
         this.errorMessage = statusCode.getMessage();
     }
 
     public InternalError(String errorMessage) {
-        this.code = StatusCode.BAD_REQUEST;
+        this.statusCode = StatusCode.BAD_REQUEST;
         this.errorMessage = errorMessage;
     }
 
     public InternalError(StatusCode statusCode, String errorMessage) {
-        this.code = statusCode;
+        this.statusCode = statusCode;
         this.errorMessage = errorMessage;
     }
 
@@ -23,7 +23,7 @@ public class InternalError {
         return errorMessage;
     }
 
-    public String getStatusErrorMessage() {
-        return code.getMessage();
+    public StatusCode getStatusCode() {
+        return statusCode;
     }
 }

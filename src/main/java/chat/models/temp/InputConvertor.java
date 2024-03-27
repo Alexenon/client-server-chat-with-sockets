@@ -6,7 +6,8 @@ import javax.crypto.SecretKey;
 
 public class InputConvertor {
     /**
-     * FORMAT: {@code <receiver_name>: <message>}
+     * FORMAT: {@code <receiver_username>: <message>} <br>
+     * EXAMPLE: {@code Dan: This is a private message}
      */
     public static final String PRIVATE_MESSAGE_REGEX = "\\b(\\w+):\\s+(.*)";
 
