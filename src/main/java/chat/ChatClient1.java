@@ -2,9 +2,9 @@ package chat;
 
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
-import chat.models.errors.InternalError;
 import chat.models.User;
 import chat.models.commands.Command;
+import chat.models.errors.InternalError;
 import chat.models.temp.InputConvertor;
 import chat.ui.ChatLayout;
 
@@ -55,21 +55,14 @@ public class ChatClient1 {
     private void handleSendingMessage() {
         Object objectToBeSent = getObjectToSend();
 
-        if(objectToBeSent instanceof Command command) {
-            System.out.println("COMMAND: " + command);
-            chatLayout.updateChatArea(command.getResult());
-            chatLayout.clearMessageInput();
-            objectToBeSent = null;
-        }
 
-        if (objectToBeSent instanceof InternalError error) {
-            System.out.println("ERROR: " + error.getErrorMessage());
-            chatLayout.updateChatArea(error.getErrorMessage());
-            chatLayout.clearMessageInput();
-            objectToBeSent = null;
-        }
-
-        sendToServer(objectToBeSent);
+//        if (objectToBeSent instanceof Command) {
+//            handleCommand((Command) objectToBeSent);
+//        } else if (objectToBeSent instanceof InternalError) {
+//            handleInternalError((InternalError) objectToBeSent);
+//        } else {
+//            sendToServer(objectToBeSent);
+//        }
     }
 
     private void sendToServer(Object o) {
@@ -92,6 +85,12 @@ public class ChatClient1 {
         InputConvertor inputConvertor = new InputConvertor(user, secretKey, shouldBeEncrypted);
         return inputConvertor.convertIntoObject(input);
     }
+
+    public void display(String text) {
+        chatLayout.updateChatArea(text);
+        chatLayout.clearMessageInput();
+    }
+
 
     private class IncomingMessageHandler implements Runnable {
         private final ObjectInputStream inputStream;
