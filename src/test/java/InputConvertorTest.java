@@ -21,8 +21,8 @@ public class InputConvertorTest {
     @Test
     public void testPublicMessage() {
         String text = "This is a public message";
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey, false);
-        Object convertedObject = inputConvertor.convertIntoObject(text);
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object convertedObject = inputConvertor.convertIntoObject(text, false);
 
         Assert.assertTrue(convertedObject instanceof Message);
 
@@ -38,8 +38,8 @@ public class InputConvertorTest {
         User expectedReceiver = new User("Dan");
         String expectedText = "This is a private message";
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey, false);
-        Object convertedObject = inputConvertor.convertIntoObject(text);
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object convertedObject = inputConvertor.convertIntoObject(text, false);
 
         Assert.assertTrue(convertedObject instanceof Message);
 
@@ -52,8 +52,8 @@ public class InputConvertorTest {
     @Test
     public void testEncryptedPublicMessage() {
         String text = "This is a public message";
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey, true);
-        Object convertedObject = inputConvertor.convertIntoObject(text);
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object convertedObject = inputConvertor.convertIntoObject(text, false);
 
         Assert.assertTrue(convertedObject instanceof EncryptedMessage);
 
@@ -70,8 +70,8 @@ public class InputConvertorTest {
         User expectedReceiver = new User("Dan");
         String expectedText = "This is a private message";
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey, true);
-        Object convertedObject = inputConvertor.convertIntoObject(text);
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object convertedObject = inputConvertor.convertIntoObject(text, false);
 
         Assert.assertTrue(convertedObject instanceof EncryptedMessage);
 
@@ -87,9 +87,9 @@ public class InputConvertorTest {
         String help = "/help";
         String exit = "/exit";
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey, false);
-        Object helpObj = inputConvertor.convertIntoObject(help);
-        Object exitObj = inputConvertor.convertIntoObject(exit);
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object helpObj = inputConvertor.convertIntoObject(help, false);
+        Object exitObj = inputConvertor.convertIntoObject(exit, false);
 
         Assert.assertTrue(helpObj instanceof HelpCommand);
         Assert.assertTrue(exitObj instanceof ExitCommand);
@@ -105,13 +105,13 @@ public class InputConvertorTest {
     }
 
     @Test
-    public void testInvalidCommands() throws InvalidCommandException {
+    public void testInvalidCommands() {
         String help_me = "/help me";
         String me = "/me";
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey, false);
-        Object obj1 = inputConvertor.convertIntoObject(help_me);
-        Object obj2 = inputConvertor.convertIntoObject(me);
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object obj1 = inputConvertor.convertIntoObject(help_me, false);
+        Object obj2 = inputConvertor.convertIntoObject(me, false);
 
         Assert.assertTrue(obj1 instanceof InternalError);
         Assert.assertTrue(obj2 instanceof InternalError);

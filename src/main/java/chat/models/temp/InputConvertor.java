@@ -13,20 +13,18 @@ public class InputConvertor {
 
     private final User user;
     private final SecretKey secretKey;
-    private final boolean shouldBeEncrypted;
 
-    public InputConvertor(User user, SecretKey secretKey, boolean shouldBeEncrypted) {
+    public InputConvertor(User user, SecretKey secretKey) {
         this.user = user;
         this.secretKey = secretKey;
-        this.shouldBeEncrypted = shouldBeEncrypted;
     }
 
-    public Object convertIntoObject(String input) {
-        Convertor convertor = getConvertor(input);
+    public Object convertIntoObject(String input, boolean shouldBeEncrypted) {
+        Convertor convertor = getConvertor(input, shouldBeEncrypted);
         return convertor.getObjectFromInput(input);
     }
 
-    private Convertor getConvertor(String input) {
+    private Convertor getConvertor(String input, boolean shouldBeEncrypted) {
         InputType inputType = getType(input);
         return switch (inputType) {
             case COMMAND -> new CommandConvertor();

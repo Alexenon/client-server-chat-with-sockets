@@ -6,7 +6,14 @@ import chat.models.User;
 
 import javax.crypto.SecretKey;
 
-public record ResponseHandlerFactory(User user, SecretKey secretKey) {
+public class ResponseHandlerFactory {
+    private User user;
+    private SecretKey secretKey;
+
+    public ResponseHandlerFactory(User user, SecretKey secretKey) {
+        this.user = user;
+        this.secretKey = secretKey;
+    }
 
     public ResponseHandler createResponseHandler(Object object) {
         if (object instanceof Message message) {
@@ -18,6 +25,14 @@ public record ResponseHandlerFactory(User user, SecretKey secretKey) {
         }
 
         throw new RuntimeException("Couldn't process the server response: " + object);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
     }
 }
 

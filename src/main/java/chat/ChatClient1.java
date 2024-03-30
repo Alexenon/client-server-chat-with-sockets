@@ -3,9 +3,6 @@ package chat;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.User;
-import chat.models.commands.Command;
-import chat.models.errors.InternalError;
-import chat.models.temp.InputConvertor;
 import chat.ui.ChatLayout;
 
 import javax.crypto.SecretKey;
@@ -16,26 +13,28 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ChatClient1 {
-    private final User user;
     private final ChatLayout chatLayout;
+    private final InputSendingHandler inputSendingHandler;
+    private final ResponseHandlerFactory responseHandlerFactory;
+    private User user;
     private SecretKey secretKey;
     private ObjectOutputStream outputStream;
-    private ResponseHandlerFactory responseHandlerFactory;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
-        user = new User(chatLayout.getUsername());
-        initialize();
+        initializeForm();
+        connectToTheServer();
+        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
+        inputSendingHandler = new InputSendingHandler(chatLayout, outputStream, user, secretKey);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ChatClient1::new);
     }
 
-    private void initialize() {
+    private void initializeForm() {
         chatLayout.buildForm();
-        chatLayout.sendActionListener(e -> handleSendingMessage());
-        connectToTheServer();
+        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingMessages());
     }
 
     private void connectToTheServer() {
@@ -43,54 +42,19 @@ public class ChatClient1 {
             Socket socket = new Socket("localhost", 8080);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            // Send the username to the server
-            outputStream.writeObject(chatLayout.getUsername());
-            outputStream.flush();
+            user = new User(chatLayout.getUsername());
+            inputSendingHandler.sendToServer(user.getUsername());
             new Thread(new IncomingMessageHandler(socket)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleSendingMessage() {
-        Object objectToBeSent = getObjectToSend();
-
-
-//        if (objectToBeSent instanceof Command) {
-//            handleCommand((Command) objectToBeSent);
-//        } else if (objectToBeSent instanceof InternalError) {
-//            handleInternalError((InternalError) objectToBeSent);
-//        } else {
-//            sendToServer(objectToBeSent);
-//        }
+    public void updateSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
+        this.inputSendingHandler.setSecretKey(secretKey);
+        this.responseHandlerFactory.setSecretKey(secretKey);
     }
-
-    private void sendToServer(Object o) {
-        if (o == null) return;
-
-        try {
-            System.out.println("Sending object: " + o);
-            outputStream.writeObject(o);
-            outputStream.flush();
-            chatLayout.clearMessageInput();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Object getObjectToSend() {
-        String input = chatLayout.getMessageInput();
-        boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
-
-        InputConvertor inputConvertor = new InputConvertor(user, secretKey, shouldBeEncrypted);
-        return inputConvertor.convertIntoObject(input);
-    }
-
-    public void display(String text) {
-        chatLayout.updateChatArea(text);
-        chatLayout.clearMessageInput();
-    }
-
 
     private class IncomingMessageHandler implements Runnable {
         private final ObjectInputStream inputStream;
@@ -107,9 +71,8 @@ public class ChatClient1 {
                     System.out.println("Received object: " + object);
 
                     if (object instanceof SecretKey secretKey) {
-                        ChatClient1.this.secretKey = secretKey;
-                        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
                         System.out.println("Received secret key from server: " + secretKey);
+                        updateSecretKey(secretKey);
                         continue;
                     }
 
