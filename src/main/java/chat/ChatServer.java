@@ -14,12 +14,12 @@ import java.net.Socket;
 //  - bytes to different objects (message, error, user, etc.)
 
 public class ChatServer {
-    private static final int PORT = 8080;
+    private static final int SERVER_PORT = 8080;
 
     public static void main(String[] args) {
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            System.out.println("Server started on port " + PORT);
+            ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
+            System.out.println("Server started on port " + SERVER_PORT);
 
             while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();

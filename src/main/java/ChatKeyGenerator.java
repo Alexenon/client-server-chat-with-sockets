@@ -9,10 +9,10 @@ import java.security.PublicKey;
 import java.util.Arrays;
 
 public class ChatKeyGenerator {
-    private SecretKey groupKey;
+    private SecretKey secretKey;
 
     public ChatKeyGenerator() {
-        groupKey = initiateGroupKey();
+        secretKey = initiateGroupKey();
     }
 
     // Generating a group key (symmetric)
@@ -26,19 +26,10 @@ public class ChatKeyGenerator {
         }
     }
 
-//    public byte[] getEncryptedGroupKey(PublicKey publicKey) {
-//        return encryptGroupKey(secretKey.getEncoded(), publicKey);
-//    }
-//
-//    public byte[] getDecryptedGroupKey(PrivateKey privateKey) {
-//        return decryptGroupKey(secretKey.getEncoded(), privateKey);
-//    }
-
-
     /**
      * Used for encryption of group key
      */
-    public byte[] encryptGroupKey(byte[] keyToEncrypted, PublicKey publicKey) {
+    public byte[] encryptSecretKey(byte[] keyToEncrypted, PublicKey publicKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -54,7 +45,7 @@ public class ChatKeyGenerator {
      * @param keyToBeDecrypted is encrypted group key
      * @param privateKey       is user personal private key
      */
-    public byte[] decryptGroupKey(byte[] keyToBeDecrypted, PrivateKey privateKey) {
+    public byte[] decryptSecretKey(byte[] keyToBeDecrypted, PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -65,12 +56,12 @@ public class ChatKeyGenerator {
     }
 
     /**
-     * @param groupKey should be used original group key, and not encrypted one
+     * @param secretKey should be used original group key, and not encrypted one
      */
-    public byte[] encryptMessage(String message, SecretKey groupKey) {
+    public byte[] encryptMessage(String message, SecretKey secretKey) {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, groupKey);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] iv = cipher.getParameters().getParameterSpec(IvParameterSpec.class).getIV();
             byte[] encryptedMessage = cipher.doFinal(message.getBytes());
             byte[] combined = new byte[iv.length + encryptedMessage.length];
@@ -99,8 +90,8 @@ public class ChatKeyGenerator {
         }
     }
 
-    public SecretKey getGroupKey() {
-        return groupKey;
+    public SecretKey getSecretKey() {
+        return secretKey;
     }
 
 }

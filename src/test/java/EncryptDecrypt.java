@@ -8,13 +8,13 @@ public class EncryptDecrypt {
         User alex = new User("Alex");
 
         ChatKeyGenerator keyGenerator = new ChatKeyGenerator();
-        SecretKey groupKey = keyGenerator.getGroupKey();
+        SecretKey groupKey = keyGenerator.getSecretKey();
 
-        byte[] encryptedGroupKey_for_Dan = keyGenerator.encryptGroupKey(groupKey.getEncoded(), dan.getPublicKey());
-        byte[] decryptedGroupKey_for_Dan = keyGenerator.decryptGroupKey(encryptedGroupKey_for_Dan, dan.getPrivateKey());
+        byte[] encryptedGroupKey_for_Dan = keyGenerator.encryptSecretKey(groupKey.getEncoded(), dan.getPublicKey());
+        byte[] decryptedGroupKey_for_Dan = keyGenerator.decryptSecretKey(encryptedGroupKey_for_Dan, dan.getPrivateKey());
 
-        byte[] encryptedGroupKey_for_Alex = keyGenerator.encryptGroupKey(groupKey.getEncoded(), alex.getPublicKey());
-        byte[] decryptedGroupKey_for_Alex = keyGenerator.decryptGroupKey(encryptedGroupKey_for_Alex, alex.getPrivateKey());
+        byte[] encryptedGroupKey_for_Alex = keyGenerator.encryptSecretKey(groupKey.getEncoded(), alex.getPublicKey());
+        byte[] decryptedGroupKey_for_Alex = keyGenerator.decryptSecretKey(encryptedGroupKey_for_Alex, alex.getPrivateKey());
 
         String messageFromAlex = "Hi Dan, this should our secret";
         String messageFromDan = "Hi Alex, yes, I know this";

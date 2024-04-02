@@ -13,41 +13,41 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ChatClient1 {
+    private final User user;
     private final ChatLayout chatLayout;
     private final InputSendingHandler inputSendingHandler;
     private final ResponseHandlerFactory responseHandlerFactory;
-    private User user;
     private SecretKey secretKey;
     private ObjectOutputStream outputStream;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
-        initializeForm();
-        connectToTheServer();
+        user = new User(chatLayout.getUsername());
+        initializeConnection();
         responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
         inputSendingHandler = new InputSendingHandler(chatLayout, outputStream, user, secretKey);
+        setupConnection();
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ChatClient1::new);
     }
 
-    private void initializeForm() {
-        chatLayout.buildForm();
-        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingMessages());
-    }
-
-    private void connectToTheServer() {
+    private void initializeConnection() {
         try {
             Socket socket = new Socket("localhost", 8080);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-            user = new User(chatLayout.getUsername());
-            inputSendingHandler.sendToServer(user.getUsername());
-            new Thread(new IncomingMessageHandler(socket)).start();
+            IncomingMessageHandler incomingMessageHandler = new IncomingMessageHandler(socket);
+            Thread thread = new Thread(incomingMessageHandler);
+            thread.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Couldn't connect to the server. " + e.getLocalizedMessage());
         }
+    }
+
+    private void setupConnection() {
+        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingMessages());
+        inputSendingHandler.sendToServer(user.getUsername());
     }
 
     public void updateSecretKey(SecretKey secretKey) {
