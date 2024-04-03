@@ -1,4 +1,4 @@
-package chat.models.temp;
+package chat.handlers.input.convertors;
 
 import chat.models.EncryptedMessage;
 import chat.models.Message;

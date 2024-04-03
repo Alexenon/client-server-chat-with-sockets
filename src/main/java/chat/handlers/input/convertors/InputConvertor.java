@@ -1,5 +1,6 @@
-package chat.models.temp;
+package chat.handlers.input.convertors;
 
+import chat.handlers.input.InputType;
 import chat.models.User;
 
 import javax.crypto.SecretKey;

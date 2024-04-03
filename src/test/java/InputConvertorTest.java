@@ -1,3 +1,4 @@
+import chat.handlers.input.convertors.InputConvertor;
 import chat.models.EncryptedMessage;
 import chat.models.Message;
 import chat.models.User;
@@ -6,7 +7,6 @@ import chat.models.commands.HelpCommand;
 import chat.models.commands.InvalidCommandException;
 import chat.models.errors.InternalError;
 import chat.models.errors.StatusCode;
-import chat.models.temp.InputConvertor;
 import chat.sever.ServerManager;
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class InputConvertorTest {
     public void testEncryptedPublicMessage() {
         String text = "This is a public message";
         InputConvertor inputConvertor = new InputConvertor(author, secretKey);
-        Object convertedObject = inputConvertor.convertIntoObject(text, false);
+        Object convertedObject = inputConvertor.convertIntoObject(text, true);
 
         Assert.assertTrue(convertedObject instanceof EncryptedMessage);
 
@@ -71,7 +71,7 @@ public class InputConvertorTest {
         String expectedText = "This is a private message";
 
         InputConvertor inputConvertor = new InputConvertor(author, secretKey);
-        Object convertedObject = inputConvertor.convertIntoObject(text, false);
+        Object convertedObject = inputConvertor.convertIntoObject(text, true);
 
         Assert.assertTrue(convertedObject instanceof EncryptedMessage);
 

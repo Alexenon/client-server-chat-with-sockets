@@ -1,4 +1,4 @@
-package chat.models.temp;
+package chat.handlers.input.convertors;
 
 import chat.models.Commands;
 import chat.models.commands.Command;

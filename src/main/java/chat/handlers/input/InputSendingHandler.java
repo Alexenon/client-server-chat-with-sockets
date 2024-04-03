@@ -1,9 +1,9 @@
-package chat;
+package chat.handlers.input;
 
 import chat.models.User;
 import chat.models.commands.Command;
 import chat.models.errors.InternalError;
-import chat.models.temp.InputConvertor;
+import chat.handlers.input.convertors.InputConvertor;
 import chat.ui.ChatLayout;
 
 import javax.crypto.SecretKey;

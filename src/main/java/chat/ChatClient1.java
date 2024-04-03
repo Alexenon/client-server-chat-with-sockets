@@ -1,5 +1,6 @@
 package chat;
 
+import chat.handlers.input.InputSendingHandler;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.User;
@@ -51,6 +52,7 @@ public class ChatClient1 {
     }
 
     public void updateSecretKey(SecretKey secretKey) {
+        System.out.println("Updating secret key: " + secretKey);
         this.secretKey = secretKey;
         this.inputSendingHandler.setSecretKey(secretKey);
         this.responseHandlerFactory.setSecretKey(secretKey);
@@ -71,7 +73,6 @@ public class ChatClient1 {
                     System.out.println("Received object: " + object);
 
                     if (object instanceof SecretKey secretKey) {
-                        System.out.println("Received secret key from server: " + secretKey);
                         updateSecretKey(secretKey);
                         continue;
                     }
