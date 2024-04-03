@@ -105,26 +105,28 @@ public class InputConvertorTest {
     }
 
     @Test
-    public void testInvalidCommands() {
-        String help_me = "/help me";
+    public void testInvalidCommand() {
         String me = "/me";
-
         InputConvertor inputConvertor = new InputConvertor(author, secretKey);
-        Object obj1 = inputConvertor.convertIntoObject(help_me, false);
-        Object obj2 = inputConvertor.convertIntoObject(me, false);
+        Object object = inputConvertor.convertIntoObject(me, false);
 
-        Assert.assertTrue(obj1 instanceof InternalError);
-        Assert.assertTrue(obj2 instanceof InternalError);
-
-        InternalError err1 = (InternalError) obj1;
-        InternalError err2 = (InternalError) obj2;
-
-        Assert.assertEquals(err1.getStatusCode(), StatusCode.BAD_REQUEST);
-        Assert.assertEquals(err2.getStatusCode(), StatusCode.BAD_REQUEST);
-
-        System.out.println(err1.getErrorMessage());
-        System.out.println(err2.getErrorMessage());
+        Assert.assertTrue(object instanceof InternalError);
+        InternalError error = (InternalError) object;
+        Assert.assertEquals(error.getStatusCode(), StatusCode.BAD_REQUEST);
+        Assert.assertTrue(error.getErrorMessage().startsWith("Invalid command"));
     }
 
+    @Test
+    public void testInvalidHelpCommand() throws InvalidCommandException {
+        String help = "/help me";
+        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        Object object = inputConvertor.convertIntoObject(help, false);
+
+        Assert.assertTrue(object instanceof HelpCommand);
+        HelpCommand helpCommand = (HelpCommand) object;
+        String result = helpCommand.getResult();
+        Assert.assertFalse(helpCommand.isValid());
+        Assert.assertTrue(result.startsWith("Invalid command"));
+    }
 
 }

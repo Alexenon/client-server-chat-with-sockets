@@ -1,6 +1,6 @@
 package chat.handlers.input.convertors;
 
-import chat.models.Commands;
+import chat.models.commands.Commands;
 import chat.models.commands.Command;
 import chat.models.commands.ExitCommand;
 import chat.models.commands.HelpCommand;
@@ -18,7 +18,6 @@ public class CommandConvertor implements Convertor {
         try {
             return getCommandFromInput(input);
         } catch (InvalidCommandException e) {
-            e.printStackTrace();
             return new InternalError(StatusCode.BAD_REQUEST, e.getLocalizedMessage());
         }
     }

@@ -1,7 +1,5 @@
 package chat.models.commands;
 
-import chat.models.Commands;
-
 import java.util.Arrays;
 
 public class HelpCommand implements Command {

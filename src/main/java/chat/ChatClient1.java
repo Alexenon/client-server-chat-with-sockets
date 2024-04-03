@@ -13,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+// TODO: Encryption
+
 public class ChatClient1 {
     private final User user;
     private final ChatLayout chatLayout;
