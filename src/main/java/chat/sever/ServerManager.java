@@ -49,7 +49,7 @@ public class ServerManager {
         System.out.println(object);
     }
 
-    private static SecretKey initiateGroupKey() {
+    public static SecretKey initiateGroupKey() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
             keyGenerator.init(256);

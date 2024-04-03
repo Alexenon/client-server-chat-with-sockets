@@ -12,8 +12,10 @@ public class ChatLayout {
     private final JButton sendButton = new JButton("Send");
 
     private String username;
+    private boolean isClosed;
 
     public ChatLayout() {
+        isClosed = false;
         initialize();
         buildForm();
     }
@@ -28,7 +30,7 @@ public class ChatLayout {
     public void buildForm() {
         frame.setTitle(username);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        frame.setSize(500, 400);
 
         // Create a panel for the checkbox and add it to the frame's content pane
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -69,14 +71,18 @@ public class ChatLayout {
         return username;
     }
 
-    public void closeWindow() {
-        frame.dispose();
-    }
-
     public void clearMessageInput() {
         messageField.setText("");
     }
 
+    public void closeWindow() {
+        isClosed = true;
+        frame.dispose();
+    }
+
+    public boolean isActive() {
+        return !isClosed;
+    }
 
 }
 

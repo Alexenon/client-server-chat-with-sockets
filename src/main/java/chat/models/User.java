@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class User implements Serializable {
     @Serial
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 195640213275933887L;
 
     private final String username;
     private final KeyPair keyPair;
@@ -51,13 +51,14 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        User u = (User) o;
 
-        return Objects.equals(this.username, user.username);
+        return username.equals(u.username);
+//               && Objects.equals(keyPair, u.keyPair);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username);
+        return Objects.hash(username, keyPair);
     }
 }

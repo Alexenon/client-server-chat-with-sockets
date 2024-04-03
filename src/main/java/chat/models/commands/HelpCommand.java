@@ -3,59 +3,73 @@ package chat.models.commands;
 import chat.models.Commands;
 
 import java.util.Arrays;
-import java.util.Optional;
 
-public class HelpCommand implements ICommand {
+public class HelpCommand implements Command {
     private final String input;
-    private final String specifiedCommand;
+    private final String commandForHelp;
 
     public HelpCommand(String input) {
         this.input = input;
-        this.specifiedCommand = extractCommand();
+        this.commandForHelp = extractCommandForHelp();
     }
 
-    private String extractCommand() {
+    private String extractCommandForHelp() {
         String[] splits = input.split(" ");
-        return splits.length > 0 ? splits[1] : "";
+        return splits.length > 1 ? splits[1] : "";
     }
 
     @Override
-    public void execute() {
-        System.out.println("Executing /help command");
+    public void execute() throws InvalidCommandException {
+        if (isValid())
+            System.out.println("Executing \"" + input + "\" command");
     }
 
     @Override
-    public boolean isValid() {
-        String[] splits = input.split(" ");
+    public boolean isValid() throws InvalidCommandException {
+        String[] args = input.split(" ");
 
-        if (splits.length > 2) return false;
-        if (!splits[0].equals("/help")) return false;
+        if (args.length > 2)
+            throw new InvalidCommandException("Too many arguments for command \"/help\" found");
+
+        return isCommandForHelpValid();
+    }
+
+    private boolean isCommandForHelpValid() {
+        if (commandForHelp.isEmpty()) return true;
 
         return Arrays.stream(Commands.values())
                 .map(c -> c.toString().toLowerCase())
-                .anyMatch(s -> s.equals(specifiedCommand));
+                .anyMatch(s -> s.equals(commandForHelp));
     }
 
-    @Override
-    public Optional<String> result() {
-        return Optional.of(getResultPerCommand(specifiedCommand));
+    public String getResult() {
+        return getHelpForCommand(commandForHelp) == null
+                ? getErrorMessage()
+                : getHelpForCommand(commandForHelp);
     }
 
-    private String getResultPerCommand(String command) {
-        return switch (command) {
+    private String getHelpForCommand(String name) {
+        return switch (name) {
             case "" -> """
-                    List of available commands:
-                        /help - Display this help message.
-                        /encrypt [message] - Encrypt a message
-                        /user [username] - View information about a specific user.
+                    List of all available commands:
+                        /help               - Display help message.
+                        /encrypt [message]  - Encrypt a message
+                        /user    [username] - View information about a specific user.
                         /private [username] - Start a private conversation with a user.
-                        /exit - Exit the chat.
+                        /exit               - Exit the chat.
                         
                     Options:
-                        /help [command] - Display information about a specific command.
+                        /help [command name] - Display information about a specific command.
                     """;
-            case "encrypt" -> "MISSING";
-            case "exit" -> "MISSING TOO";
+            case "encrypt" -> """
+                    Encrypts a message, or a series of messages.
+                                        
+                    Options:
+                        /encrypt [message] - Encrypt just a particular message
+                        /encrypt [on] - Turns ON encryption for messages
+                        /encrypt [off] - Turns OFF encryption for messages
+                    """;
+            case "exit" -> "Disconnects from the server";
             default -> null;
         };
     }

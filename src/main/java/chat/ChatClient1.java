@@ -1,7 +1,6 @@
 package chat;
 
-import chat.handlers.input.InputHandler;
-import chat.handlers.input.InputHandlerFactory;
+import chat.handlers.input.InputSendingHandler;
 import chat.handlers.response.ResponseHandler;
 import chat.handlers.response.ResponseHandlerFactory;
 import chat.models.User;
@@ -17,66 +16,46 @@ import java.net.Socket;
 public class ChatClient1 {
     private final User user;
     private final ChatLayout chatLayout;
-    private InputHandlerFactory inputHandlerFactory;
-    private ResponseHandlerFactory responseHandlerFactory;
+    private final InputSendingHandler inputSendingHandler;
+    private final ResponseHandlerFactory responseHandlerFactory;
+    private SecretKey secretKey;
     private ObjectOutputStream outputStream;
-    private SecretKey groupKey;
 
     public ChatClient1() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
-        initialize();
-        inputHandlerFactory = new InputHandlerFactory(user, groupKey);
-        responseHandlerFactory = new ResponseHandlerFactory(user, groupKey);
+        initializeConnection();
+        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
+        inputSendingHandler = new InputSendingHandler(chatLayout, outputStream, user, secretKey);
+        setupConnection();
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ChatClient1::new);
     }
 
-    private void initialize() {
-        chatLayout.buildForm();
-        chatLayout.sendActionListener(e -> handleSendingMessage());
-        connectToTheServer();
-    }
-
-    private void connectToTheServer() {
+    private void initializeConnection() {
         try {
             Socket socket = new Socket("localhost", 8080);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-            // Send the username to the server
-            outputStream.writeObject(chatLayout.getUsername());
-            outputStream.flush();
-            new Thread(new IncomingMessageHandler(socket)).start();
+            IncomingMessageHandler incomingMessageHandler = new IncomingMessageHandler(socket);
+            Thread thread = new Thread(incomingMessageHandler);
+            thread.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Couldn't connect to the server. " + e.getLocalizedMessage());
         }
     }
 
-    private void handleSendingMessage() {
-        Object objectToBeSent = getObjectToSend();
-        sendToServer(objectToBeSent);
+    private void setupConnection() {
+        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingMessages());
+        inputSendingHandler.sendToServer(user.getUsername());
     }
 
-    private void sendToServer(Object o) {
-        if (o == null) return;
-
-        try {
-            outputStream.writeObject(o);
-            outputStream.flush();
-            chatLayout.clearMessageInput();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Object getObjectToSend() {
-        String input = chatLayout.getMessageInput();
-        boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
-
-        InputHandler inputHandler = inputHandlerFactory.getInputHandler(input, shouldBeEncrypted);
-        return inputHandler.convertIntoObject(input);
+    public void updateSecretKey(SecretKey secretKey) {
+        System.out.println("Updating secret key: " + secretKey);
+        this.secretKey = secretKey;
+        this.inputSendingHandler.setSecretKey(secretKey);
+        this.responseHandlerFactory.setSecretKey(secretKey);
     }
 
     private class IncomingMessageHandler implements Runnable {
@@ -88,14 +67,13 @@ public class ChatClient1 {
 
         public void run() {
             try {
-                while (true) {
+                while (chatLayout.isActive()) {
                     Object object = inputStream.readObject();
 
+                    System.out.println("Received object: " + object);
+
                     if (object instanceof SecretKey secretKey) {
-                        groupKey = secretKey;
-                        inputHandlerFactory = new InputHandlerFactory(user, secretKey);
-                        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
-                        System.out.println("Received secret key from server: " + secretKey);
+                        updateSecretKey(secretKey);
                         continue;
                     }
 
