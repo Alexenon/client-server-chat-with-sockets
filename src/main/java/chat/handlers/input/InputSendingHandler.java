@@ -1,9 +1,9 @@
 package chat.handlers.input;
 
+import chat.handlers.input.convertors.InputConvertor;
 import chat.models.User;
 import chat.models.commands.Command;
 import chat.models.errors.InternalError;
-import chat.handlers.input.convertors.InputConvertor;
 import chat.ui.ChatLayout;
 
 import javax.crypto.SecretKey;
@@ -32,7 +32,7 @@ public class InputSendingHandler {
 
     private void handle(Object o) {
         if (o instanceof final Command command) {
-            displayErrorMessage(command.getResult());
+            displaySimpleMessage(command.getResult());
         } else if (o instanceof InternalError internalError) {
             displayErrorMessage(internalError.getErrorMessage());
         } else {
@@ -40,6 +40,11 @@ public class InputSendingHandler {
         }
 
         chatLayout.clearMessageInput();
+    }
+
+    public void displaySimpleMessage(String message) {
+        System.err.println(message);
+        chatLayout.updateChatArea(message);
     }
 
     public void displayErrorMessage(String message) {
@@ -59,20 +64,20 @@ public class InputSendingHandler {
         }
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setSecretKey(SecretKey secretKey) {
-        this.secretKey = secretKey;
-    }
-
     public User getUser() {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public SecretKey getSecretKey() {
         return secretKey;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
     }
 }
 

@@ -8,10 +8,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 // TODO:
-//  - encryption
 //  - commands
 //  - handle same username situations
-//  - bytes to different objects (message, error, user, etc.)
 
 public class ChatServer {
     private static final int SERVER_PORT = 8080;
