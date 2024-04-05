@@ -1,5 +1,6 @@
 package chat.models.commands.executors;
 
+import chat.models.commands.Command;
 import chat.models.commands.ExitCommand;
 import chat.ui.ChatLayout;
 

@@ -1,5 +1,6 @@
 package chat.models.commands.executors;
 
+import chat.models.commands.Command;
 import chat.models.commands.HelpCommand;
 import chat.models.commands.InvalidCommandException;
 import chat.ui.ChatLayout;
