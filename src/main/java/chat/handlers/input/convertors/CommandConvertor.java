@@ -1,17 +1,24 @@
 package chat.handlers.input.convertors;
 
-import chat.models.commands.CommandType;
 import chat.models.commands.Command;
+import chat.models.commands.CommandType;
 import chat.models.commands.ExitCommand;
 import chat.models.commands.HelpCommand;
-import chat.models.errors.InvalidCommandException;
 import chat.models.errors.InternalError;
+import chat.models.errors.InvalidCommandException;
 import chat.models.errors.StatusCode;
+import chat.ui.ChatLayout;
 
 import java.util.stream.Stream;
 
 public class CommandConvertor implements Convertor {
     private static final String ERROR_MESSAGE = "Invalid command: \"%s\". To view the list of all valid commands, simply type \"/help\".";
+
+    private final ChatLayout chatLayout;
+
+    public CommandConvertor(ChatLayout chatLayout) {
+        this.chatLayout = chatLayout;
+    }
 
     @Override
     public Object getObjectFromInput(String input) {
@@ -28,8 +35,8 @@ public class CommandConvertor implements Convertor {
 
         String commandName = extractCommandName(input);
         return switch (commandName) {
-            case "/help" -> new HelpCommand(input);
-            case "/exit" -> new ExitCommand(input);
+            case "/help" -> new HelpCommand(null);
+            case "/exit" -> new ExitCommand(null);
             default -> throw new InvalidCommandException(ERROR_MESSAGE.formatted(commandName));
         };
     }

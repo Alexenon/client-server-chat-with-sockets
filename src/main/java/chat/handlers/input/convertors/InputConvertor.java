@@ -28,7 +28,7 @@ public class InputConvertor {
     private Convertor getConvertor(String input, boolean shouldBeEncrypted) {
         InputType inputType = getType(input);
         return switch (inputType) {
-            case COMMAND -> new CommandConvertor();
+            case COMMAND -> new CommandConvertor(null);
             case PUBLIC_MESSAGE -> new PublicMessageConvertor(user, secretKey, shouldBeEncrypted);
             case PRIVATE_MESSAGE -> new PrivateMessageConvertor(user, secretKey, shouldBeEncrypted);
         };

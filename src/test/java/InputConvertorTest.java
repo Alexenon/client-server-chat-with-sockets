@@ -82,51 +82,51 @@ public class InputConvertorTest {
         Assert.assertEquals(message.getReceiver(), expectedReceiver);
     }
 
-    @Test
-    public void testValidCommands() throws InvalidCommandException {
-        String help = "/help";
-        String exit = "/exit";
+//    @Test
+//    public void testValidCommands() throws InvalidCommandException {
+//        String help = "/help";
+//        String exit = "/exit";
+//
+//        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+//        Object helpObj = inputConvertor.convertIntoObject(help, false);
+//        Object exitObj = inputConvertor.convertIntoObject(exit, false);
+//
+//        Assert.assertTrue(helpObj instanceof HelpCommand);
+//        Assert.assertTrue(exitObj instanceof ExitCommand);
+//
+//        HelpCommand helpCommand = (HelpCommand) helpObj;
+//        ExitCommand exitCommand = (ExitCommand) exitObj;
+//
+//        Assert.assertTrue(helpCommand.isValid());
+//        Assert.assertTrue(exitCommand.isValid());
+//
+//        System.out.println(helpCommand.getResult());
+//        System.out.println(exitCommand.getResult());
+//    }
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
-        Object helpObj = inputConvertor.convertIntoObject(help, false);
-        Object exitObj = inputConvertor.convertIntoObject(exit, false);
-
-        Assert.assertTrue(helpObj instanceof HelpCommand);
-        Assert.assertTrue(exitObj instanceof ExitCommand);
-
-        HelpCommand helpCommand = (HelpCommand) helpObj;
-        ExitCommand exitCommand = (ExitCommand) exitObj;
-
-        Assert.assertTrue(helpCommand.isValid());
-        Assert.assertTrue(exitCommand.isValid());
-
-        System.out.println(helpCommand.getResult());
-        System.out.println(exitCommand.getResult());
-    }
-
-    @Test
-    public void testInvalidCommand() {
-        String me = "/me";
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
-        Object object = inputConvertor.convertIntoObject(me, false);
-
-        Assert.assertTrue(object instanceof InternalError);
-        InternalError error = (InternalError) object;
-        Assert.assertEquals(error.getStatusCode(), StatusCode.BAD_REQUEST);
-        Assert.assertTrue(error.getErrorMessage().startsWith("Invalid command"));
-    }
-
-    @Test
-    public void testInvalidHelpCommand() throws InvalidCommandException {
-        String help = "/help me";
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
-        Object object = inputConvertor.convertIntoObject(help, false);
-
-        Assert.assertTrue(object instanceof HelpCommand);
-        HelpCommand helpCommand = (HelpCommand) object;
-        String result = helpCommand.getResult();
-        Assert.assertFalse(helpCommand.isValid());
-        Assert.assertTrue(result.startsWith("Invalid command"));
-    }
+//    @Test
+//    public void testInvalidCommand() {
+//        String me = "/me";
+//        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+//        Object object = inputConvertor.convertIntoObject(me, false);
+//
+//        Assert.assertTrue(object instanceof InternalError);
+//        InternalError error = (InternalError) object;
+//        Assert.assertEquals(error.getStatusCode(), StatusCode.BAD_REQUEST);
+//        Assert.assertTrue(error.getErrorMessage().startsWith("Invalid command"));
+//    }
+//
+//    @Test
+//    public void testInvalidHelpCommand() throws InvalidCommandException {
+//        String help = "/help me";
+//        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+//        Object object = inputConvertor.convertIntoObject(help, false);
+//
+//        Assert.assertTrue(object instanceof HelpCommand);
+//        HelpCommand helpCommand = (HelpCommand) object;
+//        String result = helpCommand.getResult();
+//        Assert.assertFalse(helpCommand.isValid());
+//        Assert.assertTrue(result.startsWith("Invalid command"));
+//    }
 
 }

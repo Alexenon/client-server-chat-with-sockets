@@ -1,29 +1,20 @@
 package chat.models.commands;
 
+import chat.ui.ChatLayout;
+
 public class ExitCommand extends Command {
-    String input;
 
-    public ExitCommand(String input) {
-        super(input);
-        this.input = input;
+    private final static String name = "exit";
+    private final ChatLayout chatLayout;
+
+    public ExitCommand(ChatLayout chatLayout) {
+        super(name, CommandType.EXIT);
+        this.chatLayout = chatLayout;
     }
 
+    @Override
     public void execute() {
-        System.out.println("Executing \"" + input + "\" command");
-    }
-
-    public boolean isValid() {
-        return input.equalsIgnoreCase("/exit");
-    }
-
-    public String getResult() {
-        return !isValid()
-                ? getErrorMessage()
-                : "";
-    }
-
-    private String getErrorMessage() {
-        return "";
+        chatLayout.closeWindow();
     }
 
 }

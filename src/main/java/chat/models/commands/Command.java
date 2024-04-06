@@ -1,35 +1,27 @@
 package chat.models.commands;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 public abstract class Command {
 
-    protected CommandType type;
+    protected final String name;
+    protected final CommandType type;
     protected String[] params;
 
-    public Command(String input) {
-        this.type = getTypeFromInput(input);
-        this.params = getParamsFromInput(input);
+    public Command(String name, CommandType type) {
+        this(name, type, null);
     }
 
-    protected CommandType getTypeFromInput(String input) {
-        return Arrays.stream(CommandType.values())
-                .filter(c -> c.name().equalsIgnoreCase(getCommandName(input)))
-                .findFirst()
-                .orElse(null);
+    public Command(String name, CommandType type, String[] params) {
+        this.name = name;
+        this.type = type;
+        this.params = Objects.requireNonNullElse(params, new String[]{});
     }
 
-    protected String[] getParamsFromInput(String input) {
-        return Arrays.stream(input.split(" "))
-                .skip(1)
-                .toArray(String[]::new);
-    }
+    public abstract void execute();
 
-    protected String getCommandName(String input) {
-        return input.split(" ")[0]
-                .replace("/", "")
-                .toLowerCase()
-                .trim();
+    public String getName() {
+        return name;
     }
 
     public CommandType getType() {
