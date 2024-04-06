@@ -32,7 +32,7 @@ public class InputSendingHandler {
 
     private void handle(Object o) {
         if (o instanceof final Command command) {
-            displaySimpleMessage(command.getResult());
+            displaySimpleMessage("");
         } else if (o instanceof InternalError internalError) {
             displayErrorMessage(internalError.getErrorMessage());
         } else {

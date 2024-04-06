@@ -1,10 +1,10 @@
 package chat.handlers.input.convertors;
 
-import chat.models.commands.Commands;
+import chat.models.commands.CommandType;
 import chat.models.commands.Command;
 import chat.models.commands.ExitCommand;
 import chat.models.commands.HelpCommand;
-import chat.models.commands.InvalidCommandException;
+import chat.models.errors.InvalidCommandException;
 import chat.models.errors.InternalError;
 import chat.models.errors.StatusCode;
 
@@ -39,7 +39,7 @@ public class CommandConvertor implements Convertor {
             return true;
 
         String commandName = extractCommandName(input);
-        return Stream.of(Commands.values())
+        return Stream.of(CommandType.values())
                 .map(Enum::name)
                 .map(s -> "/" + s.toLowerCase())
                 .noneMatch(commandName::equals);

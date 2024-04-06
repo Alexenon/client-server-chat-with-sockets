@@ -1,12 +1,15 @@
 package chat.models.commands;
 
+import chat.models.errors.InvalidCommandException;
+
 import java.util.Arrays;
 
-public class HelpCommand implements Command {
+public class HelpCommand extends Command {
     private final String input;
     private final String commandForHelp;
 
     public HelpCommand(String input) {
+        super(input);
         this.input = input;
         this.commandForHelp = extractCommandForHelp();
     }
@@ -16,13 +19,11 @@ public class HelpCommand implements Command {
         return splits.length > 1 ? splits[1] : "";
     }
 
-    @Override
     public void execute() throws InvalidCommandException {
         if (isValid())
             System.out.println("Executing \"" + input + "\" command");
     }
 
-    @Override
     public boolean isValid() throws InvalidCommandException {
         String[] args = input.split(" ");
 
@@ -35,7 +36,7 @@ public class HelpCommand implements Command {
     private boolean isCommandForHelpValid() {
         if (commandForHelp.isEmpty()) return true;
 
-        return Arrays.stream(Commands.values())
+        return Arrays.stream(CommandType.values())
                 .map(c -> c.toString().toLowerCase())
                 .anyMatch(s -> s.equals(commandForHelp));
     }
@@ -70,5 +71,9 @@ public class HelpCommand implements Command {
             case "exit" -> "Disconnects from the server";
             default -> null;
         };
+    }
+
+    private String getErrorMessage() {
+        return "";
     }
 }

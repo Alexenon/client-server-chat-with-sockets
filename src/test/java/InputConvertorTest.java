@@ -4,7 +4,7 @@ import chat.models.Message;
 import chat.models.User;
 import chat.models.commands.ExitCommand;
 import chat.models.commands.HelpCommand;
-import chat.models.commands.InvalidCommandException;
+import chat.models.errors.InvalidCommandException;
 import chat.models.errors.InternalError;
 import chat.models.errors.StatusCode;
 import chat.sever.ServerManager;

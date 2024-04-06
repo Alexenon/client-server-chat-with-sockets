@@ -1,4 +1,4 @@
-package chat.models.commands;
+package chat.models.errors;
 
 public class InvalidCommandException extends Exception {
 

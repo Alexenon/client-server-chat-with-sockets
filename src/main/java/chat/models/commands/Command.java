@@ -1,14 +1,42 @@
 package chat.models.commands;
 
-public interface Command {
+import java.util.Arrays;
 
-    void execute() throws InvalidCommandException;
+public abstract class Command {
 
-    boolean isValid() throws InvalidCommandException;
+    protected CommandType type;
+    protected String[] params;
 
-    String getResult();
+    public Command(String input) {
+        this.type = getTypeFromInput(input);
+        this.params = getParamsFromInput(input);
+    }
 
-    default String getErrorMessage() {
-        return "Invalid command. To view the list of all valid commands, simply type \"/help\".";
-    };
+    protected CommandType getTypeFromInput(String input) {
+        return Arrays.stream(CommandType.values())
+                .filter(c -> c.name().equalsIgnoreCase(getCommandName(input)))
+                .findFirst()
+                .orElse(null);
+    }
+
+    protected String[] getParamsFromInput(String input) {
+        return Arrays.stream(input.split(" "))
+                .skip(1)
+                .toArray(String[]::new);
+    }
+
+    protected String getCommandName(String input) {
+        return input.split(" ")[0]
+                .replace("/", "")
+                .toLowerCase()
+                .trim();
+    }
+
+    public CommandType getType() {
+        return type;
+    }
+
+    public String[] getParams() {
+        return params;
+    }
 }
