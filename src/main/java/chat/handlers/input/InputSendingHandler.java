@@ -20,7 +20,7 @@ public class InputSendingHandler {
     public InputSendingHandler(ChatLayout chatLayout, ObjectOutputStream outputStream, User user, SecretKey secretKey) {
         this.chatLayout = chatLayout;
         this.outputStream = outputStream;
-        this.inputConvertor = new InputConvertor(user, secretKey);
+        this.inputConvertor = new InputConvertor(chatLayout, user, secretKey);
     }
 
     public void handleSendingMessages() {
@@ -30,26 +30,21 @@ public class InputSendingHandler {
         handle(objectToBeSent);
     }
 
-    private void handle(Object o) {
-        if (o instanceof final Command command) {
-            displaySimpleMessage("");
-        } else if (o instanceof InternalError internalError) {
-            displayErrorMessage(internalError.getErrorMessage());
+    private void handle(Object object) {
+        if (object instanceof final Command command) {
+            command.execute();
+        } else if (object instanceof InternalError internalError) {
+            displayError(internalError);
         } else {
-            sendToServer(o);
+            sendToServer(object);
         }
 
         chatLayout.clearMessageInput();
     }
 
-    public void displaySimpleMessage(String message) {
-        System.err.println(message);
-        chatLayout.updateChatArea(message);
-    }
-
-    public void displayErrorMessage(String message) {
-        System.err.println("ERROR" + message);
-        chatLayout.updateChatArea(message);
+    public void displayError(InternalError internalError) {
+        System.err.println("ERROR" + internalError);
+        chatLayout.updateChatArea(internalError.getErrorMessage());
     }
 
     public void sendToServer(Object o) {

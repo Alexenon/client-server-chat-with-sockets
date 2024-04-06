@@ -13,7 +13,7 @@ import java.util.Arrays;
  *  <li>FORMAT: {@code "/help"} - Basic help command with common description
  *  <li>FORMAT: {@code /help <commandName>} - Help command for a specific command
  * </ul>
- * */
+ */
 public class HelpCommandParser extends CommandParser {
     private final static int MAX_NUMBER_OF_ARGS = 1;
 
@@ -28,8 +28,8 @@ public class HelpCommandParser extends CommandParser {
         String commandNameForHelp = extractCommandForHelp(input);
 
         if (!isCommandForHelpValid(commandNameForHelp))
-            throw new CommandParseException("Invalid command name for help \"%s\". %s"
-                    .formatted(commandNameForHelp, viewListOfAllCommands));
+            throw new CommandParseException("%s \"%s\". %s"
+                    .formatted(incorrectArgsMsg, commandNameForHelp, viewListOfAllCommands));
 
         return new HelpCommand(chatLayout, commandNameForHelp);
     }

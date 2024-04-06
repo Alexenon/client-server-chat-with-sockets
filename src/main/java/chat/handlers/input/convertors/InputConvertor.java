@@ -2,6 +2,7 @@ package chat.handlers.input.convertors;
 
 import chat.handlers.input.InputType;
 import chat.models.User;
+import chat.ui.ChatLayout;
 
 import javax.crypto.SecretKey;
 
@@ -14,8 +15,10 @@ public class InputConvertor {
 
     private final User user;
     private final SecretKey secretKey;
+    private final ChatLayout chatLayout;
 
-    public InputConvertor(User user, SecretKey secretKey) {
+    public InputConvertor(ChatLayout chatLayout, User user, SecretKey secretKey) {
+        this.chatLayout = chatLayout;
         this.user = user;
         this.secretKey = secretKey;
     }
@@ -28,7 +31,7 @@ public class InputConvertor {
     private Convertor getConvertor(String input, boolean shouldBeEncrypted) {
         InputType inputType = getType(input);
         return switch (inputType) {
-            case COMMAND -> new CommandConvertor(null);
+            case COMMAND -> new CommandConvertor(chatLayout);
             case PUBLIC_MESSAGE -> new PublicMessageConvertor(user, secretKey, shouldBeEncrypted);
             case PRIVATE_MESSAGE -> new PrivateMessageConvertor(user, secretKey, shouldBeEncrypted);
         };

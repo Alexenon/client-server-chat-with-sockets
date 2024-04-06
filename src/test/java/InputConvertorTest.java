@@ -2,12 +2,8 @@ import chat.handlers.input.convertors.InputConvertor;
 import chat.models.EncryptedMessage;
 import chat.models.Message;
 import chat.models.User;
-import chat.models.commands.ExitCommand;
-import chat.models.commands.HelpCommand;
-import chat.models.errors.InvalidCommandException;
-import chat.models.errors.InternalError;
-import chat.models.errors.StatusCode;
 import chat.sever.ServerManager;
+import chat.ui.ChatLayout;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,13 +11,14 @@ import javax.crypto.SecretKey;
 
 public class InputConvertorTest {
 
+    ChatLayout chatLayout = null;
     User author = new User("author");
     SecretKey secretKey = ServerManager.initiateGroupKey();
 
     @Test
     public void testPublicMessage() {
         String text = "This is a public message";
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        InputConvertor inputConvertor = new InputConvertor(null, author, secretKey);
         Object convertedObject = inputConvertor.convertIntoObject(text, false);
 
         Assert.assertTrue(convertedObject instanceof Message);
@@ -38,7 +35,7 @@ public class InputConvertorTest {
         User expectedReceiver = new User("Dan");
         String expectedText = "This is a private message";
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        InputConvertor inputConvertor = new InputConvertor(null, author, secretKey);
         Object convertedObject = inputConvertor.convertIntoObject(text, false);
 
         Assert.assertTrue(convertedObject instanceof Message);
@@ -52,7 +49,7 @@ public class InputConvertorTest {
     @Test
     public void testEncryptedPublicMessage() {
         String text = "This is a public message";
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        InputConvertor inputConvertor = new InputConvertor(null, author, secretKey);
         Object convertedObject = inputConvertor.convertIntoObject(text, true);
 
         Assert.assertTrue(convertedObject instanceof EncryptedMessage);
@@ -70,7 +67,7 @@ public class InputConvertorTest {
         User expectedReceiver = new User("Dan");
         String expectedText = "This is a private message";
 
-        InputConvertor inputConvertor = new InputConvertor(author, secretKey);
+        InputConvertor inputConvertor = new InputConvertor(null, author, secretKey);
         Object convertedObject = inputConvertor.convertIntoObject(text, true);
 
         Assert.assertTrue(convertedObject instanceof EncryptedMessage);
