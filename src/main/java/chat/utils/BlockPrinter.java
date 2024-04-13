@@ -75,6 +75,6 @@ public class BlockPrinter {
     }
 
     public static void main(String[] args) {
-        System.out.println(blockPrint("Vladik - pidar =)"));
+        System.out.println(blockPrint("No problems =)"));
     }
 }
