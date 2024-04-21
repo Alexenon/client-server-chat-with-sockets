@@ -1,51 +1,29 @@
 package chat.models.commands;
 
-import chat.models.Commands;
+import chat.ui.ChatLayout;
 
-import java.util.Arrays;
+import java.util.Objects;
 
-public class HelpCommand implements Command {
-    private final String input;
-    private final String commandForHelp;
+public class HelpCommand extends Command {
 
-    public HelpCommand(String input) {
-        this.input = input;
-        this.commandForHelp = extractCommandForHelp();
+    private final static String name = "help";
+    private final ChatLayout chatLayout;
+    private final String nameCommandForHelp;
+
+    public HelpCommand(ChatLayout chatLayout) {
+        this(chatLayout, null);
     }
 
-    private String extractCommandForHelp() {
-        String[] splits = input.split(" ");
-        return splits.length > 1 ? splits[1] : "";
-    }
-
-    @Override
-    public void execute() throws InvalidCommandException {
-        if (isValid())
-            System.out.println("Executing \"" + input + "\" command");
+    public HelpCommand(ChatLayout chatLayout, String nameCommandForHelp) {
+        super(name, CommandType.HELP);
+        this.chatLayout = chatLayout;
+        this.nameCommandForHelp = Objects.requireNonNullElse(nameCommandForHelp, "");
     }
 
     @Override
-    public boolean isValid() throws InvalidCommandException {
-        String[] args = input.split(" ");
-
-        if (args.length > 2)
-            throw new InvalidCommandException("Too many arguments for command \"/help\" found");
-
-        return isCommandForHelpValid();
-    }
-
-    private boolean isCommandForHelpValid() {
-        if (commandForHelp.isEmpty()) return true;
-
-        return Arrays.stream(Commands.values())
-                .map(c -> c.toString().toLowerCase())
-                .anyMatch(s -> s.equals(commandForHelp));
-    }
-
-    public String getResult() {
-        return getHelpForCommand(commandForHelp) == null
-                ? getErrorMessage()
-                : getHelpForCommand(commandForHelp);
+    public void execute() {
+        String helpCommandResult = getHelpForCommand(nameCommandForHelp);
+        chatLayout.updateChatArea(helpCommandResult);
     }
 
     private String getHelpForCommand(String name) {
@@ -73,4 +51,5 @@ public class HelpCommand implements Command {
             default -> null;
         };
     }
+
 }

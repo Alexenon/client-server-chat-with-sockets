@@ -1,14 +1,34 @@
 package chat.models.commands;
 
-public interface Command {
+import java.util.Objects;
 
-    void execute() throws InvalidCommandException;
+public abstract class Command {
 
-    boolean isValid() throws InvalidCommandException;
+    protected final String name;
+    protected final CommandType type;
+    protected String[] params;
 
-    String getResult();
+    public Command(String name, CommandType type) {
+        this(name, type, null);
+    }
 
-    default String getErrorMessage() {
-        return "Invalid command. To view the list of all valid commands, simply type \"/help\".";
-    };
+    public Command(String name, CommandType type, String[] params) {
+        this.name = name;
+        this.type = type;
+        this.params = Objects.requireNonNullElse(params, new String[]{});
+    }
+
+    public abstract void execute();
+
+    public String getName() {
+        return name;
+    }
+
+    public CommandType getType() {
+        return type;
+    }
+
+    public String[] getParams() {
+        return params;
+    }
 }

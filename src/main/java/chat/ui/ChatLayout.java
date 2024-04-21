@@ -1,5 +1,7 @@
 package chat.ui;
 
+import chat.models.errors.StatusCode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -76,8 +78,10 @@ public class ChatLayout {
     }
 
     public void closeWindow() {
+        System.out.println("Closing the application");
         isClosed = true;
         frame.dispose();
+        System.exit(StatusCode.OK.getCode());
     }
 
     public boolean isActive() {

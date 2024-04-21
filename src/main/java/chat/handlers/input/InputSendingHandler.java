@@ -1,9 +1,9 @@
 package chat.handlers.input;
 
+import chat.handlers.input.convertors.InputConvertor;
 import chat.models.User;
 import chat.models.commands.Command;
 import chat.models.errors.InternalError;
-import chat.handlers.input.convertors.InputConvertor;
 import chat.ui.ChatLayout;
 
 import javax.crypto.SecretKey;
@@ -20,7 +20,7 @@ public class InputSendingHandler {
     public InputSendingHandler(ChatLayout chatLayout, ObjectOutputStream outputStream, User user, SecretKey secretKey) {
         this.chatLayout = chatLayout;
         this.outputStream = outputStream;
-        this.inputConvertor = new InputConvertor(user, secretKey);
+        this.inputConvertor = new InputConvertor(chatLayout, user, secretKey);
     }
 
     public void handleSendingMessages() {
@@ -30,21 +30,21 @@ public class InputSendingHandler {
         handle(objectToBeSent);
     }
 
-    private void handle(Object o) {
-        if (o instanceof final Command command) {
-            displayErrorMessage(command.getResult());
-        } else if (o instanceof InternalError internalError) {
-            displayErrorMessage(internalError.getErrorMessage());
+    private void handle(Object object) {
+        if (object instanceof final Command command) {
+            command.execute();
+        } else if (object instanceof InternalError internalError) {
+            displayError(internalError);
         } else {
-            sendToServer(o);
+            sendToServer(object);
         }
 
         chatLayout.clearMessageInput();
     }
 
-    public void displayErrorMessage(String message) {
-        System.err.println("ERROR" + message);
-        chatLayout.updateChatArea(message);
+    public void displayError(InternalError internalError) {
+        System.err.println("ERROR" + internalError);
+        chatLayout.updateChatArea(internalError.getErrorMessage());
     }
 
     public void sendToServer(Object o) {
@@ -59,20 +59,20 @@ public class InputSendingHandler {
         }
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setSecretKey(SecretKey secretKey) {
-        this.secretKey = secretKey;
-    }
-
     public User getUser() {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public SecretKey getSecretKey() {
         return secretKey;
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
     }
 }
 
