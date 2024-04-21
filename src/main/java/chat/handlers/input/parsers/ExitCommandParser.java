@@ -15,7 +15,7 @@ public class ExitCommandParser extends CommandParser {
 
     @Override
     public Command parse(String input) throws CommandParseException {
-        if (input.equalsIgnoreCase("/exit"))
+        if (!input.equalsIgnoreCase("/exit"))
             throw new CommandParseException("Incorrect command \"%s\". %s".formatted(input, viewListOfAllCommands));
 
         return new ExitCommand(chatLayout);
