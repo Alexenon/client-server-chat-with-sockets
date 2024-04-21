@@ -1,12 +1,9 @@
 package chat.handlers.input.convertors;
 
 import chat.handlers.input.InputSendingHandler;
-import chat.handlers.input.parsers.CommandParser;
-import chat.handlers.input.parsers.EncryptCommandParser;
-import chat.handlers.input.parsers.ExitCommandParser;
-import chat.handlers.input.parsers.HelpCommandParser;
 import chat.models.commands.Command;
 import chat.models.commands.CommandType;
+import chat.models.commands.parsers.*;
 import chat.models.errors.CommandParseException;
 import chat.models.errors.InternalError;
 import chat.models.errors.InvalidCommandException;
@@ -47,6 +44,7 @@ public class CommandConvertor implements Convertor {
         return switch (commandName) {
             case "/help" -> new HelpCommandParser(chatLayout);
             case "/exit" -> new ExitCommandParser(chatLayout);
+            case "/members" -> new MembersCommandParser(inputSendingHandler);
             case "/encrypt" -> new EncryptCommandParser(chatLayout, inputSendingHandler);
             default -> throw new InvalidCommandException(ERROR_MESSAGE.formatted(commandName));
         };

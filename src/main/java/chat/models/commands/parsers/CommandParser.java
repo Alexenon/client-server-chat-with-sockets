@@ -1,4 +1,4 @@
-package chat.handlers.input.parsers;
+package chat.models.commands.parsers;
 
 import chat.models.commands.Command;
 import chat.models.errors.CommandParseException;

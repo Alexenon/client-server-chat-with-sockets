@@ -1,4 +1,4 @@
-package chat.handlers.input.parsers;
+package chat.models.commands.parsers;
 
 import chat.handlers.input.InputSendingHandler;
 import chat.models.commands.Command;

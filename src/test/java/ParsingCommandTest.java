@@ -1,4 +1,4 @@
-import chat.handlers.input.parsers.HelpCommandParser;
+import chat.models.commands.parsers.HelpCommandParser;
 import chat.models.commands.Command;
 import chat.models.commands.CommandType;
 import chat.models.commands.HelpCommand;

@@ -1,6 +1,6 @@
 package chat;
 
-import chat.sever.ClientHandler;
+import chat.sever.ServerClientHandler;
 import chat.sever.ServerManager;
 
 import java.io.IOException;
@@ -22,9 +22,9 @@ public class ChatServer {
             while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
-                clientHandler.start();
-                ServerManager.addClient(clientHandler);
+                ServerClientHandler serverClientHandler = new ServerClientHandler(clientSocket);
+                serverClientHandler.start();
+                ServerManager.addClient(serverClientHandler);
             }
         } catch (IOException e) {
             e.printStackTrace();

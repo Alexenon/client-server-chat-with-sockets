@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerManager {
-    private static final List<ClientHandler> clients = new ArrayList<>();
+    private static final List<ServerClientHandler> clients = new ArrayList<>();
     private static SecretKey secretKey = initiateGroupKey();
 
-    public static synchronized void addClient(ClientHandler clientHandler) {
-        clients.add(clientHandler);
-        clientHandler.sendObject(secretKey); // TODO: Think how to send group key
+    public static synchronized void addClient(ServerClientHandler serverClientHandler) {
+        clients.add(serverClientHandler);
+        serverClientHandler.sendObject(secretKey); // TODO: Think how to send group key
     }
 
-    public static synchronized void removeClient(ClientHandler clientHandler) {
-        clients.remove(clientHandler);
+    public static synchronized void removeClient(ServerClientHandler serverClientHandler) {
+        clients.remove(serverClientHandler);
     }
 
     public static synchronized void broadcastMessage(String messageText) {
@@ -28,7 +28,7 @@ public class ServerManager {
     }
 
     public static synchronized void broadcastMessage(Object object) {
-        for (ClientHandler client : clients) {
+        for (ServerClientHandler client : clients) {
             System.out.println(object);
             client.sendObject(object);
         }
@@ -40,12 +40,12 @@ public class ServerManager {
     }
 
     public static synchronized void broadcastMessage(Object object, User receiver) {
-        ClientHandler clientHandlerReceiver = clients.stream()
+        ServerClientHandler serverClientHandlerReceiver = clients.stream()
                 .filter(cl -> cl.getUser() == receiver)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Couldn't find the receiver user " + receiver));
 
-        clientHandlerReceiver.sendObject(object);
+        serverClientHandlerReceiver.sendObject(object);
         System.out.println(object);
     }
 

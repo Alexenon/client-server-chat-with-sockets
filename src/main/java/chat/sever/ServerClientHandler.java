@@ -8,15 +8,15 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
- * Client Handler works for handling messages from clients using GUI
+ * Server's client handler for handling messages/commands from clients using GUI
  */
-public class ClientHandler extends Thread {
+public class ServerClientHandler extends Thread {
     private final Socket socket;
     private final ObjectInputStream inputStream;
     private final ObjectOutputStream outputStream;
     private User user;
 
-    public ClientHandler(Socket socket) throws IOException {
+    public ServerClientHandler(Socket socket) throws IOException {
         this.socket = socket;
         this.inputStream = new ObjectInputStream(socket.getInputStream());
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
