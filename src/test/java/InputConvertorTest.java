@@ -3,7 +3,6 @@ import chat.models.EncryptedMessage;
 import chat.models.Message;
 import chat.models.User;
 import chat.sever.ServerManager;
-import chat.ui.ChatLayout;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +10,6 @@ import javax.crypto.SecretKey;
 
 public class InputConvertorTest {
 
-    ChatLayout chatLayout = null;
     User author = new User("author");
     SecretKey secretKey = ServerManager.initiateGroupKey();
 
