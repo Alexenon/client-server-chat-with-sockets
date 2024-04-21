@@ -1,6 +1,8 @@
 package chat.handlers.input.convertors;
 
+import chat.handlers.input.InputSendingHandler;
 import chat.handlers.input.parsers.CommandParser;
+import chat.handlers.input.parsers.EncryptCommandParser;
 import chat.handlers.input.parsers.ExitCommandParser;
 import chat.handlers.input.parsers.HelpCommandParser;
 import chat.models.commands.Command;
@@ -17,9 +19,11 @@ public class CommandConvertor implements Convertor {
     private static final String ERROR_MESSAGE = "Invalid command: \"%s\". To view the list of all valid commands, simply type \"/help\".";
 
     private final ChatLayout chatLayout;
+    private final InputSendingHandler inputSendingHandler;
 
-    public CommandConvertor(ChatLayout chatLayout) {
+    public CommandConvertor(ChatLayout chatLayout, InputSendingHandler inputSendingHandler) {
         this.chatLayout = chatLayout;
+        this.inputSendingHandler = inputSendingHandler;
     }
 
     @Override
@@ -43,6 +47,7 @@ public class CommandConvertor implements Convertor {
         return switch (commandName) {
             case "/help" -> new HelpCommandParser(chatLayout);
             case "/exit" -> new ExitCommandParser(chatLayout);
+            case "/encrypt" -> new EncryptCommandParser(chatLayout, inputSendingHandler);
             default -> throw new InvalidCommandException(ERROR_MESSAGE.formatted(commandName));
         };
     }

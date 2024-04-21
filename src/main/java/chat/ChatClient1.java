@@ -47,7 +47,7 @@ public class ChatClient1 {
     }
 
     private void setupConnection() {
-        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingMessages());
+        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingOperation());
         inputSendingHandler.sendToServer(user.getUsername());
     }
 

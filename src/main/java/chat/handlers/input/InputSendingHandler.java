@@ -20,14 +20,17 @@ public class InputSendingHandler {
     public InputSendingHandler(ChatLayout chatLayout, ObjectOutputStream outputStream, User user, SecretKey secretKey) {
         this.chatLayout = chatLayout;
         this.outputStream = outputStream;
-        this.inputConvertor = new InputConvertor(chatLayout, user, secretKey);
+        this.inputConvertor = new InputConvertor(chatLayout, user, secretKey, this);
     }
 
-    public void handleSendingMessages() {
+    public void handleSendingOperation() {
         String input = chatLayout.getMessageInput();
         boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
-        Object objectToBeSent = inputConvertor.convertIntoObject(input, shouldBeEncrypted);
-        handle(objectToBeSent);
+        handleSendingObject(input, shouldBeEncrypted);
+    }
+
+    public void handleSendingObject(String input, boolean shouldBeEncrypted) {
+        handle(inputConvertor.convertIntoObject(input, shouldBeEncrypted));
     }
 
     private void handle(Object object) {

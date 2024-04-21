@@ -69,6 +69,10 @@ public class ChatLayout {
         return encryptCheckbox.isSelected();
     }
 
+    public void setEncryptCheckboxValue(boolean value) {
+        encryptCheckbox.setSelected(value);
+    }
+
     public String getUsername() {
         return username;
     }

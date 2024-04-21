@@ -1,5 +1,6 @@
 package chat.handlers.input.convertors;
 
+import chat.handlers.input.InputSendingHandler;
 import chat.handlers.input.InputType;
 import chat.models.User;
 import chat.ui.ChatLayout;
@@ -16,11 +17,17 @@ public class InputConvertor {
     private final User user;
     private final SecretKey secretKey;
     private final ChatLayout chatLayout;
+    private final InputSendingHandler inputSendingHandler;
 
     public InputConvertor(ChatLayout chatLayout, User user, SecretKey secretKey) {
+        this(chatLayout, user, secretKey, null);
+    }
+
+    public InputConvertor(ChatLayout chatLayout, User user, SecretKey secretKey, InputSendingHandler inputSendingHandler) {
         this.chatLayout = chatLayout;
         this.user = user;
         this.secretKey = secretKey;
+        this.inputSendingHandler = inputSendingHandler;
     }
 
     public Object convertIntoObject(String input, boolean shouldBeEncrypted) {
@@ -31,7 +38,7 @@ public class InputConvertor {
     private Convertor getConvertor(String input, boolean shouldBeEncrypted) {
         InputType inputType = getType(input);
         return switch (inputType) {
-            case COMMAND -> new CommandConvertor(chatLayout);
+            case COMMAND -> new CommandConvertor(chatLayout, inputSendingHandler);
             case PUBLIC_MESSAGE -> new PublicMessageConvertor(user, secretKey, shouldBeEncrypted);
             case PRIVATE_MESSAGE -> new PrivateMessageConvertor(user, secretKey, shouldBeEncrypted);
         };
