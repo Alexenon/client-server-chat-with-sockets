@@ -44,4 +44,5 @@ public enum StatusCode {
     public String getMessage() {
         return message;
     }
+
 }

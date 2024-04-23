@@ -2,7 +2,7 @@ package chat.models.commands.parsers;
 
 import chat.handlers.input.InputSendingHandler;
 import chat.models.commands.Command;
-import chat.models.commands.server.MembersCommand;
+import chat.models.commands.server.ViewMembersCommand;
 import chat.models.errors.CommandParseException;
 
 public class MembersCommandParser extends CommandParser {
@@ -18,6 +18,6 @@ public class MembersCommandParser extends CommandParser {
         if (!input.equalsIgnoreCase("/members"))
             throw new CommandParseException("Invalid command \"%s\". %s".formatted(input, viewListOfAllCommands));
 
-        return new MembersCommand(inputSendingHandler);
+        return new ViewMembersCommand(inputSendingHandler);
     }
 }

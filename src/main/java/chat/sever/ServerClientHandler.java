@@ -35,8 +35,9 @@ public class ServerClientHandler extends Thread {
 
             // Read messages from client and send them to all clients
             while (!socket.isClosed()) {
-                Object messageObject = inputStream.readObject();
-                ServerManager.broadcastMessage(messageObject);
+                Object receivedObject = inputStream.readObject();
+                ServerResponseHandler serverResponseHandler = new ServerResponseHandler(user);
+                serverResponseHandler.handleResponse(receivedObject);
             }
         } catch (IOException | ClassNotFoundException e) {
             ServerManager.removeClient(this);

@@ -7,20 +7,20 @@ import chat.models.commands.CommandType;
 import chat.sever.ClientRequest;
 import chat.sever.RequestType;
 
-public class MembersCommand extends Command {
+public class ViewMembersCommand extends Command {
     private static final String name = "members";
 
     private final InputSendingHandler inputSendingHandler;
 
-    public MembersCommand(InputSendingHandler inputSendingHandler) {
-        super(name, CommandType.MEMBERS);
+    public ViewMembersCommand(InputSendingHandler inputSendingHandler) {
+        super(name, CommandType.VIEW_MEMBERS);
         this.inputSendingHandler = inputSendingHandler;
     }
 
     @Override
     public void execute() {
-        User user = inputSendingHandler.getUser();
-        ClientRequest request = new ClientRequest(user, RequestType.VIEW_MEMBERS);
+        User receiver = inputSendingHandler.getUser();
+        ClientRequest request = new ClientRequest(RequestType.VIEW_MEMBERS, receiver);
         inputSendingHandler.sendToServer(request);
     }
 }

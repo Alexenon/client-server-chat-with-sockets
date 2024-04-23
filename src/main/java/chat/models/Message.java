@@ -49,7 +49,7 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return "Message{" +
-               "text='" + text + '\'' +
+               "text='" + text.replaceAll("\n", " ") + '\'' +
                ", author=" + author +
                ", receiver=" + receiver +
                ", dateTime=" + getDateTimeFormatted() +

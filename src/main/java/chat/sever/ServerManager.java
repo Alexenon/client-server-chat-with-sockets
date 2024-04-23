@@ -67,4 +67,7 @@ public class ServerManager {
         return secretKey;
     }
 
+    public static List<User> getUsers() {
+        return clients.stream().map(ServerClientHandler::getUser).toList();
+    }
 }
