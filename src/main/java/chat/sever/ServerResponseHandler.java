@@ -15,10 +15,10 @@ public class ServerResponseHandler {
 
     public void handleResponse(Object receivedObject) {
         if (!shouldBeSentPrivately(receivedObject)) {
-            ServerManager.broadcastMessage(receivedObject);
+            ServerManager.broadcast(receivedObject);
         } else {
             System.out.println("HERE");
-            ServerManager.broadcastMessage(objectToSend(receivedObject), user);
+            ServerManager.broadcast(objectToSend(receivedObject), user);
         }
     }
 

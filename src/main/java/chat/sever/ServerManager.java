@@ -15,40 +15,19 @@ public class ServerManager {
 
     public static synchronized void addClient(ServerClientHandler serverClientHandler) {
         clients.add(serverClientHandler);
-        serverClientHandler.sendObject(secretKey); // TODO: Think how to send group key
+        resetSecurityKey();
+        broadcast(secretKey); // TODO: Think how to send group key
     }
 
     public static synchronized void removeClient(ServerClientHandler serverClientHandler) {
         clients.remove(serverClientHandler);
+        resetSecurityKey();
+        broadcast(secretKey);
     }
 
-    public static synchronized void broadcastMessage(String messageText) {
-        Message message = new Message(messageText);
-        broadcastMessage(message);
-    }
-
-    public static synchronized void broadcastMessage(Object object) {
-        for (ServerClientHandler client : clients) {
-            System.out.println(object);
-            client.sendObject(object);
-        }
-    }
-
-    public static synchronized void broadcastMessage(String messageText, User receiver) {
-        Message message = new Message(messageText);
-        broadcastMessage(message, receiver);
-    }
-
-    public static synchronized void broadcastMessage(Object object, User receiver) {
-        ServerClientHandler serverClientHandlerReceiver = clients.stream()
-                .filter(cl -> cl.getUser() == receiver)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Couldn't find the receiver user " + receiver));
-
-        serverClientHandlerReceiver.sendObject(object);
-        System.out.println(object);
-    }
-
+    /**
+     * @return secret key used for message encryption and decryption by all users
+     * */
     public static SecretKey initiateGroupKey() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -59,8 +38,39 @@ public class ServerManager {
         }
     }
 
+    /**
+     * Regenerate the current secret key, when a new user join or leaves the chat
+     * for more privacy between chat members
+     * */
     public static void resetSecurityKey() {
         secretKey = initiateGroupKey();
+    }
+
+    public static synchronized void broadcast(String messageText) {
+        Message message = new Message(messageText);
+        broadcast(message);
+    }
+
+    public static synchronized void broadcast(Object object) {
+        for (ServerClientHandler client : clients) {
+            System.out.println(object);
+            client.sendObject(object);
+        }
+    }
+
+    public static synchronized void broadcast(String messageText, User receiver) {
+        Message message = new Message(messageText);
+        broadcast(message, receiver);
+    }
+
+    public static synchronized void broadcast(Object object, User receiver) {
+        ServerClientHandler serverClientHandlerReceiver = clients.stream()
+                .filter(cl -> cl.getUser() == receiver)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Couldn't find the receiver user " + receiver));
+
+        serverClientHandlerReceiver.sendObject(object);
+        System.out.println(object);
     }
 
     public static SecretKey getSecretKey() {

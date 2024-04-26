@@ -1,6 +1,5 @@
 package chat.client.models;
 
-import chat.client.models.User;
 import chat.sever.RequestType;
 
 import java.io.Serial;
