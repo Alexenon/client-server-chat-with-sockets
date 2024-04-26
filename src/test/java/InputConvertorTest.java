@@ -1,7 +1,7 @@
-import chat.handlers.input.convertors.InputConvertor;
-import chat.models.EncryptedMessage;
-import chat.models.Message;
-import chat.models.User;
+import chat.client.handlers.input.convertors.InputConvertor;
+import chat.client.models.EncryptedMessage;
+import chat.client.models.Message;
+import chat.client.models.User;
 import chat.sever.ServerManager;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,10 +1,11 @@
 package chat;
 
-import chat.handlers.input.InputSendingHandler;
-import chat.handlers.response.ResponseHandler;
-import chat.handlers.response.ResponseHandlerFactory;
-import chat.models.User;
-import chat.ui.ChatLayout;
+import chat.client.handlers.input.InputSendingHandler;
+import chat.client.handlers.response.ResponseHandler;
+import chat.client.handlers.response.ResponseHandlerFactory;
+import chat.client.models.User;
+import chat.client.ui.ChatLayout;
+import chat.utils.ServerConfiguration;
 
 import javax.crypto.SecretKey;
 import javax.swing.*;
@@ -36,7 +37,7 @@ public class ChatClient1 {
 
     private void initializeConnection() {
         try {
-            Socket socket = new Socket("localhost", 8080);
+            Socket socket = new Socket(ServerConfiguration.SERVER_NAME, ServerConfiguration.SERVER_PORT);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             IncomingMessageHandler incomingMessageHandler = new IncomingMessageHandler(socket);
             Thread thread = new Thread(incomingMessageHandler);

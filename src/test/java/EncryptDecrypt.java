@@ -1,4 +1,4 @@
-import chat.models.User;
+import chat.client.models.User;
 
 import javax.crypto.SecretKey;
 

@@ -1,6 +1,6 @@
 package chat.sever;
 
-import chat.models.User;
+import chat.client.models.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

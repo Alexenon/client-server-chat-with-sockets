@@ -1,6 +1,6 @@
 package chat.sever;
 
-import chat.models.errors.StatusCode;
+import chat.utils.StatusCode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

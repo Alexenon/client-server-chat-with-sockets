@@ -1,7 +1,7 @@
 package chat.sever;
 
-import chat.models.Message;
-import chat.models.User;
+import chat.client.models.Message;
+import chat.client.models.User;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;

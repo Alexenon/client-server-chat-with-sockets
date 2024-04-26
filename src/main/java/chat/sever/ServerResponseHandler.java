@@ -1,7 +1,10 @@
 package chat.sever;
 
-import chat.models.Message;
-import chat.models.User;
+import chat.client.models.ClientRequest;
+import chat.client.models.Message;
+import chat.client.models.User;
+
+// TODO: /info command to see information about an user
 
 public class ServerResponseHandler {
     private final User user;

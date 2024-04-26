@@ -1,4 +1,4 @@
-import chat.models.EncryptedMessage;
+import chat.client.models.EncryptedMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
