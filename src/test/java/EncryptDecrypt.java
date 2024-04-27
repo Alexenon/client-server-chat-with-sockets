@@ -1,3 +1,4 @@
+import chat.EncryptUtils;
 import chat.client.models.User;
 
 import javax.crypto.SecretKey;
@@ -7,23 +8,22 @@ public class EncryptDecrypt {
         User dan = new User("Dan");
         User alex = new User("Alex");
 
-        ChatKeyGenerator keyGenerator = new ChatKeyGenerator();
-        SecretKey groupKey = keyGenerator.getSecretKey();
+        SecretKey groupKey = EncryptUtils.initiateGroupKey();
 
-        byte[] encryptedGroupKey_for_Dan = keyGenerator.encryptSecretKey(groupKey.getEncoded(), dan.getPublicKey());
-        byte[] decryptedGroupKey_for_Dan = keyGenerator.decryptSecretKey(encryptedGroupKey_for_Dan, dan.getPrivateKey());
+        byte[] encryptedGroupKey_for_Dan = EncryptUtils.encryptSecretKey(groupKey.getEncoded(), dan.getPublicKey());
+        byte[] decryptedGroupKey_for_Dan = EncryptUtils.decryptSecretKey(encryptedGroupKey_for_Dan, dan.getPrivateKey());
 
-        byte[] encryptedGroupKey_for_Alex = keyGenerator.encryptSecretKey(groupKey.getEncoded(), alex.getPublicKey());
-        byte[] decryptedGroupKey_for_Alex = keyGenerator.decryptSecretKey(encryptedGroupKey_for_Alex, alex.getPrivateKey());
+        byte[] encryptedGroupKey_for_Alex = EncryptUtils.encryptSecretKey(groupKey.getEncoded(), alex.getPublicKey());
+        byte[] decryptedGroupKey_for_Alex = EncryptUtils.decryptSecretKey(encryptedGroupKey_for_Alex, alex.getPrivateKey());
 
         String messageFromAlex = "Hi Dan, this should our secret";
         String messageFromDan = "Hi Alex, yes, I know this";
 
-        byte[] encrypted_messageFromAlex = keyGenerator.encryptMessage(messageFromAlex, groupKey);
-        String decrypted_messageFromAlex = keyGenerator.decryptMessage(encrypted_messageFromAlex, decryptedGroupKey_for_Dan);
+        byte[] encrypted_messageFromAlex = EncryptUtils.encryptMessageWithKey(messageFromAlex, groupKey);
+        String decrypted_messageFromAlex = EncryptUtils.decryptMessageWithEncryptedKey(encrypted_messageFromAlex, decryptedGroupKey_for_Dan);
 
-        byte[] encrypted_messageFromDan = keyGenerator.encryptMessage(messageFromDan, groupKey);
-        String decrypted_messageFromDan = keyGenerator.decryptMessage(encrypted_messageFromDan, decryptedGroupKey_for_Alex);
+        byte[] encrypted_messageFromDan = EncryptUtils.encryptMessageWithKey(messageFromDan, groupKey);
+        String decrypted_messageFromDan = EncryptUtils.decryptMessageWithEncryptedKey(encrypted_messageFromDan, decryptedGroupKey_for_Alex);
 
         System.out.println("Sending message and encrypted group key to " + dan);
         System.out.println(" - Encrypted message: " + new String(encrypted_messageFromAlex));
