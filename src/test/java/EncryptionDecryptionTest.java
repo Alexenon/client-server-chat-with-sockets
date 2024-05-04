@@ -1,24 +1,16 @@
 import chat.EncryptUtils;
-import chat.client.models.EncryptedMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
 import javax.crypto.SecretKey;
+import java.security.KeyPair;
 
 public class EncryptionDecryptionTest {
-    private final String message = "Hello, this should be encrypted";
-    private final SecretKey secretKey;
-    private final EncryptedMessage encryptedMessage;
-
-    public EncryptionDecryptionTest() {
-        secretKey = EncryptUtils.initiateGroupKey();
-        encryptedMessage = new EncryptedMessage(message, secretKey);
-    }
 
     @Test
-    public void testEncryptUtils() {
+    public void testSymetricEncryption() {
         String text = "Today is Saturday";
-        SecretKey secretKey = EncryptUtils.initiateGroupKey();
+        SecretKey secretKey = EncryptUtils.generateSecretKey();
         String encryptedText = EncryptUtils.encrypt(text, secretKey);
         String decryptedText = EncryptUtils.decrypt(encryptedText, secretKey);
         Assert.assertNotEquals("Encrypted text should not match the original text", encryptedText, decryptedText);
@@ -26,33 +18,25 @@ public class EncryptionDecryptionTest {
     }
 
     @Test
-    public void testEncryption() {
-        String encryptedMessageText = encryptedMessage.getText();
-        System.out.println("message = " + message);
-        System.out.println("encryptedMessageText = " + encryptedMessageText);
-        System.out.println(encryptedMessage);
-        Assert.assertNotEquals("The message should be encrypted", message, encryptedMessageText);
-    }
-
-    @Test
-    public void testDecryption() {
-        String decryptedMessageText = encryptedMessage.getText(secretKey);
-        System.out.println("message = " + message);
-        System.out.println("decryptedMessageText = " + decryptedMessageText);
-        System.out.println(encryptedMessage);
-        Assert.assertEquals("The decrypted message should match the original message", message, decryptedMessageText);
+    public void testAsymetricEncryption() {
+        String text = "Today is Saturday";
+        KeyPair receiverKeyPair = EncryptUtils.generateKeyPair();
+        String encryptedText = EncryptUtils.encrypt(text, receiverKeyPair.getPublic());
+        String decryptedText = EncryptUtils.decrypt(encryptedText, receiverKeyPair.getPrivate());
+        Assert.assertNotEquals("Encrypted text should not match the original text", encryptedText, decryptedText);
+        Assert.assertEquals("Decrypted text should match the original text", text, decryptedText);
     }
 
     @Test
     public void testResetSecretKey() {
         String text = "Today is Saturday";
-        SecretKey initialKey = EncryptUtils.initiateGroupKey();
+        SecretKey initialKey = EncryptUtils.generateSecretKey();
 
         String encryptedTextWithOldKey = EncryptUtils.encrypt(text, initialKey);
         String decryptedTextWithOldKey = EncryptUtils.decrypt(encryptedTextWithOldKey, initialKey);
 
         // Resetting secret key
-        SecretKey newSecretKey = EncryptUtils.initiateGroupKey();
+        SecretKey newSecretKey = EncryptUtils.generateSecretKey();
         String encryptedTextWithNewKey = EncryptUtils.encrypt(text, newSecretKey);
         String decryptedTextWithNewKey = EncryptUtils.decrypt(encryptedTextWithNewKey, newSecretKey);
 
