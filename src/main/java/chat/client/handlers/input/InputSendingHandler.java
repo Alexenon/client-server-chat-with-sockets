@@ -3,8 +3,8 @@ package chat.client.handlers.input;
 import chat.client.handlers.input.convertors.InputConvertor;
 import chat.client.models.User;
 import chat.client.models.commands.Command;
-import chat.utils.errors.InternalError;
 import chat.client.ui.ChatLayout;
+import chat.utils.errors.InternalError;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -20,6 +20,7 @@ public class InputSendingHandler {
     public InputSendingHandler(ChatLayout chatLayout, ObjectOutputStream outputStream, User user, SecretKey secretKey) {
         this.chatLayout = chatLayout;
         this.outputStream = outputStream;
+        this.secretKey = secretKey;
         this.inputConvertor = new InputConvertor(chatLayout, user, secretKey, this);
     }
 
@@ -76,6 +77,7 @@ public class InputSendingHandler {
 
     public void setSecretKey(SecretKey secretKey) {
         this.secretKey = secretKey;
+        this.inputConvertor.setSecretKey(secretKey);
     }
 }
 

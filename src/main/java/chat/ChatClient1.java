@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Objects;
 
 public class ChatClient1 {
     private final User user;
@@ -53,6 +54,7 @@ public class ChatClient1 {
     }
 
     public void updateSecretKey(SecretKey secretKey) {
+        Objects.requireNonNull(secretKey);
         System.out.println("Updating secret key: " + secretKey);
         this.secretKey = secretKey;
         this.inputSendingHandler.setSecretKey(secretKey);

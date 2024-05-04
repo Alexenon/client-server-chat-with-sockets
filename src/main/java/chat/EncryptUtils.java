@@ -4,6 +4,7 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.*;
 import java.util.Base64;
+import java.util.Objects;
 
 public class EncryptUtils {
     private static final int KEY_SIZE = 256;
@@ -24,6 +25,7 @@ public class EncryptUtils {
     }
 
     public static String encrypt(String text, SecretKey secretKey) {
+        Objects.requireNonNull(secretKey, "Secret key cannot be null");
         try {
             Cipher cipher = Cipher.getInstance(SYMMETRIC_ENCRYPTION_CIPHER);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
@@ -39,6 +41,7 @@ public class EncryptUtils {
     }
 
     public static String decrypt(String encryptedText, SecretKey secretKey) {
+        Objects.requireNonNull(secretKey, "Secret key cannot be null");
         try {
             Cipher cipher = Cipher.getInstance(SYMMETRIC_ENCRYPTION_CIPHER);
             byte[] combined = Base64.getDecoder().decode(encryptedText);

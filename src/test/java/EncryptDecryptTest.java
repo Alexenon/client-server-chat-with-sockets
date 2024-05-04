@@ -5,7 +5,7 @@ import org.junit.Test;
 import javax.crypto.SecretKey;
 import java.security.KeyPair;
 
-public class EncryptionDecryptionTest {
+public class EncryptDecryptTest {
 
     @Test
     public void testSymetricEncryption() {

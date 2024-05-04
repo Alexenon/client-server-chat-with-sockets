@@ -23,10 +23,11 @@ public class EncryptedMessage implements Serializable {
     }
 
     public EncryptedMessage(String text, User author, User receiver, SecretKey secretKey) {
-        this.encryptedMessage = encrypt(text, secretKey);
+        this.dateTime = LocalDateTime.now();
+        System.out.println(this);
+        this.encryptedMessage = EncryptUtils.encrypt(text, secretKey);
         this.author = author;
         this.receiver = receiver;
-        this.dateTime = LocalDateTime.now();
     }
 
     public String getText() {
@@ -34,19 +35,11 @@ public class EncryptedMessage implements Serializable {
     }
 
     public String getText(SecretKey secretKey) {
-        return decrypt(encryptedMessage, secretKey);
+        return EncryptUtils.decrypt(encryptedMessage, secretKey);
     }
 
     public String getText(PrivateKey privateKey) {
-        return "";
-    }
-
-    private String encrypt(String text, SecretKey secretKey) {
-        return EncryptUtils.encrypt(text, secretKey);
-    }
-
-    private String decrypt(String encryptedMessage, SecretKey secretKey) {
-        return EncryptUtils.decrypt(encryptedMessage, secretKey);
+        return EncryptUtils.decrypt(encryptedMessage, privateKey);
     }
 
     public User getAuthor() {

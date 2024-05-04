@@ -1,17 +1,16 @@
 package chat.sever;
 
+import chat.EncryptUtils;
 import chat.client.models.Message;
 import chat.client.models.User;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServerManager {
+    private static SecretKey secretKey = EncryptUtils.generateSecretKey();
     private static final List<ServerClientHandler> clients = new ArrayList<>();
-    private static SecretKey secretKey = initiateGroupKey();
 
     public static synchronized void addClient(ServerClientHandler serverClientHandler) {
         clients.add(serverClientHandler);
@@ -26,24 +25,11 @@ public class ServerManager {
     }
 
     /**
-     * @return secret key used for message encryption and decryption by all users
-     * */
-    public static SecretKey initiateGroupKey() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
-            return keyGenerator.generateKey();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("NoSuchAlgorithmException");
-        }
-    }
-
-    /**
-     * Regenerate the current secret key, when a new user join or leaves the chat
+     * Resets the current secret key with a new one, when a new user joins or leave the chat
      * for more privacy between chat members
      * */
     public static void resetSecurityKey() {
-        secretKey = initiateGroupKey();
+        secretKey = EncryptUtils.generateSecretKey();
     }
 
     public static synchronized void broadcast(String messageText) {

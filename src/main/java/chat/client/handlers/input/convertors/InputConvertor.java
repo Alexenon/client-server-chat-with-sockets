@@ -15,9 +15,9 @@ public class InputConvertor {
     public static final String PRIVATE_MESSAGE_REGEX = "\\b(\\w+):\\s+(.*)";
 
     private final User user;
-    private final SecretKey secretKey;
     private final ChatLayout chatLayout;
     private final InputSendingHandler inputSendingHandler;
+    private SecretKey secretKey;
 
     public InputConvertor(ChatLayout chatLayout, User user, SecretKey secretKey) {
         this(chatLayout, user, secretKey, null);
@@ -56,6 +56,10 @@ public class InputConvertor {
 
     public boolean isPrivateMessage(String input) {
         return input.matches(PRIVATE_MESSAGE_REGEX);
+    }
+
+    public void setSecretKey(SecretKey secretKey) {
+        this.secretKey = secretKey;
     }
 
 }

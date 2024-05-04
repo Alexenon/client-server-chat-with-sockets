@@ -1,8 +1,12 @@
 package chat.client.models;
 
+import chat.EncryptUtils;
+
 import java.io.Serial;
 import java.io.Serializable;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Objects;
 
 public class User implements Serializable {
@@ -10,25 +14,19 @@ public class User implements Serializable {
     private static final long serialVersionUID = 195640213275933887L;
 
     private final String username;
-    private final KeyPair keyPair;
+    private KeyPair keyPair;
 
     public User(String username) {
         this.username = username;
-        this.keyPair = generateKeyPair();
-    }
-
-    private KeyPair generateKeyPair() {
-        try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            keyGen.initialize(2048);
-            return keyGen.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("NoSuchAlgorithmException");
-        }
+        this.keyPair = EncryptUtils.generateKeyPair();
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public void setKeyPair(KeyPair keyPair) {
+        this.keyPair = keyPair;
     }
 
     public PublicKey getPublicKey() {
@@ -54,7 +52,6 @@ public class User implements Serializable {
         User u = (User) o;
 
         return username.equals(u.username);
-//               && Objects.equals(keyPair, u.keyPair);
     }
 
     @Override
