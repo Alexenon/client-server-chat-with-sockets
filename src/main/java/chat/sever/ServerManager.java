@@ -5,12 +5,12 @@ import chat.client.models.Message;
 import chat.client.models.User;
 
 import javax.crypto.SecretKey;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ServerManager {
     private static SecretKey secretKey = EncryptUtils.generateSecretKey();
-    private static final List<ServerClientHandler> clients = new ArrayList<>();
+    private static final List<ServerClientHandler> clients = new CopyOnWriteArrayList<>();
 
     public static synchronized void addClient(ServerClientHandler serverClientHandler) {
         clients.add(serverClientHandler);

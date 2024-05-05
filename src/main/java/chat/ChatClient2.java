@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Objects;
 
 public class ChatClient2 {
     private final User user;
@@ -49,10 +50,11 @@ public class ChatClient2 {
 
     private void setupConnection() {
         chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingOperation());
-        inputSendingHandler.sendToServer(user.getUsername());
+        inputSendingHandler.sendToServer(user);
     }
 
     public void updateSecretKey(SecretKey secretKey) {
+        Objects.requireNonNull(secretKey);
         System.out.println("Updating secret key: " + secretKey);
         this.secretKey = secretKey;
         this.inputSendingHandler.setSecretKey(secretKey);
@@ -69,25 +71,27 @@ public class ChatClient2 {
         public void run() {
             try {
                 while (chatLayout.isActive()) {
-                    Object object = inputStream.readObject();
-
-                    System.out.println("Received object: " + object);
-
-                    if (object instanceof SecretKey secretKey) {
-                        updateSecretKey(secretKey);
-                        continue;
-                    }
-
-                    ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
-                    String textToBeDisplayed = responseHandler.handleResult();
-
-                    chatLayout.updateChatArea(textToBeDisplayed);
-                    System.out.println(textToBeDisplayed);
+                    handleIncomingObject(inputStream.readObject());
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                chatLayout.showError(e.getMessage());
                 chatLayout.closeWindow();
             }
         }
+
+        private void handleIncomingObject(Object object) {
+            System.out.println("Received object: " + object);
+            if (object instanceof SecretKey secretKey) {
+                updateSecretKey(secretKey);
+            } else {
+                ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
+                String textToBeDisplayed = responseHandler.handleResult();
+
+                chatLayout.updateChatArea(textToBeDisplayed);
+                System.out.println(textToBeDisplayed);
+            }
+        }
+
     }
 }

@@ -3,6 +3,7 @@ package chat.client.handlers.response;
 import chat.client.models.EncryptedMessage;
 import chat.client.models.Message;
 import chat.client.models.User;
+import chat.utils.errors.ServerError;
 
 import javax.crypto.SecretKey;
 
@@ -22,6 +23,8 @@ public class ResponseHandlerFactory {
             return new EncryptedMessageHandlerImpl(encryptedMessage, user, secretKey);
         } else if (object instanceof Error error) {
             return new ErrorHandlerImpl(error);
+        } else if (object instanceof ServerError error) {
+            throw new RuntimeException(String.valueOf(error));
         }
 
         throw new RuntimeException("Couldn't process the server response: " + object);

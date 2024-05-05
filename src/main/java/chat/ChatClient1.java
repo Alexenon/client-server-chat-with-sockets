@@ -50,7 +50,7 @@ public class ChatClient1 {
 
     private void setupConnection() {
         chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingOperation());
-        inputSendingHandler.sendToServer(user.getUsername());
+        inputSendingHandler.sendToServer(user);
     }
 
     public void updateSecretKey(SecretKey secretKey) {
@@ -71,25 +71,26 @@ public class ChatClient1 {
         public void run() {
             try {
                 while (chatLayout.isActive()) {
-                    Object object = inputStream.readObject();
-
-                    System.out.println("Received object: " + object);
-
-                    if (object instanceof SecretKey secretKey) {
-                        updateSecretKey(secretKey);
-                        continue;
-                    }
-
-                    ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
-                    String textToBeDisplayed = responseHandler.handleResult();
-
-                    chatLayout.updateChatArea(textToBeDisplayed);
-                    System.out.println(textToBeDisplayed);
+                    handleIncomingObject(inputStream.readObject());
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                chatLayout.showError(e.getMessage());
                 chatLayout.closeWindow();
             }
         }
+
+        private void handleIncomingObject(Object object) {
+            System.out.println("Received object: " + object);
+            if (object instanceof SecretKey secretKey) {
+                updateSecretKey(secretKey);
+            } else {
+                ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
+                String textToBeDisplayed = responseHandler.handleResult();
+                chatLayout.updateChatArea(textToBeDisplayed);
+                System.out.println(textToBeDisplayed);
+            }
+        }
+
     }
 }

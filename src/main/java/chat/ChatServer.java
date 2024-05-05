@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-// TODO:
-//  - handle same username situations
-
 public class ChatServer {
 
     public static void main(String[] args) {

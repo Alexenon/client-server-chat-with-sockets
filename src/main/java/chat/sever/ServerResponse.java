@@ -1,12 +1,15 @@
 package chat.sever;
 
+import chat.utils.ServerConfiguration;
 import chat.utils.StatusCode;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class ServerResponse {
-    private static final String DATE_TIME_FORMATTER = "yyyy-MM-dd HH:mm";
+public class ServerResponse implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 3218722181592127601L;
 
     private final String responseToBeDisplayed;
     private final StatusCode statusCode;
@@ -22,9 +25,6 @@ public class ServerResponse {
         return dateTime;
     }
 
-    public String getDateTimeFormatted() {
-        return dateTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMATTER));
-    }
 
     @Override
     public String toString() {
@@ -32,7 +32,7 @@ public class ServerResponse {
                "response='" + responseToBeDisplayed + '\'' +
                ", status=" + statusCode.getMessage() +
                ", statusCode=" + statusCode.getCode() +
-               ", dateTime=" + getDateTimeFormatted() +
+               ", dateTime=" + dateTime.format(ServerConfiguration.DATE_TIME_FORMATTER) +
                '}';
     }
 

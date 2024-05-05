@@ -18,15 +18,8 @@ public class ChatLayout {
 
     public ChatLayout() {
         isClosed = false;
-        initialize();
+        username = UsernameInputDialog.getUsername(frame);
         buildForm();
-    }
-
-    public void initialize() {
-        username = JOptionPane.showInputDialog(frame, "Enter your username:");
-        if (username == null || username.trim().isEmpty()) {
-            System.exit(0); // Exit if username is not provided
-        }
     }
 
     public void buildForm() {
@@ -77,6 +70,10 @@ public class ChatLayout {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void clearMessageInput() {
         messageField.setText("");
     }
@@ -86,6 +83,10 @@ public class ChatLayout {
         isClosed = true;
         frame.dispose();
         System.exit(StatusCode.OK.getCode());
+    }
+
+    public void showError(String text) {
+        JOptionPane.showMessageDialog(frame, text, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public boolean isActive() {
