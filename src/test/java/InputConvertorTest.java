@@ -1,8 +1,8 @@
-import chat.handlers.input.convertors.InputConvertor;
-import chat.models.EncryptedMessage;
-import chat.models.Message;
-import chat.models.User;
-import chat.sever.ServerManager;
+import chat.EncryptUtils;
+import chat.client.handlers.input.convertors.InputConvertor;
+import chat.client.models.EncryptedMessage;
+import chat.client.models.Message;
+import chat.client.models.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import javax.crypto.SecretKey;
 public class InputConvertorTest {
 
     User author = new User("author");
-    SecretKey secretKey = ServerManager.initiateGroupKey();
+    SecretKey secretKey = EncryptUtils.generateSecretKey();
 
     @Test
     public void testPublicMessage() {

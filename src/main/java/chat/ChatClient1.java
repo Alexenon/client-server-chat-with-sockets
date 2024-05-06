@@ -1,10 +1,11 @@
 package chat;
 
-import chat.handlers.input.InputSendingHandler;
-import chat.handlers.response.ResponseHandler;
-import chat.handlers.response.ResponseHandlerFactory;
-import chat.models.User;
-import chat.ui.ChatLayout;
+import chat.client.handlers.input.InputSendingHandler;
+import chat.client.handlers.response.ResponseHandler;
+import chat.client.handlers.response.ResponseHandlerFactory;
+import chat.client.models.User;
+import chat.client.ui.ChatLayout;
+import chat.utils.ServerConfiguration;
 
 import javax.crypto.SecretKey;
 import javax.swing.*;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Objects;
 
 public class ChatClient1 {
     private final User user;
@@ -36,7 +38,7 @@ public class ChatClient1 {
 
     private void initializeConnection() {
         try {
-            Socket socket = new Socket("localhost", 8080);
+            Socket socket = new Socket(ServerConfiguration.SERVER_NAME, ServerConfiguration.SERVER_PORT);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             IncomingMessageHandler incomingMessageHandler = new IncomingMessageHandler(socket);
             Thread thread = new Thread(incomingMessageHandler);
@@ -47,11 +49,12 @@ public class ChatClient1 {
     }
 
     private void setupConnection() {
-        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingMessages());
-        inputSendingHandler.sendToServer(user.getUsername());
+        chatLayout.sendActionListener(e -> inputSendingHandler.handleSendingOperation());
+        inputSendingHandler.sendToServer(user);
     }
 
     public void updateSecretKey(SecretKey secretKey) {
+        Objects.requireNonNull(secretKey);
         System.out.println("Updating secret key: " + secretKey);
         this.secretKey = secretKey;
         this.inputSendingHandler.setSecretKey(secretKey);
@@ -68,25 +71,26 @@ public class ChatClient1 {
         public void run() {
             try {
                 while (chatLayout.isActive()) {
-                    Object object = inputStream.readObject();
-
-                    System.out.println("Received object: " + object);
-
-                    if (object instanceof SecretKey secretKey) {
-                        updateSecretKey(secretKey);
-                        continue;
-                    }
-
-                    ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
-                    String textToBeDisplayed = responseHandler.handleResult();
-
-                    chatLayout.updateChatArea(textToBeDisplayed);
-                    System.out.println(textToBeDisplayed);
+                    handleIncomingObject(inputStream.readObject());
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                chatLayout.showError(e.getMessage());
                 chatLayout.closeWindow();
             }
         }
+
+        private void handleIncomingObject(Object object) {
+            System.out.println("Received object: " + object);
+            if (object instanceof SecretKey secretKey) {
+                updateSecretKey(secretKey);
+            } else {
+                ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
+                String textToBeDisplayed = responseHandler.handleResult();
+                chatLayout.updateChatArea(textToBeDisplayed);
+                System.out.println(textToBeDisplayed);
+            }
+        }
+
     }
 }

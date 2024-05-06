@@ -1,6 +1,6 @@
 package chat.utils;
 
-import chat.models.User;
+import chat.client.models.User;
 
 import java.util.Comparator;
 import java.util.Objects;

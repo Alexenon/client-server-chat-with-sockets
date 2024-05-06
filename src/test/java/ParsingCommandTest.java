@@ -1,9 +1,9 @@
-import chat.handlers.input.parsers.HelpCommandParser;
-import chat.models.commands.Command;
-import chat.models.commands.CommandType;
-import chat.models.commands.HelpCommand;
-import chat.models.errors.CommandParseException;
-import chat.ui.ChatLayout;
+import chat.client.handlers.parsers.HelpCommandParser;
+import chat.client.models.commands.Command;
+import chat.client.models.commands.CommandType;
+import chat.client.models.commands.client.HelpCommand;
+import chat.utils.errors.CommandParseException;
+import chat.client.ui.ChatLayout;
 import org.junit.Assert;
 import org.junit.Test;
 
