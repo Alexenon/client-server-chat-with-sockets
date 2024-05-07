@@ -9,6 +9,7 @@ import chat.client.ui.ChatLayout;
 import java.util.Arrays;
 
 /**
+ * Allowed Formats:
  * <ul>
  *  <li>FORMAT: {@code "/help"} - Basic help command with common description
  *  <li>FORMAT: {@code /help <commandName>} - Help command for a specific command

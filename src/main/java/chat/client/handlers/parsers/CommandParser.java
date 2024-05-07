@@ -4,6 +4,7 @@ import chat.client.models.commands.Command;
 import chat.utils.errors.CommandParseException;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public abstract class CommandParser {
     protected static final String incorrectArgsMsg = "Incorrect argument format";
@@ -17,6 +18,7 @@ public abstract class CommandParser {
     protected String[] getParamsFromInput(String input) {
         return Arrays.stream(input.split(" "))
                 .skip(1)
+                .filter(Objects::nonNull)
                 .toArray(String[]::new);
     }
 
