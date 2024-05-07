@@ -44,6 +44,8 @@ public class ChatClient1 {
             Thread thread = new Thread(incomingMessageHandler);
             thread.start();
         } catch (IOException e) {
+            chatLayout.showError("Couldn't connect to the server.");
+            chatLayout.closeWindow();
             throw new RuntimeException("Couldn't connect to the server. " + e.getLocalizedMessage());
         }
     }

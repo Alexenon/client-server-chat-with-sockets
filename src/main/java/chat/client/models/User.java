@@ -7,18 +7,25 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static chat.utils.ServerConfiguration.DATE_TIME_FORMATTER;
 
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 195640213275933887L;
 
     private final String username;
+    private final LocalDateTime dateCreated;
     private KeyPair keyPair;
+    private LocalDateTime lastLoginedTime;
 
     public User(String username) {
         this.username = username;
         this.keyPair = EncryptUtils.generateKeyPair();
+        this.dateCreated = LocalDateTime.now();
+        this.lastLoginedTime = LocalDateTime.now();
     }
 
     public String getUsername() {
@@ -39,9 +46,14 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" +
-               "username='" + username + '\'' +
-               '}';
+        return """
+                User{
+                    username = "%s"
+                    dateCreated = %s
+                    lastLoginedTime = %s
+                    role = DEFAULT
+                }
+                """.formatted(username, DATE_TIME_FORMATTER.format(dateCreated), DATE_TIME_FORMATTER.format(lastLoginedTime));
     }
 
     @Override

@@ -3,8 +3,7 @@ package chat.sever;
 import chat.client.models.ClientRequest;
 import chat.client.models.Message;
 import chat.client.models.User;
-
-// TODO: /info command to see information about an user
+import chat.utils.errors.UserNotFoundException;
 
 public class ServerResponseHandler {
     private final User user;
@@ -13,26 +12,27 @@ public class ServerResponseHandler {
         this.user = user;
     }
 
+    /**
+     * Handles the input received from the user<br>
+     * If the input its type of {@link ClientRequest} then the result is sent just to the author of the request,
+     * in any other cases the response is sent to all the users
+     */
     public void handleResponse(Object receivedObject) {
-        if (!shouldBeSentPrivately(receivedObject)) {
-            ServerManager.broadcast(receivedObject);
+        if (receivedObject instanceof ClientRequest clientRequest) {
+            Object response = getResponseFromClientRequest(clientRequest);
+            ServerManager.broadcast(response, user);
         } else {
-            System.out.println("HERE");
-            ServerManager.broadcast(objectToSend(receivedObject), user);
+            ServerManager.broadcast(receivedObject);
         }
     }
 
-    private boolean shouldBeSentPrivately(Object receivedObject) {
-        return receivedObject instanceof ClientRequest;
-    }
-
-    private Object objectToSend(Object object) {
+    private Object getResponseFromClientRequest(Object object) {
         ClientRequest request = (ClientRequest) object;
 
         return switch (request.getRequestType()) {
-            case VIEW_INFO -> getInfo(user);
+            case VIEW_USER_INFO -> getUserInfo(request.getParams());
             case VIEW_MEMBERS -> getMembers();
-            default -> throw new IllegalStateException("Unexpected value: " + request.getRequestType());
+            default -> throw new UnsupportedOperationException("Unexpected value: " + request.getRequestType());
         };
     }
 
@@ -41,14 +41,31 @@ public class ServerResponseHandler {
         for (User u : ServerManager.getUsers()) {
             sb.append(" - ").append(u.getUsername()).append("\n");
         }
-        String text = sb.substring(0, sb.length() - 2);
+        String text = sb.substring(0, sb.length() - 1);
         return new Message(text);
     }
 
-    private Message getInfo(User user) {
-        String text = "Information " + user.getUsername() + ":\n" + user;
-        return new Message(text);
+    private Message getUserInfo(String[] params) {
+        String username = (params != null && params.length > 0) ? params[0] : null;
+        String userInfoText = buildUserInfoText(username);
+        return new Message(userInfoText);
     }
 
+    private String buildUserInfoText(String username) {
+        try {
+            User userToBeDisplayed = (username != null) ? getUserByUsername(username) : user;
+            return "Information " + userToBeDisplayed.getUsername() + ":\n" + userToBeDisplayed;
+        } catch (UserNotFoundException e) {
+            return e.getMessage();
+        }
+    }
+
+    private User getUserByUsername(String username) throws UserNotFoundException {
+        return ServerManager.getUsers()
+                .stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElseThrow(() -> new UserNotFoundException("Couldn't find user with username: \"%s\"".formatted(username)));
+    }
 
 }
