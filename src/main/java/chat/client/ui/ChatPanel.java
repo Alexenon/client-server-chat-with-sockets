@@ -21,7 +21,6 @@ public class ChatPanel extends JPanel {
 
         addDocumentListener();
         addAdjustmentListener();
-        redirectOutput();
     }
 
     private void addDocumentListener() {
@@ -54,29 +53,11 @@ public class ChatPanel extends JPanel {
         verticalBar.addAdjustmentListener(downScroller);
     }
 
-    private void redirectOutput() {
-        OutputStream out = createOutputStream(Color.WHITE);
-        OutputStream err = createOutputStream(Color.RED);
-
-        System.setOut(new PrintStream(out));
-        System.setErr(new PrintStream(err));
-        scrollToBottom();
+    public void updateChatArea(String message) {
+        updateChatArea(message, Color.WHITE);
     }
 
-    private OutputStream createOutputStream(Color color) {
-        return new OutputStream() {
-            @Override
-            public void write(int b) {
-                textArea.append(String.valueOf((char) b), color);
-            }
-        };
-    }
-
-    public void sendMessage(String message) {
-        sendMessage(message, Color.WHITE);
-    }
-
-    public void sendMessage(String message, Color color) {
+    public void updateChatArea(String message, Color color) {
         textArea.append(message, color);
         scrollToBottom();
     }
