@@ -4,6 +4,7 @@ import chat.client.models.commands.Command;
 import chat.client.models.commands.CommandType;
 import chat.client.ui.ChatLayout;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class HelpCommand extends Command {
@@ -25,7 +26,7 @@ public class HelpCommand extends Command {
     @Override
     public void execute() {
         String helpCommandResult = getHelpForCommand(nameCommandForHelp);
-        chatLayout.updateChatArea(helpCommandResult);
+        chatLayout.updateChatArea(helpCommandResult, Color.GREEN);
     }
 
     private String getHelpForCommand(String name) {

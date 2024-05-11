@@ -16,7 +16,7 @@ public class Console {
         messageField.addActionListener(e -> {
             String message = messageField.getText();
             if (!message.isEmpty()) {
-                sendMessage(message);
+                updateChatArea(message);
                 messageField.setText("");
             }
         });
@@ -36,12 +36,12 @@ public class Console {
         return frame;
     }
 
-    public void sendMessage(String tetx) {
-        chatPanel.sendMessage(tetx);
+    public void updateChatArea(String text) {
+        chatPanel.updateChatArea(text);
     }
 
-    public void sendMessage(String text, Color color) {
-        chatPanel.sendMessage(text, color);
+    public void updateChatArea(String text, Color color) {
+        chatPanel.updateChatArea(text, color);
     }
 
 }

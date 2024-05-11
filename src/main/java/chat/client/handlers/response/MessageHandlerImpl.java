@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Class design to handle message response received from server into a String representation
  * that can be displayed to the user
- * */
+ */
 public record MessageHandlerImpl(Message message, User user) implements ResponseHandler {
     @Override
     public String handleResult() {

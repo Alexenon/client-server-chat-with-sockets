@@ -6,8 +6,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 public class ChatPanel extends JPanel {
     private final TextArea textArea = new TextArea();

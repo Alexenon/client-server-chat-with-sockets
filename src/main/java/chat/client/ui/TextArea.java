@@ -9,12 +9,13 @@ import java.awt.*;
 public class TextArea extends JTextPane {
     private static final String NEW_LINE = "\n";
     private static final Font FONT = new Font("Lucida Console", Font.BOLD, 12);
+    private static final float[] BACKGROUND_HSB = Color.RGBtoHSB(30, 33, 36, null);
 
     public TextArea() {
         setEditable(false);
         setPreferredSize(new Dimension(625, 400));
         setFont(FONT);
-        setBackground(Color.BLACK);
+        setBackground(Color.getHSBColor(BACKGROUND_HSB[0], BACKGROUND_HSB[1], BACKGROUND_HSB[2]));
     }
 
     public void append(String text, Color color) {

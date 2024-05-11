@@ -5,6 +5,8 @@ import chat.client.models.commands.Command;
 import chat.client.models.commands.CommandType;
 import chat.client.ui.ChatLayout;
 
+import java.awt.*;
+
 /**
  * Options:
  * <li>/encrypt "message" - Encrypt just a message
@@ -36,15 +38,15 @@ public class EncryptCommand extends Command {
         switch (option.toUpperCase()) {
             case "ON" -> {
                 chatLayout.setEncryptCheckboxValue(true);
-                chatLayout.updateChatArea("Encryption mode turned ON");
+                chatLayout.updateChatArea("Encryption mode turned ON", Color.GREEN);
             }
             case "OFF" -> {
                 chatLayout.setEncryptCheckboxValue(false);
-                chatLayout.updateChatArea("Encryption mode turned OFF");
+                chatLayout.updateChatArea("Encryption mode turned OFF", Color.GREEN);
             }
             case "STATUS" -> {
                 boolean encryptionMode = chatLayout.encryptCheckboxSelected();
-                chatLayout.updateChatArea("Encryption mode: " + encryptionMode);
+                chatLayout.updateChatArea("Encryption mode: " + encryptionMode, Color.GREEN);
             }
             default -> inputSendingHandler.handleSendingObject(option, false);
         }

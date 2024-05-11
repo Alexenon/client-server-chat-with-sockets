@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 public class ChatLayout {
     private final JFrame frame = new JFrame();
-    private final JTextArea chatArea = new JTextArea();
+    private final ChatPanel chatPanel = new ChatPanel();
     private final JTextField messageField = new JTextField();
     private final JCheckBox encryptCheckbox = new JCheckBox("Encrypt");
     private final JButton sendButton = new JButton("Send");
@@ -33,8 +33,7 @@ public class ChatLayout {
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 
         // Add chat area and message input components
-        frame.add(new JScrollPane(chatArea), BorderLayout.CENTER);
-        chatArea.setEditable(false);
+        frame.add(chatPanel);
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
@@ -47,11 +46,15 @@ public class ChatLayout {
 
     public void sendActionListener(ActionListener event) {
         sendButton.addActionListener(event);
-        messageField.addActionListener(event); // Think about this
+        messageField.addActionListener(event);
     }
 
     public void updateChatArea(String messageText) {
-        SwingUtilities.invokeLater(() -> chatArea.append(messageText + "\n"));
+        updateChatArea(messageText, Color.WHITE);
+    }
+
+    public void updateChatArea(String messageText, Color color) {
+        chatPanel.updateChatArea(messageText, color);
     }
 
     public String getMessageInput() {

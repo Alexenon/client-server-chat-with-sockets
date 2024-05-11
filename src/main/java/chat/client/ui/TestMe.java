@@ -8,7 +8,7 @@ public class TestMe {
         Console console = new Console();
         console.getFrame().setVisible(true);
 
-        console.sendMessage("Error: Missing required packages", Color.RED);
-        console.sendMessage("Hey", Color.CYAN);
+        console.updateChatArea("Error: Missing required packages", Color.RED);
+        console.updateChatArea("Hey", Color.CYAN);
     }
 }
