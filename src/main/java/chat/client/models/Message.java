@@ -4,6 +4,7 @@ import chat.utils.ServerConfiguration;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 
 public class Message implements Serializable {
@@ -42,13 +43,16 @@ public class Message implements Serializable {
         return dateTime;
     }
 
+    public String getDateTimeFormatted() {
+        return dateTime.format(ServerConfiguration.DATE_TIME_FORMATTER);
+    }
+
     @Override
     public String toString() {
-        return "Message{" +
-               "text='" + text.replaceAll("\n", " ") + '\'' +
-               ", author=" + author +
-               ", receiver=" + receiver +
-               ", dateTime=" + dateTime.format(ServerConfiguration.DATE_TIME_FORMATTER) +
-               '}';
+        return MessageFormat.format("Message'{'text=''{0}'', author={1}, receiver={2}, dateTime={3}'}'",
+                text.replaceAll("\n", " "),
+                getAuthor(),
+                getReceiver(),
+                getDateTimeFormatted());
     }
 }

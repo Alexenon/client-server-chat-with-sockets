@@ -2,6 +2,7 @@ package chat.client.handlers.response;
 
 import chat.client.models.EncryptedMessage;
 import chat.client.models.User;
+import chat.client.ui.ChatLayout;
 import chat.utils.UserComparator;
 
 import javax.crypto.SecretKey;
@@ -11,9 +12,19 @@ import java.util.Objects;
  * Class designed to handle message response received from server, into a String representation
  * that can be displayed to the user
  */
-public record EncryptedMessageHandlerImpl(EncryptedMessage message, User user, SecretKey secretKey) implements ResponseHandler {
+public class EncryptedMessageHandlerImpl extends ResponseHandler<EncryptedMessage> {
+
+    public EncryptedMessageHandlerImpl(ChatLayout chatLayout, User user, SecretKey secretKey) {
+        super(chatLayout, user, secretKey);
+    }
+
     @Override
-    public String handleResult() {
+    public void handleResult(EncryptedMessage message) {
+        String messageToBeDisplayed = getText(message);
+        chatLayout.updateChatArea(messageToBeDisplayed);
+    }
+
+    public String getText(EncryptedMessage message) {
         User author = message.getAuthor();
         User receiver = message.getReceiver();
         String text = getTextDecrypted(message, user, secretKey);

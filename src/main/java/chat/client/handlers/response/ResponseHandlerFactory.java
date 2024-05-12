@@ -3,26 +3,27 @@ package chat.client.handlers.response;
 import chat.client.models.EncryptedMessage;
 import chat.client.models.Message;
 import chat.client.models.User;
+import chat.client.ui.ChatLayout;
 import chat.utils.errors.ServerError;
 
 import javax.crypto.SecretKey;
 
 public class ResponseHandlerFactory {
-    private User user;
-    private SecretKey secretKey;
+    private final MessageHandlerImpl messageHandler;
+    private final EncryptedMessageHandlerImpl encryptedMessageHandler;
 
-    public ResponseHandlerFactory(User user, SecretKey secretKey) {
-        this.user = user;
-        this.secretKey = secretKey;
+    public ResponseHandlerFactory(ChatLayout chatLayout, User user, SecretKey secretKey) {
+        this.messageHandler = new MessageHandlerImpl(chatLayout, user, secretKey);
+        this.encryptedMessageHandler = new EncryptedMessageHandlerImpl(chatLayout, user, secretKey);
     }
 
-    public ResponseHandler createResponseHandler(Object object) {
+    public void handleReceivedObjectFromServer(Object object) {
         if (object instanceof Message message) {
-            return new MessageHandlerImpl(message, user);
+            messageHandler.handleResult(message);
+            return;
         } else if (object instanceof EncryptedMessage encryptedMessage) {
-            return new EncryptedMessageHandlerImpl(encryptedMessage, user, secretKey);
-        } else if (object instanceof Error error) {
-            return new ErrorHandlerImpl(error);
+            encryptedMessageHandler.handleResult(encryptedMessage);
+            return;
         } else if (object instanceof ServerError error) {
             throw new RuntimeException(String.valueOf(error));
         }
@@ -30,12 +31,9 @@ public class ResponseHandlerFactory {
         throw new RuntimeException("Couldn't process the server response: " + object);
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public void setSecretKey(SecretKey secretKey) {
-        this.secretKey = secretKey;
+        messageHandler.setSecretKey(secretKey);
+        encryptedMessageHandler.setSecretKey(secretKey);
     }
 }
 

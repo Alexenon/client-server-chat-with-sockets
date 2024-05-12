@@ -1,7 +1,6 @@
 package chat;
 
 import chat.client.handlers.input.InputSendingHandler;
-import chat.client.handlers.response.ResponseHandler;
 import chat.client.handlers.response.ResponseHandlerFactory;
 import chat.client.models.User;
 import chat.client.ui.ChatLayout;
@@ -27,7 +26,7 @@ public class ChatClient2 {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
         initializeConnection();
-        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
+        responseHandlerFactory = new ResponseHandlerFactory(chatLayout, user, secretKey);
         inputSendingHandler = new InputSendingHandler(chatLayout, outputStream, user, secretKey);
         setupConnection();
     }
@@ -44,6 +43,8 @@ public class ChatClient2 {
             Thread thread = new Thread(incomingMessageHandler);
             thread.start();
         } catch (IOException e) {
+            chatLayout.showError("Couldn't connect to the server.");
+            chatLayout.closeWindow();
             throw new RuntimeException("Couldn't connect to the server. " + e.getLocalizedMessage());
         }
     }
@@ -85,11 +86,7 @@ public class ChatClient2 {
             if (object instanceof SecretKey secretKey) {
                 updateSecretKey(secretKey);
             } else {
-                ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
-                String textToBeDisplayed = responseHandler.handleResult();
-
-                chatLayout.updateChatArea(textToBeDisplayed);
-                System.out.println(textToBeDisplayed);
+                responseHandlerFactory.handleReceivedObjectFromServer(object);
             }
         }
 

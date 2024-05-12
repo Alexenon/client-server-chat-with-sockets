@@ -5,6 +5,8 @@ import chat.client.models.Message;
 import chat.client.models.User;
 import chat.utils.errors.UserNotFoundException;
 
+import static chat.utils.ServerConfiguration.DATE_TIME_FORMATTER;
+
 public class ServerResponseHandler {
     private final User user;
 
@@ -26,17 +28,15 @@ public class ServerResponseHandler {
         }
     }
 
-    private Object getResponseFromClientRequest(Object object) {
-        ClientRequest request = (ClientRequest) object;
-
+    private Object getResponseFromClientRequest(ClientRequest request) {
         return switch (request.getRequestType()) {
-            case VIEW_USER_INFO -> getUserInfo(request.getParams());
-            case VIEW_MEMBERS -> getMembers();
+            case VIEW_USER_INFO -> viewUserInformation(request.getParams());
+            case VIEW_MEMBERS -> viewListOfMembers();
             default -> throw new UnsupportedOperationException("Unexpected value: " + request.getRequestType());
         };
     }
 
-    private Message getMembers() {
+    private Message viewListOfMembers() {
         StringBuilder sb = new StringBuilder("Members:\n");
         for (User u : ServerManager.getUsers()) {
             sb.append(" - ").append(u.getUsername()).append("\n");
@@ -45,7 +45,7 @@ public class ServerResponseHandler {
         return new Message(text);
     }
 
-    private Message getUserInfo(String[] params) {
+    private Message viewUserInformation(String[] params) {
         String username = (params != null && params.length > 0) ? params[0] : null;
         String userInfoText = buildUserInfoText(username);
         return new Message(userInfoText);
@@ -54,7 +54,7 @@ public class ServerResponseHandler {
     private String buildUserInfoText(String username) {
         try {
             User userToBeDisplayed = (username != null) ? getUserByUsername(username) : user;
-            return "Information " + userToBeDisplayed.getUsername() + ":\n" + userToBeDisplayed;
+            return "Information " + userToBeDisplayed.getUsername() + ":\n" + userInfo(userToBeDisplayed);
         } catch (UserNotFoundException e) {
             return e.getMessage();
         }
@@ -68,4 +68,16 @@ public class ServerResponseHandler {
                 .orElseThrow(() -> new UserNotFoundException("Couldn't find user with username: \"%s\"".formatted(username)));
     }
 
+    private String userInfo(User user) {
+        return """
+                User{
+                    username = "%s"
+                    dateCreated = %s
+                    lastLoginedTime = %s
+                    role = DEFAULT
+                }
+                """.formatted(user.getUsername(),
+                DATE_TIME_FORMATTER.format(user.getDateCreated()),
+                DATE_TIME_FORMATTER.format(user.getLastLoginedTime()));
+    }
 }

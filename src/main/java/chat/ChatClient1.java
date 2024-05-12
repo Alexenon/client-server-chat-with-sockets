@@ -1,7 +1,6 @@
 package chat;
 
 import chat.client.handlers.input.InputSendingHandler;
-import chat.client.handlers.response.ResponseHandler;
 import chat.client.handlers.response.ResponseHandlerFactory;
 import chat.client.models.User;
 import chat.client.ui.ChatLayout;
@@ -27,7 +26,7 @@ public class ChatClient1 {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
         initializeConnection();
-        responseHandlerFactory = new ResponseHandlerFactory(user, secretKey);
+        responseHandlerFactory = new ResponseHandlerFactory(chatLayout, user, secretKey);
         inputSendingHandler = new InputSendingHandler(chatLayout, outputStream, user, secretKey);
         setupConnection();
     }
@@ -87,10 +86,7 @@ public class ChatClient1 {
             if (object instanceof SecretKey secretKey) {
                 updateSecretKey(secretKey);
             } else {
-                ResponseHandler responseHandler = responseHandlerFactory.createResponseHandler(object);
-                String textToBeDisplayed = responseHandler.handleResult();
-                chatLayout.updateChatArea(textToBeDisplayed);
-                System.out.println(textToBeDisplayed);
+                responseHandlerFactory.handleReceivedObjectFromServer(object);
             }
         }
 
