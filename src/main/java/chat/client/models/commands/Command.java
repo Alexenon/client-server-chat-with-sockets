@@ -3,26 +3,19 @@ package chat.client.models.commands;
 import java.util.Objects;
 
 public abstract class Command {
-
-    protected final String name;
-    protected final CommandType type;
     protected String[] params;
+    protected final CommandType type;
 
-    public Command(String name, CommandType type) {
-        this(name, type, null);
+    public Command(CommandType type) {
+        this(type, null);
     }
 
-    public Command(String name, CommandType type, String[] params) {
-        this.name = name;
+    public Command(CommandType type, String[] params) {
         this.type = type;
         this.params = Objects.requireNonNullElse(params, new String[]{});
     }
 
     public abstract void execute();
-
-    public String getName() {
-        return name;
-    }
 
     public CommandType getType() {
         return type;

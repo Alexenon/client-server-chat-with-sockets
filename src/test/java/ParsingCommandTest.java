@@ -18,7 +18,6 @@ public class ParsingCommandTest {
         Command helpCommand = helpCommandParser.parse(commandWithoutParams);
 
         Assert.assertTrue(helpCommand instanceof HelpCommand);
-        Assert.assertEquals("help", helpCommand.getName());
         Assert.assertEquals(CommandType.HELP, helpCommand.getType());
         Assert.assertEquals(0, helpCommand.getParams().length);
     }
@@ -31,7 +30,6 @@ public class ParsingCommandTest {
         Command helpCommand = helpCommandParser.parse(commandWithParams);
 
         Assert.assertTrue(helpCommand instanceof HelpCommand);
-        Assert.assertEquals("help", helpCommand.getName());
         Assert.assertEquals(CommandType.HELP, helpCommand.getType());
         Assert.assertEquals(1, helpCommand.getParams().length);
     }

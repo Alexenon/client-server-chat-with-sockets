@@ -31,13 +31,13 @@ public class ServerResponseHandler {
     private Object getResponseFromClientRequest(ClientRequest request) {
         return switch (request.getRequestType()) {
             case VIEW_USER_INFO -> viewUserInformation(request.getParams());
-            case VIEW_MEMBERS -> viewListOfMembers();
+            case VIEW_CONNECTED_USERS -> viewListOfConnectedUsers();
             default -> throw new UnsupportedOperationException("Unexpected value: " + request.getRequestType());
         };
     }
 
-    private Message viewListOfMembers() {
-        StringBuilder sb = new StringBuilder("Members:\n");
+    private Message viewListOfConnectedUsers() {
+        StringBuilder sb = new StringBuilder("Connected users:\n");
         for (User u : ServerManager.getUsers()) {
             sb.append(" - ").append(u.getUsername()).append("\n");
         }

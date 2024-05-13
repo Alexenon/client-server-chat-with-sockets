@@ -15,19 +15,12 @@ import java.awt.*;
  * <li>/encrypt STATUS - Displays if encryption is ON or OFF
  */
 public class EncryptCommand extends Command {
-
-    private static final String name = "encrypt";
-
     private final ChatLayout chatLayout;
     private final InputSendingHandler inputSendingHandler;
     private final String option;
 
-    public EncryptCommand(ChatLayout chatLayout, InputSendingHandler inputSendingHandler) {
-        this(chatLayout, inputSendingHandler, null);
-    }
-
     public EncryptCommand(ChatLayout chatLayout, InputSendingHandler inputSendingHandler, String option) {
-        super(name, CommandType.ENCRYPT);
+        super(CommandType.ENCRYPT);
         this.chatLayout = chatLayout;
         this.inputSendingHandler = inputSendingHandler;
         this.option = option;
@@ -45,7 +38,7 @@ public class EncryptCommand extends Command {
                 chatLayout.updateChatArea("Encryption mode turned OFF", Color.GREEN);
             }
             case "STATUS" -> {
-                boolean encryptionMode = chatLayout.encryptCheckboxSelected();
+                String encryptionMode = String.valueOf(chatLayout.encryptCheckboxSelected()).toUpperCase();
                 chatLayout.updateChatArea("Encryption mode: " + encryptionMode, Color.GREEN);
             }
             default -> inputSendingHandler.handleSendingObject(option, false);

@@ -57,6 +57,10 @@ public class ChatLayout {
         chatPanel.updateChatArea(messageText, color);
     }
 
+    public void displayCommand(String text) {
+        chatPanel.updateChatArea("\n" + text + "\n");
+    }
+
     public String getMessageInput() {
         return messageField.getText();
     }

@@ -8,16 +8,14 @@ import chat.client.models.commands.CommandType;
 import chat.sever.RequestType;
 
 public class ViewUserInfoCommand extends Command {
-    private static final String name = "/info";
-
     private final String username;
     private final InputSendingHandler inputSendingHandler;
 
     /**
-     * @param username required for finding information about user with same username
+     * @param username required for finding information about user with this username
      */
     public ViewUserInfoCommand(InputSendingHandler inputSendingHandler, String username) {
-        super(name, CommandType.VIEW_USER_INFO);
+        super(CommandType.VIEW_USER_INFO);
         this.username = username;
         this.inputSendingHandler = inputSendingHandler;
     }
