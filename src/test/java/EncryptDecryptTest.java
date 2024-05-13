@@ -1,4 +1,6 @@
 import chat.EncryptUtils;
+import chat.client.models.EncryptedMessage;
+import chat.client.models.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,6 +48,39 @@ public class EncryptDecryptTest {
         Assert.assertEquals("Encrypted text with new key should be decrypted with new secret key", text, decryptedTextWithNewKey);
         Assert.assertThrows("Encrypted text with old key cannot be decrypted with new secret key",
                 RuntimeException.class, () -> EncryptUtils.decrypt(encryptedTextWithOldKey, newSecretKey));
+    }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    public void testPublicEncryptedMessage() {
+        String text = "Some simple text";
+        User author = new User("Author");
+        User receiver = null;
+        SecretKey secretKey = EncryptUtils.generateSecretKey();
+
+        EncryptedMessage encryptedMessage = new EncryptedMessage(text, author, receiver, secretKey);
+        String encryptedText = encryptedMessage.getText();
+        String decryptedText = encryptedMessage.getText(secretKey);
+        Assert.assertNotEquals("Encrypted text should not match the original text", encryptedText, decryptedText);
+        Assert.assertEquals("Decrypted text should match the original text", text, decryptedText);
+        Assert.assertThrows("Decryption should be done just with Secret Key",
+                RuntimeException.class, () -> encryptedMessage.getText(receiver.getPrivateKey()));
+    }
+
+    @Test
+    public void testPrivateEncryptedMessage() {
+        String text = "Some simple text";
+        User author = new User("Author");
+        User receiver = new User("Receiver");
+        SecretKey secretKey = EncryptUtils.generateSecretKey();
+
+        EncryptedMessage encryptedMessage = new EncryptedMessage(text, author, receiver, secretKey);
+        String encryptedText = encryptedMessage.getText();
+        String decryptedText = encryptedMessage.getText(receiver.getPrivateKey());
+        Assert.assertNotEquals("Encrypted text should not match the original text", encryptedText, decryptedText);
+        Assert.assertEquals("Decrypted text should match the original text", text, decryptedText);
+        Assert.assertThrows("Decryption should be done just with Secret Key",
+                RuntimeException.class, () -> encryptedMessage.getText(secretKey));
     }
 
 }

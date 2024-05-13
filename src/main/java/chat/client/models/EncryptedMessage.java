@@ -24,10 +24,15 @@ public class EncryptedMessage implements Serializable {
 
     public EncryptedMessage(String text, User author, User receiver, SecretKey secretKey) {
         this.dateTime = LocalDateTime.now();
-        System.out.println(this);
-        this.encryptedMessage = EncryptUtils.encrypt(text, secretKey);
         this.author = author;
         this.receiver = receiver;
+        this.encryptedMessage = encrypt(text, secretKey);
+    }
+
+    public String encrypt(String text, SecretKey secretKey) {
+        return receiver == null
+                ? EncryptUtils.encrypt(text, secretKey)
+                : EncryptUtils.encrypt(text, receiver.getPublicKey());
     }
 
     public String getText() {
