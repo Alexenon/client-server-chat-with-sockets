@@ -31,11 +31,12 @@ public class InputSendingHandler {
         handleSendingObject(input, shouldBeEncrypted);
     }
 
-    public void handleSendingObject(String input, boolean shouldBeEncrypted) {
-        handle(inputConvertor.convertIntoObject(input, shouldBeEncrypted));
-    }
+    private void handleSendingObject(String input, boolean shouldBeEncrypted) {
+        if (input == null || input.isBlank())
+            return;
 
-    private void handle(Object object) {
+        Object object = inputConvertor.convertIntoObject(input, shouldBeEncrypted);
+
         if (object instanceof final Command command) {
             command.execute();
         } else if (object instanceof InternalError internalError) {

@@ -42,6 +42,8 @@ public class CommandConvertor implements Convertor {
         return switch (commandName) {
             case "/help" -> new HelpCommandParser(chatLayout);
             case "/exit" -> new ExitCommandParser(chatLayout);
+            case "/clear" -> new ClearCommnadParser(chatLayout);
+            // Server Side Commands
             case "/user" -> new InfoUserCommandParser(inputSendingHandler);
             case "/users" -> new ConnectedUsersCommandParser(inputSendingHandler);
             case "/encrypt" -> new EncryptCommandParser(chatLayout, inputSendingHandler);

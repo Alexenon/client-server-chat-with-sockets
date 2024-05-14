@@ -51,13 +51,17 @@ public class ChatPanel extends JPanel {
         verticalBar.addAdjustmentListener(downScroller);
     }
 
-    public void updateChatArea(String message) {
-        updateChatArea(message, Color.WHITE);
+    public void updateChatArea(String text) {
+        updateChatArea(text, Color.WHITE);
     }
 
-    public void updateChatArea(String message, Color color) {
-        textArea.append(message, color);
+    public void updateChatArea(String text, Color color) {
+        textArea.append(text, color);
         scrollToBottom();
+    }
+
+    public void clearChatArea() {
+        textArea.clear();
     }
 
     public void scrollToBottom() {

@@ -49,16 +49,20 @@ public class ChatLayout {
         messageField.addActionListener(event);
     }
 
-    public void updateChatArea(String messageText) {
-        updateChatArea(messageText, Color.WHITE);
+    public void updateChatArea(String text) {
+        updateChatArea(text, Color.WHITE);
     }
 
-    public void updateChatArea(String messageText, Color color) {
-        chatPanel.updateChatArea(messageText, color);
+    public void updateChatArea(String text, Color color) {
+        chatPanel.updateChatArea(text, color);
     }
 
     public void displayCommand(String text) {
         chatPanel.updateChatArea(text + "\n", Color.GREEN);
+    }
+
+    public void clearChat() {
+        chatPanel.clearChatArea();
     }
 
     public String getMessageInput() {

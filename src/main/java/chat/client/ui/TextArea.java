@@ -29,4 +29,8 @@ public class TextArea extends JTextPane {
             e.printStackTrace();
         }
     }
+
+    public void clear() {
+        setText("");
+    }
 }
