@@ -45,4 +45,8 @@ public enum StatusCode {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return "StatusCode{code=%d, message='%s'}".formatted(code, message);
+    }
 }

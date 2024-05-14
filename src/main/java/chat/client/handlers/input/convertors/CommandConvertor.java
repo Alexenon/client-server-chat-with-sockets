@@ -22,6 +22,7 @@ public class CommandConvertor implements Convertor {
 
     @Override
     public Object getObjectFromInput(String input) {
+        chatLayout.updateChatArea(input); // Displays typed input command
         try {
             return getCommandFromInput(input);
         } catch (InvalidCommandException | CommandParseException e) {

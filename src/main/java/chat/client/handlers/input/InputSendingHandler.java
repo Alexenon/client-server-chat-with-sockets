@@ -7,6 +7,7 @@ import chat.client.ui.ChatLayout;
 import chat.utils.errors.InternalError;
 
 import javax.crypto.SecretKey;
+import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
@@ -48,7 +49,7 @@ public class InputSendingHandler {
 
     public void displayError(InternalError internalError) {
         System.err.println("ERROR" + internalError);
-        chatLayout.updateChatArea(internalError.getErrorMessage());
+        chatLayout.updateChatArea(internalError.getErrorMessage() + "\n", Color.RED);
     }
 
     public void sendToServer(Object o) {

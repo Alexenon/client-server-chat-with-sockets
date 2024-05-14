@@ -28,4 +28,9 @@ public class InternalError {
     public StatusCode getStatusCode() {
         return statusCode;
     }
+
+    @Override
+    public String toString() {
+        return "InternalError{statusCode=%s, errorMessage='%s'}".formatted(statusCode, errorMessage);
+    }
 }

@@ -16,8 +16,8 @@ public class CommandResponseHandler extends ResponseHandler<CommandResponse> {
 
     @Override
     void handleResult(CommandResponse commandResponse) {
-        String text = commandResponse.getDisplayMessage();
-        if(commandResponse.getStatusCode() == StatusCode.ACCEPTED) {
+        String text = commandResponse.getDisplayMessage() + "\n";
+        if (commandResponse.getStatusCode() == StatusCode.ACCEPTED) {
             chatLayout.updateChatArea(text, Color.GREEN);
         } else {
             chatLayout.updateChatArea(text, Color.RED);
