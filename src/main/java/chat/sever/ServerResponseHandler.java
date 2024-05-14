@@ -1,8 +1,8 @@
 package chat.sever;
 
 import chat.client.models.ClientRequest;
-import chat.client.models.Message;
 import chat.client.models.User;
+import chat.utils.StatusCode;
 import chat.utils.errors.UserNotFoundException;
 
 import static chat.utils.ServerConfiguration.DATE_TIME_FORMATTER;
@@ -32,31 +32,26 @@ public class ServerResponseHandler {
         return switch (request.getRequestType()) {
             case VIEW_USER_INFO -> viewUserInformation(request.getParams());
             case VIEW_CONNECTED_USERS -> viewListOfConnectedUsers();
-            default -> throw new UnsupportedOperationException("Unexpected value: " + request.getRequestType());
         };
     }
 
-    private Message viewListOfConnectedUsers() {
+    private CommandResponse viewListOfConnectedUsers() {
         StringBuilder sb = new StringBuilder("Connected users:\n");
         for (User u : ServerManager.getUsers()) {
             sb.append(" - ").append(u.getUsername()).append("\n");
         }
         String text = sb.substring(0, sb.length() - 1);
-        return new Message(text);
+        return new CommandResponse(text, StatusCode.ACCEPTED, user);
     }
 
-    private Message viewUserInformation(String[] params) {
+    private CommandResponse viewUserInformation(String[] params) {
         String username = (params != null && params.length > 0) ? params[0] : null;
-        String userInfoText = buildUserInfoText(username);
-        return new Message(userInfoText);
-    }
-
-    private String buildUserInfoText(String username) {
         try {
             User userToBeDisplayed = (username != null) ? getUserByUsername(username) : user;
-            return "Information " + userToBeDisplayed.getUsername() + ":\n" + userInfo(userToBeDisplayed);
+            String text = "Information %s:\n%s".formatted(userToBeDisplayed.getUsername(), userInfo(userToBeDisplayed));
+            return new CommandResponse(text, StatusCode.ACCEPTED, user);
         } catch (UserNotFoundException e) {
-            return e.getMessage();
+            return new CommandResponse(e.getMessage(), StatusCode.BAD_REQUEST, user);
         }
     }
 
