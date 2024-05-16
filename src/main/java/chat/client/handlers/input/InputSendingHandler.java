@@ -31,7 +31,7 @@ public class InputSendingHandler {
         handleSendingObject(input, shouldBeEncrypted);
     }
 
-    private void handleSendingObject(String input, boolean shouldBeEncrypted) {
+    public void handleSendingObject(String input, boolean shouldBeEncrypted) {
         if (input == null || input.isBlank())
             return;
 

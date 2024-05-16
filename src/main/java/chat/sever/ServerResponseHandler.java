@@ -1,6 +1,7 @@
 package chat.sever;
 
 import chat.client.models.ClientRequest;
+import chat.client.models.Message;
 import chat.client.models.User;
 import chat.utils.StatusCode;
 import chat.utils.errors.UserNotFoundException;
@@ -23,9 +24,12 @@ public class ServerResponseHandler {
         if (receivedObject instanceof ClientRequest clientRequest) {
             Object response = getResponseFromClientRequest(clientRequest);
             ServerManager.broadcast(response, user);
+        } else if (receivedObject instanceof Message message && message.getReceiver() != null) {
+            ServerManager.broadcast(receivedObject, message.getReceiver());
         } else {
             ServerManager.broadcast(receivedObject);
         }
+
     }
 
     private Object getResponseFromClientRequest(ClientRequest request) {

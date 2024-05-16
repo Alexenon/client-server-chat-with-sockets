@@ -1,6 +1,5 @@
 package chat.client.handlers.response;
 
-import chat.client.models.EncryptedMessage;
 import chat.client.models.Message;
 import chat.client.models.User;
 import chat.client.ui.ChatLayout;
@@ -11,12 +10,10 @@ import javax.crypto.SecretKey;
 
 public class ResponseHandlerFactory {
     private final MessageHandlerImpl messageHandler;
-    private final EncryptedMessageHandlerImpl encryptedMessageHandler;
     private final CommandResponseHandler commandResponseHandler;
 
     public ResponseHandlerFactory(ChatLayout chatLayout, User user, SecretKey secretKey) {
         this.messageHandler = new MessageHandlerImpl(chatLayout, user, secretKey);
-        this.encryptedMessageHandler = new EncryptedMessageHandlerImpl(chatLayout, user, secretKey);
         this.commandResponseHandler = new CommandResponseHandler(chatLayout, user, secretKey);
     }
 
@@ -24,10 +21,7 @@ public class ResponseHandlerFactory {
         if (object instanceof Message message) {
             messageHandler.handleResult(message);
             return;
-        } else if (object instanceof EncryptedMessage encryptedMessage) {
-            encryptedMessageHandler.handleResult(encryptedMessage);
-            return;
-        }  else if (object instanceof CommandResponse commandResponse) {
+        } else if (object instanceof CommandResponse commandResponse) {
             commandResponseHandler.handleResult(commandResponse);
             return;
         } else if (object instanceof ServerError error) {
@@ -39,7 +33,6 @@ public class ResponseHandlerFactory {
 
     public void setSecretKey(SecretKey secretKey) {
         messageHandler.setSecretKey(secretKey);
-        encryptedMessageHandler.setSecretKey(secretKey);
     }
 }
 

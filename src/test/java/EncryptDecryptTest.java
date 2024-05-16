@@ -1,5 +1,5 @@
 import chat.EncryptUtils;
-import chat.client.models.EncryptedMessage;
+import chat.client.models.Message;
 import chat.client.models.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class EncryptDecryptTest {
         User receiver = null;
         SecretKey secretKey = EncryptUtils.generateSecretKey();
 
-        EncryptedMessage encryptedMessage = new EncryptedMessage(text, author, receiver, secretKey);
+        Message encryptedMessage = new Message(text, author, receiver, secretKey);
         String encryptedText = encryptedMessage.getText();
         String decryptedText = encryptedMessage.getText(secretKey);
         Assert.assertNotEquals("Encrypted text should not match the original text", encryptedText, decryptedText);
@@ -74,7 +74,7 @@ public class EncryptDecryptTest {
         User receiver = new User("Receiver");
         SecretKey secretKey = EncryptUtils.generateSecretKey();
 
-        EncryptedMessage encryptedMessage = new EncryptedMessage(text, author, receiver, secretKey);
+        Message encryptedMessage = new Message(text, author, receiver, secretKey);
         String encryptedText = encryptedMessage.getText();
         String decryptedText = encryptedMessage.getText(receiver.getPrivateKey());
         Assert.assertNotEquals("Encrypted text should not match the original text", encryptedText, decryptedText);

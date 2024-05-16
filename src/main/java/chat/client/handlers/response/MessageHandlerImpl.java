@@ -56,7 +56,7 @@ public class MessageHandlerImpl extends ResponseHandler<Message> {
     }
 
     private String getDisplayText(Message message) {
-        String text = message.getText();
+        String text = getMessageText(message);
         String time = getMessageTime(message);
 
         if (message.getAuthor() == null)
@@ -66,6 +66,15 @@ public class MessageHandlerImpl extends ResponseHandler<Message> {
         return Objects.compare(user, author, USER_COMPARATOR) == 0
                 ? "[%s] %s".formatted(time, text)
                 : "[%s] <%s>: %s".formatted(time, author.getUsername(), text);
+    }
+
+    private String getMessageText(Message message) {
+        if (!message.isEncrypted())
+            return message.getText();
+
+        return message.getReceiver() == null
+                ? message.getText(secretKey)
+                : message.getText(message.getReceiver().getPrivateKey());
     }
 
     public String getMessageTime(Message message) {
