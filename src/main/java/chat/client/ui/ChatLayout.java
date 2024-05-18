@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 public class ChatLayout {
     private final JFrame frame = new JFrame();
-    private final JTextArea chatArea = new JTextArea();
+    private final ChatPanel chatPanel = new ChatPanel();
     private final JTextField messageField = new JTextField();
     private final JCheckBox encryptCheckbox = new JCheckBox("Encrypt");
     private final JButton sendButton = new JButton("Send");
@@ -25,7 +25,7 @@ public class ChatLayout {
     public void buildForm() {
         frame.setTitle(username);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 400);
+        frame.setSize(625, 450);
 
         // Create a panel for the checkbox and add it to the frame's content pane
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -33,8 +33,7 @@ public class ChatLayout {
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 
         // Add chat area and message input components
-        frame.add(new JScrollPane(chatArea), BorderLayout.CENTER);
-        chatArea.setEditable(false);
+        frame.add(chatPanel);
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
@@ -47,11 +46,23 @@ public class ChatLayout {
 
     public void sendActionListener(ActionListener event) {
         sendButton.addActionListener(event);
-        messageField.addActionListener(event); // Think about this
+        messageField.addActionListener(event);
     }
 
-    public void updateChatArea(String messageText) {
-        SwingUtilities.invokeLater(() -> chatArea.append(messageText + "\n"));
+    public void updateChatArea(String text) {
+        updateChatArea(text, Color.WHITE);
+    }
+
+    public void updateChatArea(String text, Color color) {
+        chatPanel.updateChatArea(text, color);
+    }
+
+    public void displayCommand(String text) {
+        chatPanel.updateChatArea(text + "\n", Color.GREEN);
+    }
+
+    public void clearChat() {
+        chatPanel.clearChatArea();
     }
 
     public String getMessageInput() {

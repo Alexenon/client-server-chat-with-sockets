@@ -22,6 +22,7 @@ public class CommandConvertor implements Convertor {
 
     @Override
     public Object getObjectFromInput(String input) {
+        chatLayout.updateChatArea(input); // Displays typed input command
         try {
             return getCommandFromInput(input);
         } catch (InvalidCommandException | CommandParseException e) {
@@ -41,8 +42,10 @@ public class CommandConvertor implements Convertor {
         return switch (commandName) {
             case "/help" -> new HelpCommandParser(chatLayout);
             case "/exit" -> new ExitCommandParser(chatLayout);
-            case "/info" -> new InfoUserCommandParser(inputSendingHandler);
-            case "/members" -> new MembersCommandParser(inputSendingHandler);
+            case "/clear" -> new ClearCommnadParser(chatLayout);
+            // Server Side Commands
+            case "/user" -> new InfoUserCommandParser(inputSendingHandler);
+            case "/users" -> new ConnectedUsersCommandParser(inputSendingHandler);
             case "/encrypt" -> new EncryptCommandParser(chatLayout, inputSendingHandler);
             default -> throw new InvalidCommandException(ERROR_MESSAGE.formatted(commandName));
         };

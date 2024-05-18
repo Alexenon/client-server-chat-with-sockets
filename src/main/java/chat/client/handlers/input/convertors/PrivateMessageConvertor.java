@@ -1,6 +1,5 @@
 package chat.client.handlers.input.convertors;
 
-import chat.client.models.EncryptedMessage;
 import chat.client.models.Message;
 import chat.client.models.User;
 
@@ -28,7 +27,7 @@ public record PrivateMessageConvertor(User author,
                 : new User(receiverUsername);
 
         return shouldBeEncrypted ?
-                new EncryptedMessage(messageText, author, receiver, secretKey)
+                new Message(messageText, author, receiver, secretKey)
                 : new Message(messageText, author, receiver);
     }
 

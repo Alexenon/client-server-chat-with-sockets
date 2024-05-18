@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Objects;
 
-public class ChatClient2 {
+public class ChatClient3 {
     private final User user;
     private final ChatLayout chatLayout;
     private final InputSendingHandler inputSendingHandler;
@@ -22,7 +22,7 @@ public class ChatClient2 {
     private SecretKey secretKey;
     private ObjectOutputStream outputStream;
 
-    public ChatClient2() {
+    public ChatClient3() {
         chatLayout = new ChatLayout();
         user = new User(chatLayout.getUsername());
         initializeConnection();
@@ -32,7 +32,7 @@ public class ChatClient2 {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatClient2::new);
+        SwingUtilities.invokeLater(ChatClient3::new);
     }
 
     private void initializeConnection() {

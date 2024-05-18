@@ -7,6 +7,7 @@ import chat.client.ui.ChatLayout;
 import chat.utils.errors.InternalError;
 
 import javax.crypto.SecretKey;
+import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
@@ -31,10 +32,11 @@ public class InputSendingHandler {
     }
 
     public void handleSendingObject(String input, boolean shouldBeEncrypted) {
-        handle(inputConvertor.convertIntoObject(input, shouldBeEncrypted));
-    }
+        if (input == null || input.isBlank())
+            return;
 
-    private void handle(Object object) {
+        Object object = inputConvertor.convertIntoObject(input, shouldBeEncrypted);
+
         if (object instanceof final Command command) {
             command.execute();
         } else if (object instanceof InternalError internalError) {
@@ -48,7 +50,7 @@ public class InputSendingHandler {
 
     public void displayError(InternalError internalError) {
         System.err.println("ERROR" + internalError);
-        chatLayout.updateChatArea(internalError.getErrorMessage());
+        chatLayout.updateChatArea(internalError.getErrorMessage() + "\n", Color.RED);
     }
 
     public void sendToServer(Object o) {

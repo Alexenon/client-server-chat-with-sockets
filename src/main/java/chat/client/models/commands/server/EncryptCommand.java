@@ -5,6 +5,8 @@ import chat.client.models.commands.Command;
 import chat.client.models.commands.CommandType;
 import chat.client.ui.ChatLayout;
 
+import java.awt.*;
+
 /**
  * Options:
  * <li>/encrypt "message" - Encrypt just a message
@@ -13,19 +15,12 @@ import chat.client.ui.ChatLayout;
  * <li>/encrypt STATUS - Displays if encryption is ON or OFF
  */
 public class EncryptCommand extends Command {
-
-    private static final String name = "encrypt";
-
     private final ChatLayout chatLayout;
     private final InputSendingHandler inputSendingHandler;
     private final String option;
 
-    public EncryptCommand(ChatLayout chatLayout, InputSendingHandler inputSendingHandler) {
-        this(chatLayout, inputSendingHandler, null);
-    }
-
     public EncryptCommand(ChatLayout chatLayout, InputSendingHandler inputSendingHandler, String option) {
-        super(name, CommandType.ENCRYPT);
+        super(CommandType.ENCRYPT);
         this.chatLayout = chatLayout;
         this.inputSendingHandler = inputSendingHandler;
         this.option = option;
@@ -36,15 +31,15 @@ public class EncryptCommand extends Command {
         switch (option.toUpperCase()) {
             case "ON" -> {
                 chatLayout.setEncryptCheckboxValue(true);
-                chatLayout.updateChatArea("Encryption mode turned ON");
+                chatLayout.updateChatArea("Encryption mode turned ON", Color.GREEN);
             }
             case "OFF" -> {
                 chatLayout.setEncryptCheckboxValue(false);
-                chatLayout.updateChatArea("Encryption mode turned OFF");
+                chatLayout.updateChatArea("Encryption mode turned OFF", Color.GREEN);
             }
             case "STATUS" -> {
-                boolean encryptionMode = chatLayout.encryptCheckboxSelected();
-                chatLayout.updateChatArea("Encryption mode: " + encryptionMode);
+                String encryptionMode = String.valueOf(chatLayout.encryptCheckboxSelected()).toUpperCase();
+                chatLayout.updateChatArea("Encryption mode: " + encryptionMode, Color.GREEN);
             }
             default -> inputSendingHandler.handleSendingObject(option, false);
         }

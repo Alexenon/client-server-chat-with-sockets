@@ -1,6 +1,5 @@
 import chat.EncryptUtils;
 import chat.client.handlers.input.convertors.InputConvertor;
-import chat.client.models.EncryptedMessage;
 import chat.client.models.Message;
 import chat.client.models.User;
 import org.junit.Assert;
@@ -50,9 +49,9 @@ public class InputConvertorTest {
         InputConvertor inputConvertor = new InputConvertor(null, author, secretKey);
         Object convertedObject = inputConvertor.convertIntoObject(text, true);
 
-        Assert.assertTrue(convertedObject instanceof EncryptedMessage);
+        Assert.assertTrue(convertedObject instanceof Message);
 
-        EncryptedMessage message = (EncryptedMessage) convertedObject;
+        Message message = (Message) convertedObject;
         Assert.assertNotEquals(message.getText(), text);
         Assert.assertEquals(message.getText(secretKey), text);
         Assert.assertEquals(message.getAuthor(), author);
@@ -68,9 +67,9 @@ public class InputConvertorTest {
         InputConvertor inputConvertor = new InputConvertor(null, author, secretKey);
         Object convertedObject = inputConvertor.convertIntoObject(text, true);
 
-        Assert.assertTrue(convertedObject instanceof EncryptedMessage);
+        Assert.assertTrue(convertedObject instanceof Message);
 
-        EncryptedMessage message = (EncryptedMessage) convertedObject;
+        Message message = (Message) convertedObject;
         Assert.assertNotEquals(message.getText(), text);
         Assert.assertEquals(message.getText(secretKey), expectedText);
         Assert.assertEquals(message.getAuthor(), author);

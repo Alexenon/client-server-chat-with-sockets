@@ -7,17 +7,11 @@ import chat.client.ui.ChatLayout;
 import java.util.Objects;
 
 public class HelpCommand extends Command {
-
-    private final static String name = "help";
     private final ChatLayout chatLayout;
     private final String nameCommandForHelp;
 
-    public HelpCommand(ChatLayout chatLayout) {
-        this(chatLayout, null);
-    }
-
     public HelpCommand(ChatLayout chatLayout, String nameCommandForHelp) {
-        super(name, CommandType.HELP);
+        super(CommandType.HELP);
         this.chatLayout = chatLayout;
         this.nameCommandForHelp = Objects.requireNonNullElse(nameCommandForHelp, "");
     }
@@ -25,7 +19,7 @@ public class HelpCommand extends Command {
     @Override
     public void execute() {
         String helpCommandResult = getHelpForCommand(nameCommandForHelp);
-        chatLayout.updateChatArea(helpCommandResult);
+        chatLayout.displayCommand(helpCommandResult);
     }
 
     private String getHelpForCommand(String name) {
@@ -35,7 +29,7 @@ public class HelpCommand extends Command {
                         /help               - Display help message.
                         /encrypt [message]  - Encrypt a message
                         /user    [username] - View information about a specific user.
-                        /private [username] - Start a private conversation with a user.
+                        /users              - Displays all the active users connected to the chat.
                         /exit               - Exit the chat.
                         
                     Options:
@@ -46,9 +40,11 @@ public class HelpCommand extends Command {
                                         
                     Options:
                         /encrypt [message] - Encrypt just a particular message
-                        /encrypt [on] - Turns ON encryption for messages
-                        /encrypt [off] - Turns OFF encryption for messages
+                        /encrypt ON - Turns ON encryption for messages
+                        /encrypt OFF - Turns OFF encryption for messages
+                        /encrypt STATUS - Check the status of the chat encryption
                     """;
+            case "users" -> "Displays all the active users connected to the chat";
             case "exit" -> "Disconnects from the server";
             default -> null;
         };

@@ -10,8 +10,6 @@ import java.security.PublicKey;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static chat.utils.ServerConfiguration.DATE_TIME_FORMATTER;
-
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 195640213275933887L;
@@ -44,16 +42,17 @@ public class User implements Serializable {
         return keyPair.getPrivate();
     }
 
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public LocalDateTime getLastLoginedTime() {
+        return lastLoginedTime;
+    }
+
     @Override
     public String toString() {
-        return """
-                User{
-                    username = "%s"
-                    dateCreated = %s
-                    lastLoginedTime = %s
-                    role = DEFAULT
-                }
-                """.formatted(username, DATE_TIME_FORMATTER.format(dateCreated), DATE_TIME_FORMATTER.format(lastLoginedTime));
+        return "User{username = \"%s\"}".formatted(username);
     }
 
     @Override
