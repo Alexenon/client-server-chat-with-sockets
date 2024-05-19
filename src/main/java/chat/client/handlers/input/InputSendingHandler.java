@@ -28,13 +28,15 @@ public class InputSendingHandler {
     public void handleSendingOperation() {
         String input = chatLayout.getMessageInput();
         boolean shouldBeEncrypted = chatLayout.encryptCheckboxSelected();
+
+        if (input == null || input.isBlank()) {
+            return;
+        }
+
         handleSendingObject(input, shouldBeEncrypted);
     }
 
     public void handleSendingObject(String input, boolean shouldBeEncrypted) {
-        if (input == null || input.isBlank())
-            return;
-
         Object object = inputConvertor.convertIntoObject(input, shouldBeEncrypted);
 
         if (object instanceof final Command command) {
@@ -54,8 +56,6 @@ public class InputSendingHandler {
     }
 
     public void sendToServer(Object o) {
-        if (o == null) return;
-
         try {
             System.out.println("Sending object: " + o);
             outputStream.writeObject(o);

@@ -2,7 +2,7 @@ package chat.client.handlers.response;
 
 import chat.client.models.User;
 import chat.client.ui.ChatLayout;
-import chat.sever.CommandResponse;
+import chat.sever.models.CommandResponse;
 import chat.utils.StatusCode;
 
 import javax.crypto.SecretKey;

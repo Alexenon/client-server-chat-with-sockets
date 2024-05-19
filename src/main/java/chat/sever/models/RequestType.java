@@ -1,4 +1,4 @@
-package chat.sever;
+package chat.sever.models;
 
 public enum RequestType {
     VIEW_USER_INFO,

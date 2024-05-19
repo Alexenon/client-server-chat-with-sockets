@@ -8,6 +8,10 @@ import javax.crypto.SecretKey;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Component used to manage the client actions like adding to the server,
+ * removing from the server, sending objects, etc.
+ * */
 public class ServerManager {
     private static SecretKey secretKey = EncryptUtils.generateSecretKey();
     private static final List<ServerClientHandler> clients = new CopyOnWriteArrayList<>();
@@ -15,7 +19,7 @@ public class ServerManager {
     public static synchronized void addClient(ServerClientHandler serverClientHandler) {
         clients.add(serverClientHandler);
         resetSecurityKey();
-        broadcast(secretKey); // TODO: Think how to send group key
+        broadcast(secretKey);
     }
 
     public static synchronized void removeClient(ServerClientHandler serverClientHandler) {

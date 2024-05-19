@@ -1,6 +1,7 @@
 package chat.sever;
 
 import chat.client.models.User;
+import chat.sever.handlers.ServerResponseHandler;
 import chat.utils.StatusCode;
 import chat.utils.errors.ServerError;
 

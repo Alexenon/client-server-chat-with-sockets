@@ -3,7 +3,7 @@ package chat.client.handlers.response;
 import chat.client.models.Message;
 import chat.client.models.User;
 import chat.client.ui.ChatLayout;
-import chat.sever.CommandResponse;
+import chat.sever.models.CommandResponse;
 import chat.utils.errors.ServerError;
 
 import javax.crypto.SecretKey;

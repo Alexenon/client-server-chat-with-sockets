@@ -5,7 +5,7 @@ import chat.client.models.User;
 import chat.client.models.commands.Command;
 import chat.client.models.commands.CommandType;
 import chat.client.models.ClientRequest;
-import chat.sever.RequestType;
+import chat.sever.models.RequestType;
 
 public class ViewConnectedUsersCommand extends Command {
     private final InputSendingHandler inputSendingHandler;

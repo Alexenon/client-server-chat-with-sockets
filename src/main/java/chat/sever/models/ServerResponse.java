@@ -1,4 +1,4 @@
-package chat.sever;
+package chat.sever.models;
 
 import chat.utils.ServerConfiguration;
 import chat.utils.StatusCode;

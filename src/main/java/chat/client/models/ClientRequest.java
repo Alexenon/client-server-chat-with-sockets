@@ -1,6 +1,6 @@
 package chat.client.models;
 
-import chat.sever.RequestType;
+import chat.sever.models.RequestType;
 
 import java.io.Serial;
 import java.io.Serializable;
