@@ -1,8 +1,8 @@
-# Secure Chat Application
+# Secure Chat Application 🔐
 
 This project is a secure chat application developed in Java using sockets for network communication. The application supports both public and private messaging and includes features for encrypted communication using asymmetric encryption.
 
-## Features
+## Features 🏆
 
 - **Public and Private Messaging**: Users can send messages to everyone in the chat or privately to specific users.
 - **Encryption**: Messages can be encrypted using RSA, ensuring secure communication between users.
@@ -10,13 +10,8 @@ This project is a secure chat application developed in Java using sockets for ne
 - **Graphical User Interface**: A simple and intuitive GUI built with Swing for user interaction.
 - **Server-Client Architecture**: The application uses a multi-threaded server to handle multiple client connections simultaneously.
 
-## Components
 
-- **Client**: Handles user input, connects to the server, sends messages, and receives and displays incoming messages.
-- **Server**: Manages client connections, broadcasts messages to all users, and handles private messaging and encryption.
-- **Encryption**: Utilizes RSA for encrypting and decrypting messages, ensuring that only the intended recipient can read the message.
-
-## How to Run
+## How to Run 🛠
 
 1. **Clone the Repository**:
     ```sh
@@ -42,19 +37,18 @@ This project is a secure chat application developed in Java using sockets for ne
     - To type command, search firstly for all available commands using command `/help` then apply required command. 
     - To enable encryption, check the "Encrypt" checkbox before sending your message.
 
-## Dependencies
+## Dependencies 🔗
 
 - Java 11 or higher
 
-## Future Enhancements
+## Future Enhancements 🏹
 
 - **User Authentication**: Implement a proper user authentication mechanism.
 - **Improved UI**: Enhance the user interface for better user experience.
 - **Telnet / SSH** Add posibility to use the chat, without UI but directly using telnet or ssh.
 
-### Screenshots
 
-
+## Screenshots 🖥
 
 #### Simple messaging
 ![logs](src/main/resources/message-screenshot.png)
@@ -66,16 +60,23 @@ This project is a secure chat application developed in Java using sockets for ne
 ![logs](src/main/resources/logs-screenshot.png)
 
 
-## Contributing
+## Components 🛡
+
+- **Client**: Handles user input, connects to the server, sends messages, and receives and displays incoming messages.
+- **Server**: Manages client connections, broadcasts messages to all users, and handles private messaging and encryption.
+- **Encryption**: Utilizes RSA for encrypting and decrypting messages, ensuring that only the intended recipient can read the message.
+
+
+## Contributing ❤
 
 Feel free to contribute to this project by submitting issues or pull requests. Please ensure that your contributions adhere to the project's coding standards and include appropriate tests.
 
-## License
+## License ✏
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-Happy secured chatting!
+Happy secured chatting! 👩‍💻
 
 
